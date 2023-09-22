@@ -34,12 +34,23 @@ public class Rotator : MonoBehaviour
         axis.Enable();
         pressed.performed += _ =>
         {
-            if (touchCount  > 1)
+            if (touchCount > 1)
+            {
+                rotateAllowed = false;
                 return;
+            }
             StartCoroutine(Rotate());
         };
         pressed.canceled += _ => { rotateAllowed = false; };
-        axis.performed += context => { rotation = context.ReadValue<Vector2>(); };	        
+        axis.performed += context =>
+        {
+            if (touchCount > 1)
+            {
+                rotateAllowed = false;
+                return;
+            }
+            rotation = context.ReadValue<Vector2>();
+        };	        
     }
 
     private IEnumerator Rotate()
@@ -109,7 +120,7 @@ public class Rotator : MonoBehaviour
             }
             var difference = magnitude - previousMagnitude;
             previousMagnitude = magnitude;
-            CameraZoom(difference * speedZoom);
+            CameraZoom(-difference * speedZoom);
         };
     }
     

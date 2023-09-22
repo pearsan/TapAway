@@ -501,7 +501,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1932764987}
         m_TargetAssemblyTypeName: CubeGenerator, Assembly-CSharp
-        m_MethodName: Reset
+        m_MethodName: ResetGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6485,7 +6485,7 @@ MonoBehaviour:
   _targert: {fileID: 1932764984}
   speedRotate: 0.3
   inverted: 1
-  speedZoom: 0.01
+  speedZoom: 0.03
 --- !u!1 &967997279
 GameObject:
   m_ObjectHideFlags: 0

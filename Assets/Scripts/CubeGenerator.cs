@@ -1,10 +1,15 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
+
 
 public class CubeGenerator : MonoBehaviour
 {
+
     [Range(0, 10)]
     public int width = 5;
     [Range(0, 10)]
@@ -17,21 +22,107 @@ public class CubeGenerator : MonoBehaviour
     [SerializeField] private GameObject _cube;
     [SerializeField] private Texture2D map;
     [SerializeField] private Color _color;
-    private GameObject[,,] cubes;
+    private TapCube[,,] cubes;
+    private bool[,,] canMove;
+
+
     private void Start()
     {
-        /*GenerateCubes();*/
-        /*
-        GenerateLevel();
-    */
+        StartCoroutine(GenerateCubes());
     }
 
-    public void GenerateCubes()
+    private IEnumerator GenerateCubes()
     {
-        cubes = new GameObject[width, height, depth];
         /*
         GameObject parentCube = new GameObject("Cube");
         */
+        GenerateLevel();
+        yield return new WaitForSeconds(0.05f);
+
+        Autoplay();
+        transform.position = new Vector3(0, 0, 0);
+
+    }
+
+    public void ResetGame()
+    {
+        StartCoroutine(GenerateCubes());
+    }
+
+    public void Autoplay()
+    {
+        bool canPlay = true;
+        bool playable = true;
+        while (canPlay)
+        {
+            canPlay = false;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int z = 0; z < depth; z++)
+                    {
+                        if (canMove[x, y, z] == false)
+                        {
+                            if (!cubes[x, y, z].IsBlock())
+                            {
+                                playable = false;
+                                canPlay = true;
+                                cubes[x, y, z].HiddenCube();
+                                canMove[x, y, z] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (!playable)
+        {
+            Debug.Log("cant be play");
+            Reshuffle();
+            Autoplay();
+        }
+        else
+        {
+            Debug.Log("playable");
+            ShowCubes();
+        }
+        
+    }
+
+    public void Reshuffle()
+    {
+        bool isPlayable = false;
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                for (int z = 0; z < depth; z++)
+                {
+                    if (canMove[x, y, z] == false)
+                    {
+                        cubes[x, y, z].transform.rotation = RandomRotation();
+                    }
+                } 
+            }
+        }
+    }
+        
+    private Quaternion RandomRotation()
+    {
+        Quaternion randomRotation = Quaternion.Euler(
+            Random.Range(0, 4) * 90f,
+            Random.Range(0, 4) * 90f,
+            Random.Range(0, 4) * 90f
+        );
+        return randomRotation;
+    }
+    
+    public void GenerateLevel()
+    {
+        cubes = new TapCube[width, height, depth];
+        canMove = new bool[width, height, depth];
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
         float centerOffsetY = (height - 1) * (1 + spacing) / 2f;
@@ -56,59 +147,27 @@ public class CubeGenerator : MonoBehaviour
                     cube.transform.rotation = randomRotation;
                     
                     cube.transform.position = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
-                    
-                    cubes[x, y, z] = cube;
+                    canMove[x, y, z] = false;
+                    cubes[x, y, z] = cube.GetComponent<TapCube>();
                 }
             }
         }
 
-        transform.position = new Vector3(0, 0, 0);
     }
 
-    private Quaternion RandomRotation()
+    public void ShowCubes()
     {
-        Quaternion randomRotation = Quaternion.Euler(
-            Random.Range(0, 4) * 90f,
-            Random.Range(0, 4) * 90f,
-            Random.Range(0, 4) * 90f
-        );
-        return randomRotation;
-    }
-
-
-    public void GenerateLevel()
-    {
-        ClearCube();
-
-        for (int x = 0; x < map.width; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < map.height; y++)
+            for (int y = 0; y < height; y++)
             {
-                GenerateCube(x, y);
+                for (int z = 0; z < depth; z++)
+                {
+                    canMove[x, y, z] = false;
+                    cubes[x, y, z].ShowCube();
+                }
             }
         }
-        transform.position = new Vector3(0, 0, 0);
-    }
-
-    private void GenerateCube(int x, int y)
-    {
-        float centerOffsetX = (map.width - 1) * (1 + spacing) / 2f;
-        float centerOffsetZ = (map.height - 1) * (1 + spacing) / 2f;
-        
-        Color pixelColor = map.GetPixel(x, y);
-        if (_color.Equals(pixelColor))
-        {
-            GameObject cube = Instantiate(_cube);
-            cube.transform.localScale = new Vector3(100, 100, 100);
-            cube.transform.SetParent(transform);
-            
-            float offsetX = x * (1 + spacing);
-            float offsetZ = y * (1 + spacing);
-
-            cube.transform.position = new Vector3(offsetX - centerOffsetX, offsetZ - centerOffsetZ, 0 );
-            cube.transform.localScale = Vector3.one;
-        }
-        
     }
     
     private void ClearCube()

@@ -10,7 +10,6 @@ public class PinchScrollDetection : MonoBehaviour
 
     private float previousMagnitude = 0;
     private int touchCount = 0;
-    public InputAction test;
     void Start()
     {
         var scrollAction = new InputAction(binding: "<Mouse>/scroll");

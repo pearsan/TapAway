@@ -122,12 +122,11 @@ public class TapCube : MonoBehaviour
             // Choose a random direction from the remaining directions
             Vector3 newDirection = directions[Random.Range(0, directions.Count)];
 
-
             // Convert the direction vector to a quaternion
             Quaternion rotation =  Quaternion.LookRotation(newDirection);
 
             // Set the cube's rotation
-            hitObject.transform.rotation = rotation;
+            hitObject.transform.localRotation = rotation;
         }
     }
 

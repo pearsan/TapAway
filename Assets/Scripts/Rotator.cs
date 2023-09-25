@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class Rotator : MonoBehaviour 
 {
-    [SerializeField] private InputAction pressed, axis;
+    [SerializeField] private InputAction pressed, axis, zoom;
     [SerializeField] private Transform _targert;
 
     private Transform cam;
@@ -19,9 +19,11 @@ public class Rotator : MonoBehaviour
         cam = Camera.main.transform;
         pressed.Enable();
         axis.Enable();
-        pressed.performed += _ => { StartCoroutine(Rotate()); };
+        pressed.performed += _ => {StartCoroutine(Rotate()); };
         pressed.canceled += _ => { rotateAllowed = false; };
-        axis.performed += context => { rotation = context.ReadValue<Vector2>(); };	
+        axis.performed += context => { rotation = context.ReadValue<Vector2>(); };
+
+        zoom.performed += _ => { Zooming(); };
     }
 
     private IEnumerator Rotate()
@@ -33,13 +35,21 @@ public class Rotator : MonoBehaviour
             transform.position = _targert.position;
 
             rotation *= speed;
-            transform.Rotate(Vector3.up * (inverted? 1: -1), rotation.x, Space.World);
-            transform.Rotate(cam.right * (inverted? -1: 1), rotation.y, Space.World);
+
+            //inverted = IsCubeInvert();
+
+            _targert.transform.Rotate(Vector3.up * (inverted? 1: -1), rotation.x, Space.World);
+            _targert.transform.Rotate(cam.right * (inverted? -1: 1), rotation.y, Space.World);
             
             transform.Translate(new Vector3(0, 1, -8));
 
             
             yield return null;
         }
-    }
+    }  
+
+    private void Zooming()
+    {
+        Debug.Log("Oh, is zoommm");
+    }    
 }

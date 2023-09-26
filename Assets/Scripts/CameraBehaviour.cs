@@ -62,8 +62,8 @@ public class Rotator : MonoBehaviour
             transform.position = _targert.position;
 
             rotation *= speedRotate;
-            transform.Rotate(Vector3.up * (inverted? 1: -1), rotation.x, Space.World);
-            transform.Rotate(cam.right * (inverted? -1: 1), rotation.y, Space.World);
+            _targert.transform.Rotate(Vector3.up * (inverted? 1: -1), rotation.x, Space.World);
+            _targert.transform.Rotate(cam.right * (inverted? -1: 1), rotation.y, Space.World);
             
             transform.Translate(new Vector3(0, 1, -8));
 

@@ -6,6 +6,10 @@ using DG.Tweening;
 
 public class TabGUIManager : MonoBehaviour
 {
+    [SerializeField] private string TabName;
+
+    [Space(20f)]
+
     //Attach this class to any tabs of button
     [Header("Sprites Transition")]
     [SerializeField] private Sprite UnselectedSprite;
@@ -15,11 +19,16 @@ public class TabGUIManager : MonoBehaviour
     [Tooltip("Content object from this tab when selected")]
     [SerializeField] private GameObject TargetContents;
 
-    private Image _targetImage;
+    private Image _targetTab;
+    private Image _targetIcon;
+
+    private const string UNSELETECTED_COLOR = "#73778E";
+    private const string SELECTED_COLOR = "#FFFFFF";
 
     private void Awake()
     {
-        _targetImage = GetComponent<Image>();
+        _targetTab = GetComponent<Image>();
+        _targetIcon = transform.Find("Icon").GetComponent<Image>();
     }
 
     private void Start()
@@ -33,19 +42,38 @@ public class TabGUIManager : MonoBehaviour
     /// <param name="IsAscending">If true, it will tween from left to right. If false, it will tween from right to left.</param>
     public void OnTabSelect(bool IsAscending)
     {
-        _targetImage.sprite = SelectedSprite;
+        _targetTab.sprite = SelectedSprite;
+        _targetIcon.color = ColorConverting(SELECTED_COLOR);
+        GetComponent<RectTransform>().sizeDelta = new Vector2(240, 96);
         Canvas canvas = gameObject.AddComponent<Canvas>();
         canvas.overrideSorting = true;
         canvas.sortingOrder = 3;
 
         TargetContents.SetActive(true);
+
+        TargetContents.GetComponent<RectTransform>().anchoredPosition = new Vector3(1080 * (IsAscending ? -1 : 1), 0);
+        TargetContents.transform.DOLocalMoveX(540, 0.1f);
+
+        ShopGUIManager.Instance.OnUpdateHeadingText(TabName);
     }    
 
     public void OnTabUnselect()
     {
-        _targetImage.sprite = UnselectedSprite;
+        _targetTab.sprite = UnselectedSprite;
+        _targetIcon.color = ColorConverting(UNSELETECTED_COLOR);
+        GetComponent<RectTransform>().sizeDelta = new Vector2(240, 80);
         Destroy(gameObject.GetComponent<Canvas>());
 
-        //TargetContents.SetActive(false);
+        TargetContents.SetActive(false);
+        /*TargetContents.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, 0);
+        TargetContents.transform.DOLocalMoveX(1080 * (IsAscending ? -1 : 1), 0.1f);*/
+    }
+
+
+    private Color ColorConverting(string hexColor)
+    {
+        if (ColorUtility.TryParseHtmlString(hexColor, out Color color))
+            return color;
+        return color;
     }    
 }

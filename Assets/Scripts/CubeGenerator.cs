@@ -20,10 +20,9 @@ public class CubeGenerator : MonoBehaviour
     public float spacing = 0.1f;
 
     [SerializeField] private GameObject _cube;
-    [SerializeField] private Texture2D map;
-    [SerializeField] private Color _color;
-    private TapCube[,,] cubes;
-    private bool[,,] canMove;
+    [SerializeField] private bool generateShape = false;
+    public GameObject shapePrefab;
+    private List<TapCube> cubes;
 
 
     private void Start()
@@ -36,8 +35,17 @@ public class CubeGenerator : MonoBehaviour
         /*
         GameObject parentCube = new GameObject("Cube");
         */
-        GenerateLevel();
-        yield return new WaitForSeconds(0.05f);
+        if (!generateShape)
+        {
+            GenerateCubeLevel();
+            yield return new WaitForSeconds(0.05f);            
+        }
+        else
+        {
+            GenerateShapeLevel();
+            yield return new WaitForSeconds(0.05f);
+        }
+
 
         Autoplay();
         transform.position = new Vector3(0, 0, 0);
@@ -56,25 +64,20 @@ public class CubeGenerator : MonoBehaviour
         while (canPlay)
         {
             canPlay = false;
-            for (int x = 0; x < width; x++)
+
+            foreach (var cube in cubes)
             {
-                for (int y = 0; y < height; y++)
+                if (!cube.IsHidden())
                 {
-                    for (int z = 0; z < depth; z++)
+                    if (!cube.IsBlock())
                     {
-                        if (canMove[x, y, z] == false)
-                        {
-                            if (!cubes[x, y, z].IsBlock())
-                            {
-                                playable = false;
-                                canPlay = true;
-                                cubes[x, y, z].HiddenCube();
-                                canMove[x, y, z] = true;
-                            }
-                        }
+                        playable = false;
+                        canPlay = true;
+                        cube.HiddenCube();
                     }
                 }
             }
+            
         }
         
         if (!playable)
@@ -93,18 +96,11 @@ public class CubeGenerator : MonoBehaviour
 
     public void Reshuffle()
     {
-        bool isPlayable = false;
-        for (int x = 0; x < width; x++)
+        foreach (var cube in cubes)
         {
-            for (int y = 0; y < height; y++)
+            if (!cube.IsHidden())
             {
-                for (int z = 0; z < depth; z++)
-                {
-                    if (canMove[x, y, z] == false)
-                    {
-                        cubes[x, y, z].transform.rotation = RandomRotation();
-                    }
-                } 
+                cube.transform.rotation = RandomRotation();
             }
         }
     }
@@ -119,10 +115,9 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    public void GenerateLevel()
+    public void GenerateCubeLevel()
     {
-        cubes = new TapCube[width, height, depth];
-        canMove = new bool[width, height, depth];
+        cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
         float centerOffsetY = (height - 1) * (1 + spacing) / 2f;
@@ -147,41 +142,137 @@ public class CubeGenerator : MonoBehaviour
                     cube.transform.rotation = randomRotation;
                     
                     cube.transform.position = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
-                    canMove[x, y, z] = false;
-                    cubes[x, y, z] = cube.GetComponent<TapCube>();
+                    
+                    cubes.Add(cube.gameObject.GetComponent<TapCube>());
                 }
             }
+        }
+    }
+    
+    public void GenerateShapeLevel()
+    {
+        cubes = new List<TapCube>();
+        ClearCube();
+        shapePrefab.SetActive(true);
+
+        MeshCollider meshCollider = shapePrefab.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            Debug.Log(true);
+            Bounds bounds = meshCollider.bounds;
+            float gridSize = 1f; // size of each cube
+
+            List<Vector3> points = new List<Vector3>();
+
+            for (float x = bounds.min.x; x < bounds.max.x; x += gridSize + spacing)
+            {
+                for (float y = bounds.min.y; y < bounds.max.y; y += gridSize + spacing)
+                {
+                    for (float z = bounds.min.z; z < bounds.max.z; z += gridSize + spacing)
+                    {
+                        Vector3 point =  new Vector3(x, y, z);
+                        /*if (IsPointInsideCollider(point, meshCollider))
+                        { 
+                            GameObject cube = Instantiate(_cube, point, RandomRotation()); 
+                            cube.transform.SetParent(transform);
+
+                            cubes.Add(cube.gameObject.GetComponent<TapCube>());
+                        }*/
+                        /*if (IsPointInMesh(point))
+                        {
+                            points.Add(point);
+                        }*/
+
+                        if (IsInsideMeshCollider(meshCollider, point))
+                        {
+                            points.Add(point);
+                        }
+                    } 
+                }
+            }
+
+            foreach (var point in points)
+            {
+                GameObject cube = Instantiate(_cube, point, RandomRotation()); 
+                cube.transform.SetParent(transform);
+
+                cubes.Add(cube.gameObject.GetComponent<TapCube>());
+            }
+            shapePrefab.SetActive(false);
+        }
+    }
+    
+    bool IsPointInsideCollider(Vector3 point, Collider collider)
+    {
+        // Create a tiny box at the point's position
+        float size = 1.2f;
+        Vector3 boxSize = new Vector3(size, size, size); // Can adjust size as needed
+
+        // Check if the box collides with the collider
+        Collider[] hitColliders = Physics.OverlapBox(point, boxSize / 2);
+        
+        // If the box collides with the collider, the point is inside the collider
+        foreach (Collider hitCollider in hitColliders)
+        {
+
+            if (hitCollider == collider)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
+    {
+        var temp = Physics.queriesHitBackfaces;
+        Ray ray = new Ray(point, Vector3.back);
+
+        bool hitFrontFace = false;
+        RaycastHit hit = default;
+
+        Physics.queriesHitBackfaces = true;
+        bool hitFrontOrBackFace = col.Raycast(ray, out RaycastHit hit2, 100f);
+        if (hitFrontOrBackFace)
+        {
+            Physics.queriesHitBackfaces = false;
+            hitFrontFace = col.Raycast(ray, out hit, 100f);
+        }
+        Physics.queriesHitBackfaces = temp;
+
+        if (!hitFrontOrBackFace)
+        {
+            return false;
+        }
+        else if (!hitFrontFace)
+        {
+            return true;
+        }
+        else 
+        {
+            // This can happen when, for instance, the point is inside the torso but there's a part of the mesh (like the tail) that can still be hit on the front
+            if (hit.distance > hit2.distance)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
     }
 
     public void ShowCubes()
     {
-        for (int x = 0; x < width; x++)
+        foreach (var cube in cubes)
         {
-            for (int y = 0; y < height; y++)
-            {
-                for (int z = 0; z < depth; z++)
-                {
-                    canMove[x, y, z] = false;
-                    cubes[x, y, z].ShowCube();
-                }
-            }
+            cube.ShowCube();
         }
     }
     
-    private void ClearCube()
+    public void ClearCube()
     {
-        for (int i = 0; i < cubes.GetLength(0); i++)
-        {
-            for (int j = 0; j < cubes.GetLength(1); j++)
-            {
-                for (int k = 0; k < cubes.GetLength(2); k++)
-                {
-                    cubes[i, j, k] = null;
-                }
-            }
-        }
+        cubes.Clear();
         while (transform.childCount > 0)
         {
             Transform child = transform.GetChild(0);

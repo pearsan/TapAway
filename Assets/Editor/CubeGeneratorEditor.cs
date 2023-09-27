@@ -22,9 +22,9 @@ public class CubeGeneratorEditor : Editor
             _generator.ResetGame();
         }
         
-        if (GUILayout.Button("Create Shap"))
+        if (GUILayout.Button("Clear"))
         {
-            _generator.GenerateLevel();
+            _generator.ClearCube();
         }
     }
 }

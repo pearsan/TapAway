@@ -13,7 +13,6 @@ public class TapCube : MonoBehaviour
 
     [SerializeField] private bool isHidden = false;
 
-    [SerializeField] private Vector3 _initialPos;
 
     public bool drawRay;
     private Vector3 startPosition;
@@ -24,10 +23,6 @@ public class TapCube : MonoBehaviour
         if (_moving)
         {
             transform.position += transform.forward * speed * Time.deltaTime;
-            if (Vector3.Distance(transform.position, startPosition) >= 10)
-            {
-                Destroy(gameObject);
-            }
         }
     }
     
@@ -39,17 +34,14 @@ public class TapCube : MonoBehaviour
     public void SetMoving()
     {
         _moving = true;
-        startPosition = transform.position;
+        StartCoroutine(DestroyByTime());
     }
 
-    /*private void OnTriggerEnter(Collider other)
+    private IEnumerator DestroyByTime()
     {
-        if (other.gameObject.GetComponent<TapCube>())
-        {
-            _moving = false;
-            transform.position = _initialPos;
-        }
-    }*/
+        yield return new WaitForSeconds(5f);
+        Destroy(gameObject);
+    }
 
     public bool IsBlock()
     {

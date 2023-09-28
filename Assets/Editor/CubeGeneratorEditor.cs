@@ -19,12 +19,22 @@ public class CubeGeneratorEditor : Editor
         base.OnInspectorGUI();
         if (GUILayout.Button("Create Cubes"))
         {
-            _generator.ResetGame();
+            _generator.CreateLevel();
         }
         
         if (GUILayout.Button("Clear"))
         {
             _generator.ClearCube();
+        }
+        
+        if (GUILayout.Button("Export"))
+        {
+            _generator.ExportObject();
+        }
+        
+        if (GUILayout.Button("LoadLevel"))
+        {
+            _generator.LoadJson();
         }
     }
 }

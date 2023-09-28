@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
@@ -22,42 +25,48 @@ public class CubeGenerator : MonoBehaviour
     [SerializeField] private GameObject _cube;
     [SerializeField] private bool generateShape = false;
     public GameObject shapePrefab;
-    private List<TapCube> cubes;
+    private List<TapCube> _cubes;
 
-
-    private void Start()
+    [SerializeField] private TextAsset jsonFile;
+    [SerializeField] private string levelName;
+    
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void CreateLevel()
     {
         StartCoroutine(GenerateCubes());
     }
-
     private IEnumerator GenerateCubes()
     {
-        /*
-        GameObject parentCube = new GameObject("Cube");
-        */
+
         if (!generateShape)
         {
             GenerateCubeLevel();
-            yield return new WaitForSeconds(0.05f);            
+            
         }
         else
         {
             GenerateShapeLevel();
-            yield return new WaitForSeconds(0.05f);
         }
-
-
+        
+        yield return new WaitForSeconds(0.05f);
         Autoplay();
         transform.position = new Vector3(0, 0, 0);
-
     }
 
     public void ResetGame()
     {
-        StartCoroutine(GenerateCubes());
+        LoadJson();
     }
 
-    public void Autoplay()
+    //Call the function to make the puzzle Sovable
+    private IEnumerator SolveGame()
+    {
+        yield return new WaitForSeconds(0.05f);
+        Autoplay();
+    }
+
+    // Test and make the puzzle solvable
+    private void Autoplay()
     {
         bool canPlay = true;
         bool playable = true;
@@ -65,7 +74,7 @@ public class CubeGenerator : MonoBehaviour
         {
             canPlay = false;
 
-            foreach (var cube in cubes)
+            foreach (var cube in _cubes)
             {
                 if (!cube.IsHidden())
                 {
@@ -82,13 +91,17 @@ public class CubeGenerator : MonoBehaviour
         
         if (!playable)
         {
+            /*
             Debug.Log("cant be play");
+            */
             Reshuffle();
             Autoplay();
         }
         else
         {
+            /*
             Debug.Log("playable");
+            */
             ShowCubes();
         }
         
@@ -96,11 +109,11 @@ public class CubeGenerator : MonoBehaviour
 
     public void Reshuffle()
     {
-        foreach (var cube in cubes)
+        foreach (var cube in _cubes)
         {
             if (!cube.IsHidden())
             {
-                cube.transform.rotation = RandomRotation();
+                cube.transform.localRotation = RandomRotation();
             }
         }
     }
@@ -115,9 +128,10 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
+    // ReSharper disable Unity.PerformanceAnalysis
     public void GenerateCubeLevel()
     {
-        cubes = new List<TapCube>();
+        _cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
         float centerOffsetY = (height - 1) * (1 + spacing) / 2f;
@@ -139,11 +153,11 @@ public class CubeGenerator : MonoBehaviour
 
                     Quaternion randomRotation = RandomRotation();
 
-                    cube.transform.rotation = randomRotation;
+                    cube.transform.localRotation = randomRotation;
                     
-                    cube.transform.position = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
+                    cube.transform.localPosition = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
                     
-                    cubes.Add(cube.gameObject.GetComponent<TapCube>());
+                    _cubes.Add(cube.gameObject.GetComponent<TapCube>());
                 }
             }
         }
@@ -151,7 +165,7 @@ public class CubeGenerator : MonoBehaviour
     
     public void GenerateShapeLevel()
     {
-        cubes = new List<TapCube>();
+        _cubes = new List<TapCube>();
         ClearCube();
         shapePrefab.SetActive(true);
 
@@ -171,18 +185,6 @@ public class CubeGenerator : MonoBehaviour
                     for (float z = bounds.min.z; z < bounds.max.z; z += gridSize + spacing)
                     {
                         Vector3 point =  new Vector3(x, y, z);
-                        /*if (IsPointInsideCollider(point, meshCollider))
-                        { 
-                            GameObject cube = Instantiate(_cube, point, RandomRotation()); 
-                            cube.transform.SetParent(transform);
-
-                            cubes.Add(cube.gameObject.GetComponent<TapCube>());
-                        }*/
-                        /*if (IsPointInMesh(point))
-                        {
-                            points.Add(point);
-                        }*/
-
                         if (IsInsideMeshCollider(meshCollider, point))
                         {
                             points.Add(point);
@@ -193,37 +195,17 @@ public class CubeGenerator : MonoBehaviour
 
             foreach (var point in points)
             {
-                GameObject cube = Instantiate(_cube, point, RandomRotation()); 
+                GameObject cube = Instantiate(_cube);
                 cube.transform.SetParent(transform);
+                cube.transform.localRotation = RandomRotation();
+                cube.transform.localPosition = point;
 
-                cubes.Add(cube.gameObject.GetComponent<TapCube>());
+                _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             }
             shapePrefab.SetActive(false);
         }
     }
-    
-    bool IsPointInsideCollider(Vector3 point, Collider collider)
-    {
-        // Create a tiny box at the point's position
-        float size = 1.2f;
-        Vector3 boxSize = new Vector3(size, size, size); // Can adjust size as needed
 
-        // Check if the box collides with the collider
-        Collider[] hitColliders = Physics.OverlapBox(point, boxSize / 2);
-        
-        // If the box collides with the collider, the point is inside the collider
-        foreach (Collider hitCollider in hitColliders)
-        {
-
-            if (hitCollider == collider)
-            {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
     {
         var temp = Physics.queriesHitBackfaces;
@@ -264,7 +246,7 @@ public class CubeGenerator : MonoBehaviour
 
     public void ShowCubes()
     {
-        foreach (var cube in cubes)
+        foreach (var cube in _cubes)
         {
             cube.ShowCube();
         }
@@ -272,11 +254,77 @@ public class CubeGenerator : MonoBehaviour
     
     public void ClearCube()
     {
-        cubes.Clear();
+        _cubes.Clear();
         while (transform.childCount > 0)
         {
             Transform child = transform.GetChild(0);
             DestroyImmediate(child.gameObject);
+        }
+    }
+
+    public void ExportObject()
+    {
+        // Create a new list to hold the positions.
+        List<Vector3> positions = new List<Vector3>();
+
+        // Add the position of each game object to the list.
+
+        foreach (Transform child in transform)
+        {
+            // Now you can do something with each child GameObject
+            /*Debug.Log(child.name);*/
+            positions.Add(child.localPosition);
+        }
+
+        // Convert the list of positions to JSON.
+        string jsonString = JsonConvert.SerializeObject(positions, Formatting.Indented, new Vector3Converter());
+
+        // Write the JSON string to a file.
+        string path = Path.Combine("Assets", "Resources", levelName + ".json");
+        File.WriteAllText(path, jsonString);
+        AssetDatabase.Refresh();
+        Debug.Log("saved");
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void LoadJson()
+    {
+        _cubes = new List<TapCube>();
+        ClearCube();
+        List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
+        int i = 0;
+        foreach (Vector3 position in positions)
+        {
+            GameObject cube = Instantiate(_cube);
+            cube.name = "" + i;
+            _cubes.Add(cube.gameObject.GetComponent<TapCube>());
+            cube.transform.SetParent(transform);
+            cube.transform.localRotation = RandomRotation();
+            cube.transform.localPosition = position;
+            i++;
+        }
+        Debug.Log("current cubes: " + i);
+        StartCoroutine(SolveGame());
+        transform.position = new Vector3(0, 0, 0);
+    }
+    
+    public class Vector3Converter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            Vector3 vector = (Vector3)value;
+            serializer.Serialize(writer, new float[] { vector.x, vector.y, vector.z });
+        }
+
+        public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var array = JArray.Load(reader);
+            return new Vector3(array[0].Value<float>(), array[1].Value<float>(), array[2].Value<float>());
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Vector3);
         }
     }
 }

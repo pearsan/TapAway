@@ -41,7 +41,6 @@ public class CameraBehaviour : MonoBehaviour
         SetZoom();
         SetRotate();
         SetDrag();
-        Debug.Log(test.bindings[0].path);
     }
 
     private void SetRotate()
@@ -186,53 +185,6 @@ public class CameraBehaviour : MonoBehaviour
         dragAction.Enable();
         dragAction.started += ctx => { isDragging = true; };
         dragAction.canceled += ctx => { isDragging = false; };
-
-        /*// For touch
-        var touch0contact = new InputAction(type: InputActionType.Button, binding: "<Touchscreen>/touch0/press");
-        var touch1contact = new InputAction(type: InputActionType.Button, binding: "<Touchscreen>/touch1/press");
-        touch0contact.Enable();
-        touch1contact.Enable();
-
-        touch0contact.performed += _ => touchCount++;
-        touch1contact.performed += _ => touchCount++;
-
-        touch0contact.canceled += _ =>
-        {
-            touchCount--;
-            isDragging = false;
-        };
-        touch1contact.canceled += _ =>
-        {
-            touchCount--;
-            isDragging = false;
-        };
-
-        var touch0pos = new InputAction(type: InputActionType.Value, binding: "<TouchScreen>/touch0/position");
-        var touch1pos = new InputAction(type: InputActionType.Value, binding: "<TouchScreen>/touch1/position");
-        touch0pos.Enable();
-        touch1pos.Enable();
-
-        touch0pos.performed += _ =>
-        {
-            if (touchCount < 2)
-                return;
-            previousTouch0Pos = touch0pos.ReadValue<Vector2>();
-        };
-
-        touch1pos.performed += _ =>
-        {
-            if (touchCount < 2)
-                return;
-            previousTouch1Pos = touch1pos.ReadValue<Vector2>();
-            var touch0CurrentPos = touch0pos.ReadValue<Vector2>();
-            var touch1CurrentPos = touch1pos.ReadValue<Vector2>();
-
-            var difference = ((touch0CurrentPos - previousTouch0Pos) + (touch1CurrentPos - previousTouch1Pos)) / 2.0f;
-            Camera.main.transform.Translate(new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0), Space.Self);
-
-            previousTouch0Pos = touch0CurrentPos;
-            previousTouch1Pos = touch1CurrentPos;
-        };*/
     }
 
     private void Update()

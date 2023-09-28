@@ -41,9 +41,11 @@ public class PurchaseSkinSO : ShopItemSO
         return JsonUtility.FromJson<PurchaseSkin>(jsonData);
     }
 
-    public void SaveData(PurchaseSkin skin)
+    public void SaveData(PurchaseSkinSO skin)
     {
-        string jsonData = JsonUtility.ToJson(skin);
+        PurchaseSkin purcSkin = new PurchaseSkin { Name = skin.Name, Price = skin.Price, IsUnlock = skin.IsUnlock };
+
+        string jsonData = JsonUtility.ToJson(purcSkin);
         PlayerPrefs.SetString(PURCHASE_SKIN_PATH + Name, jsonData);
         PlayerPrefs.Save();
     }    

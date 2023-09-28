@@ -9,6 +9,11 @@ public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
 
+    [Tooltip("This game object control buy and equip button")]
+    public GameObject BuyButton;
+    [Tooltip("This game object control buy and equip button")]
+    public GameObject EquipButton;
+
     private List<TabGUIManager> tabGUIManagers;
 
     private TabGUIManager lastTabSelected;
@@ -30,7 +35,7 @@ public class ShopGUIManager : MonoBehaviour
 
         foreach(var tab in tabGUIManagers)
         {
-            tab.GetComponent<Button>().onClick.AddListener(OnTapClick);
+            tab.GetComponent<Button>().onClick.AddListener(OnTabClick);
         }
 
         FirstTabSelectedFromStart();
@@ -41,7 +46,7 @@ public class ShopGUIManager : MonoBehaviour
 
 
     //---------------------------------Button Behaviour----------------------------------
-    public void OnTapClick()
+    public void OnTabClick()
     {
         foreach(var tab in tabGUIManagers)
         {
@@ -54,7 +59,22 @@ public class ShopGUIManager : MonoBehaviour
             else
                 tab.OnTabUnselect();
         }    
+    }
+
+    public void OnShopItemButtonClick(bool IsUnlock)
+    {
+        if(IsUnlock)
+        {
+            BuyButton.SetActive(false);
+            EquipButton.SetActive(true);
+        }
+        else
+        {
+            BuyButton.SetActive(true);
+            EquipButton.SetActive(false);
+        }
     }    
+
     //-----------------------------------------------------------------------------------
 
     private void FirstTabSelectedFromStart()
@@ -64,7 +84,7 @@ public class ShopGUIManager : MonoBehaviour
             if (tab == tabGUIManagers[0])
             {
                 lastTabSelected = tab;
-                tab.OnTabSelect(false);
+                tab.OnTabSelect(false, false);
             }
             else
                 tab.OnTabUnselect();

@@ -5,5 +5,5 @@ using UnityEngine;
 public class ShopItemSO : ScriptableObject
 {
     public string Name;
-    [HideInInspector] public bool IsUnlock;
+    public bool IsUnlock;
 }

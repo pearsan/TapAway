@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(TabContentGUIBehaviour))]
 public class TabGUIManager : MonoBehaviour
 {
     [SerializeField] private string TabName;
@@ -19,11 +20,7 @@ public class TabGUIManager : MonoBehaviour
     [Header("Contents")]
     [Tooltip("Content object from this tab when selected")]
     [SerializeField] private GameObject TargetContents;
-    [Tooltip("Transform where to instantiate shop item")]
-    [SerializeField] private Transform TargetTransforms;
-
-    [Header("Prefabs")]
-    [SerializeField] private GameObject ShopItemPrefab;
+    
 
     [Header("Events")]
     [SerializeField] private UnityEvent FetchDataBehaviour;
@@ -58,7 +55,7 @@ public class TabGUIManager : MonoBehaviour
     /// Handle the tab selection event and perform a tween animation.
     /// </summary>
     /// <param name="IsAscending">If true, it will tween from left to right. If false, it will tween from right to left.</param>
-    public void OnTabSelect(bool IsAscending)
+    public void OnTabSelect(bool IsAscending, bool ActiveTween = true)
     {
         _targetTab.sprite = SelectedSprite;
         _targetIcon.color = ColorConverting(SELECTED_COLOR);
@@ -69,8 +66,11 @@ public class TabGUIManager : MonoBehaviour
 
         TargetContents.SetActive(true);
 
-        TargetContents.GetComponent<RectTransform>().anchoredPosition = new Vector3(1080 * (IsAscending ? -1 : 1), 0);
-        TargetContents.transform.DOLocalMoveX(540, 0.1f);
+        if (ActiveTween)
+        {
+            TargetContents.GetComponent<RectTransform>().anchoredPosition = new Vector3(1080 * (IsAscending ? 1 : -1), 0);
+            TargetContents.transform.DOLocalMoveX(540, 0.2f);
+        }
     }    
 
     public void OnTabUnselect()
@@ -98,20 +98,29 @@ public class TabGUIManager : MonoBehaviour
     public void FetchPurchaseSkinDataFromSender(ShopItemSO[] data)
     {
         tabContentBehaviours = null;
-        tabContentBehaviours += () => CreatePurchaseSkinItemsInShop(data);
+        tabContentBehaviours += () => GetComponent<PurchaseSkinContentGUIBehaviour>().CreateItemInShop(data);
         tabContentBehaviours.Invoke();
     }
-    #endregion
 
-    #region Each type of contents behaviour (Purchase Skins, Random Skins, ...)
-    private void CreatePurchaseSkinItemsInShop(ShopItemSO[] data)
+    public void FetchRandomSkinDataFromSender(ShopItemSO[] data)
     {
-        foreach(var skin in data)
-        {
-            GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
-            if(((PurchaseSkinSO)skin).IsUnlock)
-                item.GetComponent<Image>().sprite = ((PurchaseSkinSO)skin).SkinIcon;
-        }  
+        tabContentBehaviours = null;
+        tabContentBehaviours += () => GetComponent<RandomSkinContentGUIBehaviour>().CreateItemInShop(data);
+        tabContentBehaviours.Invoke();
     }    
+
+    public void FetchTapEffectDataFromSender(ShopItemSO[] data)
+    {
+        tabContentBehaviours = null;
+        tabContentBehaviours += () => GetComponent<TapEffectContentGUIBehaviour>().CreateItemInShop(data);
+        tabContentBehaviours.Invoke();
+    }
+
+    public void FetchWinEffectDataFromSender(ShopItemSO[] data)
+    {
+        tabContentBehaviours = null;
+        tabContentBehaviours += () => GetComponent<WinEffectContentGUIBehaviour>().CreateItemInShop(data);
+        tabContentBehaviours.Invoke();
+    }
     #endregion
 }

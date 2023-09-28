@@ -19,7 +19,7 @@ public class CubeGeneratorEditor : Editor
         base.OnInspectorGUI();
         if (GUILayout.Button("Create Cubes"))
         {
-            _generator.GenerateCubes();
+            _generator.ResetGame();
         }
         
         if (GUILayout.Button("Create Shap"))

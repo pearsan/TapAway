@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class TabGUIManager : MonoBehaviour
 {
@@ -18,12 +19,23 @@ public class TabGUIManager : MonoBehaviour
     [Header("Contents")]
     [Tooltip("Content object from this tab when selected")]
     [SerializeField] private GameObject TargetContents;
+    [Tooltip("Transform where to instantiate shop item")]
+    [SerializeField] private Transform TargetTransforms;
+
+    [Header("Prefabs")]
+    [SerializeField] private GameObject ShopItemPrefab;
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent FetchDataBehaviour;
 
     private Image _targetTab;
     private Image _targetIcon;
 
     private const string UNSELETECTED_COLOR = "#73778E";
     private const string SELECTED_COLOR = "#FFFFFF";
+
+    private delegate void TabContentBehaviours();
+    private TabContentBehaviours tabContentBehaviours;
 
     private void Awake()
     {
@@ -33,9 +45,15 @@ public class TabGUIManager : MonoBehaviour
 
     private void Start()
     {
-        
+        FetchDataBehaviour.Invoke();
+        Initialize();
     }
 
+    private void Initialize()
+    {
+    }    
+
+    #region Tab behaviour
     /// <summary>
     /// Handle the tab selection event and perform a tween animation.
     /// </summary>
@@ -53,8 +71,6 @@ public class TabGUIManager : MonoBehaviour
 
         TargetContents.GetComponent<RectTransform>().anchoredPosition = new Vector3(1080 * (IsAscending ? -1 : 1), 0);
         TargetContents.transform.DOLocalMoveX(540, 0.1f);
-
-        ShopGUIManager.Instance.OnUpdateHeadingText(TabName);
     }    
 
     public void OnTabUnselect()
@@ -75,5 +91,27 @@ public class TabGUIManager : MonoBehaviour
         if (ColorUtility.TryParseHtmlString(hexColor, out Color color))
             return color;
         return color;
+    }
+    #endregion
+
+    #region Tab contents behaviour
+    public void FetchPurchaseSkinDataFromSender(ShopItemSO[] data)
+    {
+        tabContentBehaviours = null;
+        tabContentBehaviours += () => CreatePurchaseSkinItemsInShop(data);
+        tabContentBehaviours.Invoke();
+    }
+    #endregion
+
+    #region Each type of contents behaviour (Purchase Skins, Random Skins, ...)
+    private void CreatePurchaseSkinItemsInShop(ShopItemSO[] data)
+    {
+        foreach(var skin in data)
+        {
+            GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
+            if(((PurchaseSkinSO)skin).IsUnlock)
+                item.GetComponent<Image>().sprite = ((PurchaseSkinSO)skin).SkinIcon;
+        }  
     }    
+    #endregion
 }

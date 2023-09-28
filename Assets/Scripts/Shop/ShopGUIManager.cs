@@ -9,8 +9,6 @@ public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
 
-    [SerializeField] private TMP_Text HeadingText;
-
     private List<TabGUIManager> tabGUIManagers;
 
     private TabGUIManager lastTabSelected;
@@ -23,12 +21,6 @@ public class ShopGUIManager : MonoBehaviour
     private void Start()
     {
         Initialize();
-
-        PurchaseSkinSO[] purchaseSkins = Resources.LoadAll<PurchaseSkinSO>("Shop Items/Skin Items/Purchase Skins");
-        foreach(var skin in purchaseSkins)
-        {
-            Debug.Log(skin.LoadData().Name);
-        }    
     }
 
     private void Initialize()
@@ -44,11 +36,7 @@ public class ShopGUIManager : MonoBehaviour
         FirstTabSelectedFromStart();
     }
 
-    //---------------------------------Text Behaviour------------------------------------
-    public void OnUpdateHeadingText(string newText)
-    {
-        HeadingText.text = newText;
-    }    
+    //---------------------------------Text Behaviour------------------------------------ 
     //-----------------------------------------------------------------------------------
 
 

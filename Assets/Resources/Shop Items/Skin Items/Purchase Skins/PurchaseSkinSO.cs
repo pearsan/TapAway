@@ -34,7 +34,7 @@ public class PurchaseSkinSO : ShopItemSO
 
             string newItemData = JsonUtility.ToJson(cube);
             PlayerPrefs.SetString(PURCHASE_SKIN_PATH + Name, newItemData);
-            Debug.Log("Not exist so create first!");
+            Debug.Log($"Not exist so create {Name} first!");
         }
 
         jsonData = PlayerPrefs.GetString(PURCHASE_SKIN_PATH + Name);

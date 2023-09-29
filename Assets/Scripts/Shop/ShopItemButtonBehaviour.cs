@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RandomSkinButtonBehaviour : MonoBehaviour
+public class ShopItemButtonBehaviour : MonoBehaviour
 {
-    public RandomSkinSO randomSkinSO;
+    public ShopItemSO shopItemSO;
 
     private Button button;
 
@@ -32,6 +32,6 @@ public class RandomSkinButtonBehaviour : MonoBehaviour
 
     public void OnClickButton()
     {
-        ShopManager.Instance.Subcribe(randomSkinSO);
+        ShopManager.Instance.Subcribe(shopItemSO);
     }    
 }

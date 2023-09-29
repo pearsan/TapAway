@@ -19,8 +19,10 @@ public class PurchaseSkinSO : ShopItemSO
     public float Price;
     public GameObject CubePrefab;
 
+    private const string TYPE = "Skin";
+
     PurchaseSkin cube;
-    public PurchaseSkin LoadData()
+    public void LoadData()
     {
         string jsonData = PlayerPrefs.GetString(PURCHASE_SKIN_PATH + Name);
         if(string.IsNullOrEmpty(jsonData))
@@ -38,7 +40,12 @@ public class PurchaseSkinSO : ShopItemSO
         }
 
         jsonData = PlayerPrefs.GetString(PURCHASE_SKIN_PATH + Name);
-        return JsonUtility.FromJson<PurchaseSkin>(jsonData);
+
+        PurchaseSkin purchaseSkin = JsonUtility.FromJson<PurchaseSkin>(jsonData);
+        Name = purchaseSkin.Name;
+        Price = purchaseSkin.Price;
+        IsUnlock = purchaseSkin.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(PurchaseSkinSO skin)

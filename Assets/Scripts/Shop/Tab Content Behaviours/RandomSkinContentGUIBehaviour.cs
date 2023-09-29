@@ -10,8 +10,9 @@ public class RandomSkinContentGUIBehaviour : TabContentGUIBehaviour
         foreach (var skin in data)
         {
             GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
-            RandomSkinButtonBehaviour randomSkinButtonBehaviour = item.AddComponent<RandomSkinButtonBehaviour>();
-            randomSkinButtonBehaviour.randomSkinSO = (RandomSkinSO)skin;
+            ShopItems.Add((item, skin));
+            ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
+            shopItemButtonBehaviour.shopItemSO = skin;
             if (((RandomSkinSO)skin).IsUnlock)
                 item.GetComponent<Image>().sprite = ((RandomSkinSO)skin).SkinIcon;
         }

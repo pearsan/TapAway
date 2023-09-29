@@ -43,6 +43,15 @@ public class ShopManager : MonoBehaviour
 
         foreach (var data in _winEffectsData)
             data.LoadData();
+<<<<<<< Updated upstream
+=======
+
+        _randomSkinsData[5].IsUnlock = true;
+        _randomSkinsData[3].IsUnlock = true;
+        _purchaseSkinsData[0].IsUnlock = true;
+        _tapEffectsData[0].IsUnlock = true;
+        _winEffectsData[0].IsUnlock = true;
+>>>>>>> Stashed changes
     }
 
     public void FetchPurchaseSkinData(GameObject receiver)

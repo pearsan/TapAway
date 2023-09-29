@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 224ed4bcbe27c9348b89697bc3583cca, type: 3}
   m_Name: Tap effect SO 2
   m_EditorClassIdentifier: 
-  Name: Tap 1
+  Name: Tap 2
   IsUnlock: 0
+  Type: TapEffect
   TapIcon: {fileID: 21300000, guid: 4d338c631fa36f345b72a36f1c91ff9a, type: 3}
   Price: 150
   tapPrefab: {fileID: 0}

@@ -21,4 +21,8 @@ public class HandleMainSceneButton : MonoBehaviour
         SceneManager.LoadScene("GenerateScene");
     }
 
+    public void ChangeToShopScene()
+    {
+        SceneManager.LoadScene("Shop Scene");
+    }    
 }

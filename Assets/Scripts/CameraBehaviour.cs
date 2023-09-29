@@ -9,6 +9,7 @@ public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] private InputAction pressed, axis;
     [SerializeField] private Transform _targert;
+    [SerializeField] private InputAction clicked;
 
     private Transform cam;
     [SerializeField] private float speedRotate = 0.3f;
@@ -32,15 +33,28 @@ public class CameraBehaviour : MonoBehaviour
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
+    
+    /// <summary>
+    /// EDITOR Cube
+    /// </summary>
+    [SerializeField] private GameObject parent;
+    [SerializeField] private GameObject child;
+    [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
 
 
     public InputAction test;
 
-    private void Awake() 
+    private void Awake()
     {
         SetZoom();
         SetRotate();
         SetDrag();
+        clicked.Enable();
+        clicked.performed += _ =>
+        {
+            ShootRay();
+        };
+    
     }
 
     private void SetRotate()
@@ -55,6 +69,7 @@ public class CameraBehaviour : MonoBehaviour
                 rotateAllowed = false;
                 return;
             }
+            rotation = Vector2.zero;
             StartCoroutine(Rotate());
         };
         pressed.canceled += _ => { rotateAllowed = false; };
@@ -204,4 +219,56 @@ public class CameraBehaviour : MonoBehaviour
             lastDragPosition = Vector2.zero;
         }
     }
+    private void ShootRay()
+    {
+        RaycastHit hit;
+        Ray ray;
+        
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.collider != null)
+                {
+                    TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                    if (!editCube)
+                    {
+                        if (tapCube != null && !tapCube.IsBlock())
+                        {
+                            tapCube.SetMoving();
+                        }    
+                    }
+                    else
+                    {
+                        Vector3 positionToInstantiate = tapCube.transform.position + hit.normal;
+                        GameObject newCube = Instantiate(child);
+                        newCube.transform.SetParent(parent.transform);
+                        newCube.transform.position = positionToInstantiate;
+                        newCube.transform.localRotation = tapCube.transform.localRotation;
+                    }
+                    
+                }
+            }
+        }
+        else if (Input.GetMouseButtonUp(1))
+        {
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            {
+                if (hit.collider != null)
+                {
+                    TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                    if (editCube)
+                    {
+                        if (tapCube != null)
+                        {
+                            Destroy(tapCube.gameObject);
+                        }    
+                    }
+                }
+            }
+        }
+    }
 }
+
+

@@ -17,9 +17,14 @@ public class CubeGeneratorEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        if (GUILayout.Button("Create Cubes"))
+        if (GUILayout.Button("Create Cubes base on 3D Grid"))
         {
-            _generator.CreateLevel();
+            _generator.Create3DGridLevel();
+        }
+        
+        if (GUILayout.Button("Create Cubes base on 3D model"))
+        {
+            _generator.Create3DShapeLevel();
         }
         
         if (GUILayout.Button("Clear"))

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
@@ -22,8 +23,8 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject _cube;
-    [SerializeField] private bool generateShape = false;
+    [SerializeField] private GameObject cube;
+
     public GameObject shapePrefab;
     private List<TapCube> _cubes;
 
@@ -31,33 +32,21 @@ public class CubeGenerator : MonoBehaviour
     [SerializeField] private string levelName;
     
     // ReSharper disable Unity.PerformanceAnalysis
-    public void CreateLevel()
+    public void Create3DShapeLevel()
     {
-        StartCoroutine(GenerateCubes());
+        Generate3DShapeLevel();
     }
-    private IEnumerator GenerateCubes()
+    
+    public void Create3DGridLevel()
     {
-
-        if (!generateShape)
-        {
-            GenerateCubeLevel();
-            
-        }
-        else
-        {
-            GenerateShapeLevel();
-        }
-        
-        yield return new WaitForSeconds(0.05f);
-        Autoplay();
-        transform.position = new Vector3(0, 0, 0);
+        GenerateGridLevel();
     }
-
+    
     public void ResetGame()
     {
         LoadJson();
     }
-
+    
     //Call the function to make the puzzle Sovable
     private IEnumerator SolveGame()
     {
@@ -129,7 +118,7 @@ public class CubeGenerator : MonoBehaviour
     }
     
     // ReSharper disable Unity.PerformanceAnalysis
-    public void GenerateCubeLevel()
+    private void GenerateGridLevel()
     {
         _cubes = new List<TapCube>();
         ClearCube();
@@ -143,7 +132,7 @@ public class CubeGenerator : MonoBehaviour
             {
                 for (int z = 0; z < depth; z++)
                 {
-                    GameObject cube = Instantiate(_cube);
+                    GameObject cube = Instantiate(this.cube);
                     cube.name ="" + x + ',' + y + ',' + z;
                     cube.transform.SetParent(transform);
 
@@ -161,9 +150,11 @@ public class CubeGenerator : MonoBehaviour
                 }
             }
         }
+        
+        StartCoroutine(SolveGame());
     }
     
-    public void GenerateShapeLevel()
+    public void Generate3DShapeLevel()
     {
         _cubes = new List<TapCube>();
         ClearCube();
@@ -195,7 +186,7 @@ public class CubeGenerator : MonoBehaviour
 
             foreach (var point in points)
             {
-                GameObject cube = Instantiate(_cube);
+                GameObject cube = Instantiate(this.cube);
                 cube.transform.SetParent(transform);
                 cube.transform.localRotation = RandomRotation();
                 cube.transform.localPosition = point;
@@ -204,6 +195,8 @@ public class CubeGenerator : MonoBehaviour
             }
             shapePrefab.SetActive(false);
         }
+
+        StartCoroutine(SolveGame());
     }
 
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
@@ -295,7 +288,7 @@ public class CubeGenerator : MonoBehaviour
         int i = 0;
         foreach (Vector3 position in positions)
         {
-            GameObject cube = Instantiate(_cube);
+            GameObject cube = Instantiate(this.cube);
             cube.name = "" + i;
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             cube.transform.SetParent(transform);

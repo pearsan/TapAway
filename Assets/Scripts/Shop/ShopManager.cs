@@ -51,6 +51,7 @@ public class ShopManager : MonoBehaviour
         _randomSkinsData[3].IsUnlock = true;
         _purchaseSkinsData[0].IsUnlock = true;
         _tapEffectsData[0].IsUnlock = true;
+        _tapEffectsData[2].IsUnlock = true;
         _winEffectsData[0].IsUnlock = true;
     }
 

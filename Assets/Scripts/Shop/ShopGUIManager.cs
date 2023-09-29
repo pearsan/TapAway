@@ -9,10 +9,13 @@ public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
 
-    [Tooltip("This game object control buy and equip button")]
+    [Tooltip("This game object control buy and equip button (SetActive)")]
     public GameObject BuyButton;
     [Tooltip("This game object control buy and equip button")]
     public GameObject EquipButton;
+
+    [Header("Button Behaviours")]
+    public EquipButtonBehaviour EquipButtonBehaviour;
 
     private List<TabGUIManager> tabGUIManagers;
 
@@ -48,6 +51,8 @@ public class ShopGUIManager : MonoBehaviour
     //---------------------------------Button Behaviour----------------------------------
     public void OnTabClick()
     {
+        BuyButton.SetActive(false);
+        EquipButton.SetActive(false);
         foreach(var tab in tabGUIManagers)
         {
             if (tab.gameObject == EventSystem.current.currentSelectedGameObject)
@@ -76,6 +81,12 @@ public class ShopGUIManager : MonoBehaviour
     }    
 
     //-----------------------------------------------------------------------------------
+
+    public void OnUpdateAllSelectedItemFeedbacks()
+    {
+        foreach (var tab in tabGUIManagers)
+            tab.OnUpdateItemSelectedFeedback();
+    }    
 
     private void FirstTabSelectedFromStart()
     {

@@ -7,11 +7,14 @@ public class TapEffectContentGUIBehaviour : TabContentGUIBehaviour
 {
     public override void CreateItemInShop(ShopItemSO[] data)
     {
-        foreach (var skin in data)
+        foreach (var tap in data)
         {
             GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
-            if (((TapEffectSO)skin).IsUnlock)
-                item.GetComponent<Image>().sprite = ((TapEffectSO)skin).TapIcon;
+            ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
+            shopItemButtonBehaviour.shopItemSO = tap;
+            ShopItems.Add((item, tap));
+            if (((TapEffectSO)tap).IsUnlock)
+                item.GetComponent<Image>().sprite = ((TapEffectSO)tap).TapIcon;
         }
     }
 }

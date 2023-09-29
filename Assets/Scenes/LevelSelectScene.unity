@@ -289,7 +289,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &54409563
 RectTransform:
   m_ObjectHideFlags: 0
@@ -446,6 +446,49 @@ MonoBehaviour:
   m_Spacing: {x: 18, y: 18}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &199340377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 199340378}
+  - component: {fileID: 199340379}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &199340378
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199340377}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 17.156502, y: -17.838814, z: -177.16768}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &199340379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 199340377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d7fcf303c6fe914aab5b9cb78c61ce0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &208994025
 GameObject:
   m_ObjectHideFlags: 0
@@ -1243,6 +1286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuyButton: {fileID: 54409562}
   EquipButton: {fileID: 1876209220}
+  EquipButtonBehaviour: {fileID: 848838155}
 --- !u!114 &469882066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1255,6 +1299,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60273880460850745b181fe72ef8eded, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SubcriberSO: {fileID: 0}
 --- !u!1 &537666478
 GameObject:
   m_ObjectHideFlags: 0
@@ -1514,6 +1559,7 @@ MonoBehaviour:
   UnselectedSprite: {fileID: 21300000, guid: 66e97ecadddee434f96ef964b9e58452, type: 3}
   SelectedSprite: {fileID: 21300000, guid: b31c16401c7903a468ef521aae8df65d, type: 3}
   TargetContents: {fileID: 22866033}
+  ItemSelectedPrefab: {fileID: 50336741409048248, guid: 868bbf6e1f0e95c47b123221b803c22b, type: 3}
   FetchDataBehaviour:
     m_PersistentCalls:
       m_Calls:
@@ -1529,6 +1575,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _tabContentGUIBehaviour: {fileID: 661572613}
 --- !u!1 &668349983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1588,8 +1635,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tap effects
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
-  m_sharedMaterial: {fileID: -6394751936575088673, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_sharedMaterial: {fileID: 9104814476811249964, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1858,8 +1905,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Win effects
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
-  m_sharedMaterial: {fileID: -6394751936575088673, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_sharedMaterial: {fileID: 9104814476811249964, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2244,6 +2291,8 @@ GameObject:
   - component: {fileID: 848838152}
   - component: {fileID: 848838154}
   - component: {fileID: 848838153}
+  - component: {fileID: 848838156}
+  - component: {fileID: 848838155}
   m_Layer: 5
   m_Name: Equip Button
   m_TagString: Untagged
@@ -2261,14 +2310,15 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 1596845735}
   m_Father: {fileID: 1876209221}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 300}
-  m_SizeDelta: {x: 400, y: 200}
+  m_SizeDelta: {x: 500, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &848838153
 MonoBehaviour:
@@ -2290,7 +2340,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5194f2ffcafb5964c94603a61b1842ea, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7433fab74817c4d4dbdd371589e7da70, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2308,6 +2358,76 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848838151}
   m_CullTransparentMesh: 1
+--- !u!114 &848838155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848838151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8e5b2f4a8ab65243b49c3a35d5d3052, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EquippedSprite: {fileID: 21300000, guid: 30af7eaee578c6545ac6e80d24f50a7f, type: 3}
+  EquipSprite: {fileID: 21300000, guid: 7433fab74817c4d4dbdd371589e7da70, type: 3}
+--- !u!114 &848838156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848838151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 0
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 848838153}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 848838155}
+        m_TargetAssemblyTypeName: EquipButtonBehaviour, Assembly-CSharp
+        m_MethodName: OnEquipItem
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &855696834
 GameObject:
   m_ObjectHideFlags: 0
@@ -2751,6 +2871,7 @@ MonoBehaviour:
   UnselectedSprite: {fileID: 21300000, guid: 66e97ecadddee434f96ef964b9e58452, type: 3}
   SelectedSprite: {fileID: 21300000, guid: b31c16401c7903a468ef521aae8df65d, type: 3}
   TargetContents: {fileID: 1747312745}
+  ItemSelectedPrefab: {fileID: 50336741409048248, guid: 868bbf6e1f0e95c47b123221b803c22b, type: 3}
   FetchDataBehaviour:
     m_PersistentCalls:
       m_Calls:
@@ -2766,6 +2887,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _tabContentGUIBehaviour: {fileID: 947692484}
 --- !u!114 &947692484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2981,8 +3103,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Buy a cube by gold
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
-  m_sharedMaterial: {fileID: -6394751936575088673, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_sharedMaterial: {fileID: 9104814476811249964, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3209,6 +3331,7 @@ MonoBehaviour:
   UnselectedSprite: {fileID: 21300000, guid: 66e97ecadddee434f96ef964b9e58452, type: 3}
   SelectedSprite: {fileID: 21300000, guid: b31c16401c7903a468ef521aae8df65d, type: 3}
   TargetContents: {fileID: 1835069262}
+  ItemSelectedPrefab: {fileID: 50336741409048248, guid: 868bbf6e1f0e95c47b123221b803c22b, type: 3}
   FetchDataBehaviour:
     m_PersistentCalls:
       m_Calls:
@@ -3224,6 +3347,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _tabContentGUIBehaviour: {fileID: 1071455316}
 --- !u!1 &1074362793
 GameObject:
   m_ObjectHideFlags: 0
@@ -4423,6 +4547,140 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1596845734
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1596845735}
+  - component: {fileID: 1596845737}
+  - component: {fileID: 1596845736}
+  m_Layer: 5
+  m_Name: Equip Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1596845735
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596845734}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 848838152}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 400, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1596845736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596845734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Equip
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_sharedMaterial: {fileID: 9104814476811249964, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 60
+  m_fontSizeBase: 60
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1596845737
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596845734}
+  m_CullTransparentMesh: 1
 --- !u!1 &1715634162
 GameObject:
   m_ObjectHideFlags: 0
@@ -4612,8 +4870,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Random a cube
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
-  m_sharedMaterial: {fileID: -6394751936575088673, guid: b0372620498e80a49bf3bcececc7c037, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
+  m_sharedMaterial: {fileID: 9104814476811249964, guid: 0e1fdc028dc61fa4981a3159bd5a6463, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5001,7 +5259,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1876209221
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5518,6 +5776,7 @@ MonoBehaviour:
   UnselectedSprite: {fileID: 21300000, guid: 66e97ecadddee434f96ef964b9e58452, type: 3}
   SelectedSprite: {fileID: 21300000, guid: b31c16401c7903a468ef521aae8df65d, type: 3}
   TargetContents: {fileID: 2145962573}
+  ItemSelectedPrefab: {fileID: 50336741409048248, guid: 868bbf6e1f0e95c47b123221b803c22b, type: 3}
   FetchDataBehaviour:
     m_PersistentCalls:
       m_Calls:
@@ -5533,6 +5792,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  _tabContentGUIBehaviour: {fileID: 1978140704}
 --- !u!114 &1978140704
 MonoBehaviour:
   m_ObjectHideFlags: 0

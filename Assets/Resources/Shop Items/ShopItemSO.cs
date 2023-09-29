@@ -6,4 +6,5 @@ public class ShopItemSO : ScriptableObject
 {
     public string Name;
     public bool IsUnlock;
+    public string Type; //This type will recognize string path of PlayerPrefs
 }

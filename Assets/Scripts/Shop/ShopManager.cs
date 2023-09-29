@@ -12,7 +12,10 @@ public class ShopManager : MonoBehaviour
     private TapEffectSO[] _tapEffectsData;
     private WinEffectSO[] _winEffectsData;
 
-    private ShopItemSO SubcriberSO; //recognize last button want to "Observer pattern"
+    /// <summary>
+    ///  Recognize last button want to "Observer pattern"
+    /// </summary>
+    public ShopItemSO SubcriberSO;
 
     private void Awake()
     {
@@ -43,15 +46,13 @@ public class ShopManager : MonoBehaviour
 
         foreach (var data in _winEffectsData)
             data.LoadData();
-<<<<<<< Updated upstream
-=======
 
         _randomSkinsData[5].IsUnlock = true;
         _randomSkinsData[3].IsUnlock = true;
         _purchaseSkinsData[0].IsUnlock = true;
         _tapEffectsData[0].IsUnlock = true;
+        _tapEffectsData[2].IsUnlock = true;
         _winEffectsData[0].IsUnlock = true;
->>>>>>> Stashed changes
     }
 
     public void FetchPurchaseSkinData(GameObject receiver)
@@ -80,5 +81,6 @@ public class ShopManager : MonoBehaviour
     {
         SubcriberSO = subcriber;
         ShopGUIManager.Instance.OnShopItemButtonClick(subcriber.IsUnlock);
+        ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
     }    
 }

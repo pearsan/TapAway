@@ -20,6 +20,8 @@ public class TabGUIManager : MonoBehaviour
     [Header("Contents")]
     [Tooltip("Content object from this tab when selected")]
     [SerializeField] private GameObject TargetContents;
+    [Space(10f)]
+    [SerializeField] private GameObject ItemSelectedPrefab;
     
 
     [Header("Events")]
@@ -27,6 +29,9 @@ public class TabGUIManager : MonoBehaviour
 
     private Image _targetTab;
     private Image _targetIcon;
+
+    private GameObject _itemSelectedFeedback;
+    public TabContentGUIBehaviour _tabContentGUIBehaviour;
 
     private const string UNSELETECTED_COLOR = "#73778E";
     private const string SELECTED_COLOR = "#FFFFFF";
@@ -48,6 +53,11 @@ public class TabGUIManager : MonoBehaviour
 
     private void Initialize()
     {
+        _itemSelectedFeedback = Instantiate<GameObject>(ItemSelectedPrefab, transform);
+        _itemSelectedFeedback.SetActive(false);
+        OnUpdateItemSelectedFeedback();
+
+        _tabContentGUIBehaviour = GetComponent<TabContentGUIBehaviour>();
     }    
 
     #region Tab behaviour
@@ -122,5 +132,19 @@ public class TabGUIManager : MonoBehaviour
         tabContentBehaviours += () => GetComponent<WinEffectContentGUIBehaviour>().CreateItemInShop(data);
         tabContentBehaviours.Invoke();
     }
+
+    public void OnUpdateItemSelectedFeedback()
+    {
+        foreach(var item in _tabContentGUIBehaviour.ShopItems)
+        {
+            if(item.Item2.Name == ShopReadWriteData.Instance.GetEquippedEquipmentName(item.Item2))
+            {
+                _itemSelectedFeedback.SetActive(true);
+                _itemSelectedFeedback.transform.SetParent(item.Item1.transform);
+                _itemSelectedFeedback.GetComponent<RectTransform>().offsetMin = Vector2.zero;
+                _itemSelectedFeedback.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+            }    
+        }    
+    }    
     #endregion
 }

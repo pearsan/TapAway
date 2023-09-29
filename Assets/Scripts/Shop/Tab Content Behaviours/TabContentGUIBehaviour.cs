@@ -10,6 +10,13 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] protected GameObject ShopItemPrefab;
+
+    public List<(GameObject, ShopItemSO)> ShopItems;
+
+    private void Awake()
+    {
+        ShopItems = new List<(GameObject, ShopItemSO)>();
+    }
     public virtual void CreateItemInShop(ShopItemSO[] data)
     {
 

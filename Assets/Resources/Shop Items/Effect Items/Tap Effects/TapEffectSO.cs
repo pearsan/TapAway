@@ -18,8 +18,10 @@ public class TapEffectSO : ShopItemSO
     public float Price;
     public GameObject tapPrefab;
 
+    private const string TYPE = "TapEffect";
+
     TapEffect tap;
-    public TapEffect LoadData()
+    public void LoadData()
     {
         string jsonData = PlayerPrefs.GetString(TAP_EFFECT_PATH + Name);
         if (string.IsNullOrEmpty(jsonData))
@@ -37,7 +39,12 @@ public class TapEffectSO : ShopItemSO
         }
 
         jsonData = PlayerPrefs.GetString(TAP_EFFECT_PATH + Name);
-        return JsonUtility.FromJson<TapEffect>(jsonData);
+
+        TapEffect tapEffect = JsonUtility.FromJson<TapEffect>(jsonData);
+        Name = tapEffect.Name;
+        Price = tapEffect.Price;
+        IsUnlock = tapEffect.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(TapEffect tap)

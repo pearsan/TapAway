@@ -18,6 +18,8 @@ public class RandomSkinSO : ShopItemSO
     public float Price;
     public GameObject CubePrefab;
 
+    private const string TYPE = "Skin"; 
+
     RandomSkin cube;
     public void LoadData()
     {
@@ -42,6 +44,7 @@ public class RandomSkinSO : ShopItemSO
         Name = randomSkin.Name;
         Price = randomSkin.Price;
         IsUnlock = randomSkin.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(RandomSkinSO skin)

@@ -6,7 +6,7 @@ public class WinEffect
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Win effect SO", menuName = "Shop/Win Effect", order = 1)]
@@ -15,7 +15,6 @@ public class WinEffectSO : ShopItemSO
     private const string Win_EFFECT_PATH = "Shop_WinEffect_";
 
     public Sprite WinIcon;
-    public float Price;
     public GameObject winPrefab;
 
     private const string TYPE = "WinEffect";

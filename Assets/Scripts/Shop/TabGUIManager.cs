@@ -135,6 +135,7 @@ public class TabGUIManager : MonoBehaviour
 
     public void OnUpdateItemSelectedFeedback()
     {
+        bool IsThisTabHasItemSelected = false;
         foreach(var item in _tabContentGUIBehaviour.ShopItems)
         {
             if(item.Item2.Name == ShopReadWriteData.Instance.GetEquippedEquipmentName(item.Item2))
@@ -143,8 +144,12 @@ public class TabGUIManager : MonoBehaviour
                 _itemSelectedFeedback.transform.SetParent(item.Item1.transform);
                 _itemSelectedFeedback.GetComponent<RectTransform>().offsetMin = Vector2.zero;
                 _itemSelectedFeedback.GetComponent<RectTransform>().offsetMax = Vector2.zero;
-            }    
-        }    
+
+                IsThisTabHasItemSelected = true;
+            }
+        }
+        if (!IsThisTabHasItemSelected)
+            _itemSelectedFeedback.SetActive(false);
     }    
     #endregion
 }

@@ -17,6 +17,10 @@ public class ShopGUIManager : MonoBehaviour
     [Header("Button Behaviours")]
     public EquipButtonBehaviour EquipButtonBehaviour;
 
+    [Header("Currency Behaviours")]
+    [SerializeField] private TMP_Text GoldText;
+    [SerializeField] private TMP_Text ItemPriceText;
+
     private List<TabGUIManager> tabGUIManagers;
 
     private TabGUIManager lastTabSelected;
@@ -29,6 +33,11 @@ public class ShopGUIManager : MonoBehaviour
     private void Start()
     {
         Initialize();
+    }
+
+    private void Update()
+    {
+        UpdateGoldText();
     }
 
     private void Initialize()
@@ -45,10 +54,17 @@ public class ShopGUIManager : MonoBehaviour
     }
 
     //---------------------------------Text Behaviour------------------------------------ 
+    private void UpdateGoldText()
+    {
+        if (GoldManager.Instance != null)
+            GoldText.text = GoldManager.Instance.GetGold().ToString();
+        else
+            Debug.LogWarning("Not singleton of Gold Manager");
+    }
     //-----------------------------------------------------------------------------------
 
 
-    //---------------------------------Button Behaviour----------------------------------
+    #region Button behaviours
     public void OnTabClick()
     {
         BuyButton.SetActive(false);
@@ -65,10 +81,26 @@ public class ShopGUIManager : MonoBehaviour
                 tab.OnTabUnselect();
         }    
     }
-
-    public void OnShopItemButtonClick(bool IsUnlock)
+    public void OnBuyButtonClick()
     {
-        if(IsUnlock)
+        if(ShopManager.Instance.SubcriberSO.Price <= GoldManager.Instance.GetGold())
+        {
+            GoldManager.Instance.ModifyGoldValue(-ShopManager.Instance.SubcriberSO.Price);
+            ShopManager.Instance.MarkShopItemIsUnlock();
+            ShopManager.Instance.Subcribe();
+        }
+        else
+        {
+            Debug.Log("Ban co the xem quang cao");
+        } 
+            
+    }
+    #endregion
+
+    #region Script behaviours
+    public void OnShopItemButtonClick(ShopItemSO shopItemSO)
+    {
+        if(shopItemSO.IsUnlock)
         {
             BuyButton.SetActive(false);
             EquipButton.SetActive(true);
@@ -76,10 +108,12 @@ public class ShopGUIManager : MonoBehaviour
         else
         {
             BuyButton.SetActive(true);
+            ItemPriceText.text = shopItemSO.Price.ToString();
+
             EquipButton.SetActive(false);
         }
-    }    
-
+    }
+    #endregion   
     //-----------------------------------------------------------------------------------
 
     public void OnUpdateAllSelectedItemFeedbacks()

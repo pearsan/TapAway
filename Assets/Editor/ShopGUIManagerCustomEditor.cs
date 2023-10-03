@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
 [CustomEditor(typeof(ShopGUIManager))]
 public class ShopGUIManagerCustomEditor : Editor
 {

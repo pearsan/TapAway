@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-
 public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
@@ -45,7 +44,7 @@ public class ShopGUIManager : MonoBehaviour
         tabGUIManagers = new List<TabGUIManager>();
         tabGUIManagers = new List<TabGUIManager>(GetComponentsInChildren<TabGUIManager>());
 
-        foreach(var tab in tabGUIManagers)
+        foreach (var tab in tabGUIManagers)
         {
             tab.GetComponent<Button>().onClick.AddListener(OnTabClick);
         }
@@ -69,7 +68,7 @@ public class ShopGUIManager : MonoBehaviour
     {
         BuyButton.SetActive(false);
         EquipButton.SetActive(false);
-        foreach(var tab in tabGUIManagers)
+        foreach (var tab in tabGUIManagers)
         {
             if (tab.gameObject == EventSystem.current.currentSelectedGameObject)
             {
@@ -79,11 +78,11 @@ public class ShopGUIManager : MonoBehaviour
             }
             else
                 tab.OnTabUnselect();
-        }    
+        }
     }
     public void OnBuyButtonClick()
     {
-        if(ShopManager.Instance.SubcriberSO.Price <= GoldManager.Instance.GetGold())
+        if (ShopManager.Instance.SubcriberSO.Price <= GoldManager.Instance.GetGold())
         {
             GoldManager.Instance.ModifyGoldValue(-ShopManager.Instance.SubcriberSO.Price);
             ShopManager.Instance.MarkShopItemIsUnlock();
@@ -92,15 +91,20 @@ public class ShopGUIManager : MonoBehaviour
         else
         {
             Debug.Log("Ban co the xem quang cao");
-        } 
-            
+        }
+
+    }
+
+    public void OnAddGoldBuyADSButton()
+    {
+        ISHandler.Instance.ShowRewardedVideo("Add gold button", () => { GoldManager.Instance.ModifyGoldValue(200); }, () => { });
     }
     #endregion
 
     #region Script behaviours
     public void OnShopItemButtonClick(ShopItemSO shopItemSO)
     {
-        if(shopItemSO.IsUnlock)
+        if (shopItemSO.IsUnlock)
         {
             BuyButton.SetActive(false);
             EquipButton.SetActive(true);
@@ -113,14 +117,14 @@ public class ShopGUIManager : MonoBehaviour
             EquipButton.SetActive(false);
         }
     }
-    #endregion   
+    #endregion
     //-----------------------------------------------------------------------------------
 
     public void OnUpdateAllSelectedItemFeedbacks()
     {
         foreach (var tab in tabGUIManagers)
             tab.OnUpdateItemSelectedFeedback();
-    }    
+    }
 
     private void FirstTabSelectedFromStart()
     {
@@ -134,8 +138,8 @@ public class ShopGUIManager : MonoBehaviour
             else
                 tab.OnTabUnselect();
         }
-    } 
-    
+    }
+
     private bool IsAscendingTab(TabGUIManager lastObject, TabGUIManager nextObject)
     {
         int lastIndex = tabGUIManagers.IndexOf(lastObject);
@@ -144,5 +148,5 @@ public class ShopGUIManager : MonoBehaviour
             return true;
         else
             return false;
-    }    
+    }
 }

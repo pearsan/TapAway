@@ -5,19 +5,30 @@ using GoogleMobileAds.Api;
 
 public class IntersititialAds : MonoBehaviour
 {
+    public static IntersititialAds Instance;
+
     bool CanAds = false;
 
-    float timer = 0;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public void Start()
     {
-        // Initialize the Google Mobile Ads SDK.
-        MobileAds.Initialize((InitializationStatus initStatus) =>
+        for(int i = 1;i<=10;i++)
         {
-            CanAds = true;
-            LoadInterstitialAd();
-            RegisterReloadHandler(_interstitialAd); 
-            // This callback is called once the MobileAds SDK is initialized.
-        });
+            // Initialize the Google Mobile Ads SDK.
+            MobileAds.Initialize((InitializationStatus initStatus) =>
+            {
+                CanAds = true;
+                LoadInterstitialAd();
+                RegisterReloadHandler(_interstitialAd);
+                Debug.LogWarning("Oh, init-ed");
+                // This callback is called once the MobileAds SDK is initialized.
+            }
+            );
+        }
     }
 
 #if UNITY_ANDROID
@@ -81,15 +92,6 @@ public class IntersititialAds : MonoBehaviour
             Debug.LogWarning("Interstitial ad is not ready yet.");
         }
     }
-
-    /*private void Update()
-    {
-        timer += Time.deltaTime;
-        if (Input.GetMouseButtonDown(0) && CanAds)
-        {
-            ShowInterstitialAd();
-        }
-    }*/
 
     private void RegisterReloadHandler(InterstitialAd interstitialAd)
     {

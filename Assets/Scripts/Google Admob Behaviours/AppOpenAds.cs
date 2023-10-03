@@ -19,10 +19,6 @@ public class AppOpenAds : MonoBehaviour
         {
             LoadAppOpenAd();
         });
-
-        // Use the AppStateEventNotifier to listen to application open/close events.
-        // This is used to launch the loaded ad when we open the app.
-        AppStateEventNotifier.AppStateChanged += OnAppStateChanged;
     }
 
     private void OnDestroy()
@@ -39,6 +35,9 @@ public class AppOpenAds : MonoBehaviour
     private void OnApplicationFocus(bool focus)
     {
         Debug.Log($"Focus with: {focus}");
+        AppStateEventNotifier.AppStateChanged += OnAppStateChanged;
+        if (focus)
+            ShowAppOpenAd();
     }
 
     public void Start()

@@ -7,7 +7,7 @@ public class PurchaseSkin
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Purchase skin SO", menuName = "Shop/Purchase Skin", order = 0)]
@@ -16,7 +16,6 @@ public class PurchaseSkinSO : ShopItemSO
     private const string PURCHASE_SKIN_PATH = "Shop_PurchaseSkin_";
 
     public Sprite SkinIcon;
-    public float Price;
     public GameObject CubePrefab;
 
     private const string TYPE = "Skin";

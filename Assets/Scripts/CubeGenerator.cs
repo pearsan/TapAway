@@ -10,7 +10,6 @@ using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
-
 public class CubeGenerator : MonoBehaviour
 {
 
@@ -271,7 +270,7 @@ public class CubeGenerator : MonoBehaviour
         // Write the JSON string to a file.
         string path = Path.Combine("Assets", "Resources", levelName + ".json");
         File.WriteAllText(path, jsonString);
-        AssetDatabase.Refresh();
+        //AssetDatabase.Refresh();
         Debug.Log("saved");
     }
 

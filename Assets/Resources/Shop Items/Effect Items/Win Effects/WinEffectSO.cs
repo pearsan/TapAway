@@ -6,7 +6,7 @@ public class WinEffect
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Win effect SO", menuName = "Shop/Win Effect", order = 1)]
@@ -15,11 +15,12 @@ public class WinEffectSO : ShopItemSO
     private const string Win_EFFECT_PATH = "Shop_WinEffect_";
 
     public Sprite WinIcon;
-    public float Price;
     public GameObject winPrefab;
 
+    private const string TYPE = "WinEffect";
+
     WinEffect win;
-    public WinEffect LoadData()
+    public void LoadData()
     {
         string jsonData = PlayerPrefs.GetString(Win_EFFECT_PATH + Name);
         if (string.IsNullOrEmpty(jsonData))
@@ -37,7 +38,12 @@ public class WinEffectSO : ShopItemSO
         }
 
         jsonData = PlayerPrefs.GetString(Win_EFFECT_PATH + Name);
-        return JsonUtility.FromJson<WinEffect>(jsonData);
+
+        WinEffect winEffect = JsonUtility.FromJson<WinEffect>(jsonData);
+        Name = winEffect.Name;
+        Price = winEffect.Price;
+        IsUnlock = winEffect.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(WinEffectSO Win)

@@ -6,7 +6,7 @@ public class RandomSkin
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Random skin SO", menuName = "Shop/Random Skin", order = 0)]
@@ -15,8 +15,9 @@ public class RandomSkinSO : ShopItemSO
     private const string RANDOM_SKIN_PATH = "Shop_RandomSkin_";
 
     public Sprite SkinIcon;
-    public float Price;
     public GameObject CubePrefab;
+
+    private const string TYPE = "Skin"; 
 
     RandomSkin cube;
     public void LoadData()
@@ -42,6 +43,7 @@ public class RandomSkinSO : ShopItemSO
         Name = randomSkin.Name;
         Price = randomSkin.Price;
         IsUnlock = randomSkin.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(RandomSkinSO skin)

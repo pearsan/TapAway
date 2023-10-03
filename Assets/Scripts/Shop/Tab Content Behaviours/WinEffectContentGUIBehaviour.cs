@@ -7,11 +7,14 @@ public class WinEffectContentGUIBehaviour : TabContentGUIBehaviour
 {
     public override void CreateItemInShop(ShopItemSO[] data)
     {
-        foreach (var skin in data)
+        foreach (var win in data)
         {
             GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
-            if (((WinEffectSO)skin).IsUnlock)
-                item.GetComponent<Image>().sprite = ((WinEffectSO)skin).WinIcon;
+            ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
+            shopItemButtonBehaviour.shopItemSO = win;
+            ShopItems.Add((item,win));
+            if (((WinEffectSO)win).IsUnlock)
+                item.GetComponent<Image>().sprite = ((WinEffectSO)win).WinIcon;
         }
     }
 }

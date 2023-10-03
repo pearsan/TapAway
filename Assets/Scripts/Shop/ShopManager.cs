@@ -12,7 +12,10 @@ public class ShopManager : MonoBehaviour
     private TapEffectSO[] _tapEffectsData;
     private WinEffectSO[] _winEffectsData;
 
-    private ShopItemSO SubcriberSO; //recognize last button want to "Observer pattern"
+    /// <summary>
+    ///  Recognize last button want to "Observer pattern"
+    /// </summary>
+    public ShopItemSO SubcriberSO;
 
     private void Awake()
     {
@@ -25,6 +28,7 @@ public class ShopManager : MonoBehaviour
         
     }
 
+    #region Data Read/Write
     private void FetchData()
     {
         _purchaseSkinsData = Resources.LoadAll<PurchaseSkinSO>("Shop Items/Skin Items/Purchase Skins");
@@ -32,9 +36,36 @@ public class ShopManager : MonoBehaviour
         _tapEffectsData = Resources.LoadAll<TapEffectSO>("Shop Items/Effect Items/Tap Effects");
         _winEffectsData = Resources.LoadAll<WinEffectSO>("Shop Items/Effect Items/Win Effects");
 
+        SaveData();
+        LoadData();
+
+        _randomSkinsData[5].IsUnlock = true;
+        _randomSkinsData[3].IsUnlock = true;
+        _purchaseSkinsData[0].IsUnlock = true;
+        _tapEffectsData[0].IsUnlock = true;
+        _tapEffectsData[2].IsUnlock = true;
+        _winEffectsData[0].IsUnlock = true;
+    }
+
+    private void SaveData()
+    {
+        foreach (var data in _purchaseSkinsData)
+            data.SaveData(data);
+
+        foreach (var data in _randomSkinsData)
+            data.SaveData(data);
+
+        foreach (var data in _tapEffectsData)
+            data.SaveData(data);
+
+        foreach (var data in _winEffectsData)
+            data.SaveData(data);
+    }    
+    private void LoadData()
+    {
         foreach (var data in _purchaseSkinsData)
             data.LoadData();
-        
+
         foreach (var data in _randomSkinsData)
             data.LoadData();
 
@@ -43,7 +74,7 @@ public class ShopManager : MonoBehaviour
 
         foreach (var data in _winEffectsData)
             data.LoadData();
-    }
+    }    
 
     public void FetchPurchaseSkinData(GameObject receiver)
     {
@@ -62,14 +93,30 @@ public class ShopManager : MonoBehaviour
 
     public void FetchWinEffectData(GameObject receiver)
     {
-        Debug.Log(_winEffectsData);
-
         receiver.GetComponent<TabGUIManager>()?.FetchWinEffectDataFromSender(_winEffectsData);
     }
+
+
+    public void MarkShopItemIsUnlock()
+    {
+        SubcriberSO.IsUnlock = true;
+        SaveData();
+        Subcribe(SubcriberSO);
+    }    
+    #endregion
+
+
 
     public void Subcribe(ShopItemSO subcriber)
     {
         SubcriberSO = subcriber;
-        ShopGUIManager.Instance.OnShopItemButtonClick(subcriber.IsUnlock);
-    }    
+        ShopGUIManager.Instance.OnShopItemButtonClick(subcriber);
+        ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
+    }
+
+    public void Subcribe()
+    {
+        ShopGUIManager.Instance.OnShopItemButtonClick(SubcriberSO);
+        ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(SubcriberSO);
+    }
 }

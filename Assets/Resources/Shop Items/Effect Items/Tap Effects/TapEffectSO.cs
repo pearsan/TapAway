@@ -6,7 +6,7 @@ public class TapEffect
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Tap effect SO", menuName = "Shop/Tap Effect", order = 1)]
@@ -15,11 +15,12 @@ public class TapEffectSO : ShopItemSO
     private const string TAP_EFFECT_PATH = "Shop_TapEffect_";
 
     public Sprite TapIcon;
-    public float Price;
     public GameObject tapPrefab;
 
+    private const string TYPE = "TapEffect";
+
     TapEffect tap;
-    public TapEffect LoadData()
+    public void LoadData()
     {
         string jsonData = PlayerPrefs.GetString(TAP_EFFECT_PATH + Name);
         if (string.IsNullOrEmpty(jsonData))
@@ -37,10 +38,15 @@ public class TapEffectSO : ShopItemSO
         }
 
         jsonData = PlayerPrefs.GetString(TAP_EFFECT_PATH + Name);
-        return JsonUtility.FromJson<TapEffect>(jsonData);
+
+        TapEffect tapEffect = JsonUtility.FromJson<TapEffect>(jsonData);
+        Name = tapEffect.Name;
+        Price = tapEffect.Price;
+        IsUnlock = tapEffect.IsUnlock;
+        Type = TYPE;
     }
 
-    public void SaveData(TapEffect tap)
+    public void SaveData(TapEffectSO tap)
     {
         TapEffect tapEffect = new TapEffect { Name = tap.Name, Price = tap.Price, IsUnlock = tap.IsUnlock };
 

@@ -7,7 +7,7 @@ public class PurchaseSkin
 {
     public string Name;
     public bool IsUnlock;
-    public float Price;
+    public int Price;
 }
 
 [CreateAssetMenu(fileName = "Purchase skin SO", menuName = "Shop/Purchase Skin", order = 0)]
@@ -16,11 +16,12 @@ public class PurchaseSkinSO : ShopItemSO
     private const string PURCHASE_SKIN_PATH = "Shop_PurchaseSkin_";
 
     public Sprite SkinIcon;
-    public float Price;
     public GameObject CubePrefab;
 
+    private const string TYPE = "Skin";
+
     PurchaseSkin cube;
-    public PurchaseSkin LoadData()
+    public void LoadData()
     {
         string jsonData = PlayerPrefs.GetString(PURCHASE_SKIN_PATH + Name);
         if(string.IsNullOrEmpty(jsonData))
@@ -38,7 +39,12 @@ public class PurchaseSkinSO : ShopItemSO
         }
 
         jsonData = PlayerPrefs.GetString(PURCHASE_SKIN_PATH + Name);
-        return JsonUtility.FromJson<PurchaseSkin>(jsonData);
+
+        PurchaseSkin purchaseSkin = JsonUtility.FromJson<PurchaseSkin>(jsonData);
+        Name = purchaseSkin.Name;
+        Price = purchaseSkin.Price;
+        IsUnlock = purchaseSkin.IsUnlock;
+        Type = TYPE;
     }
 
     public void SaveData(PurchaseSkinSO skin)

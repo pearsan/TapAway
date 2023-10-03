@@ -82,14 +82,14 @@ public class IntersititialAds : MonoBehaviour
         }
     }
 
-    private void Update()
+    /*private void Update()
     {
         timer += Time.deltaTime;
         if (Input.GetMouseButtonDown(0) && CanAds)
         {
             ShowInterstitialAd();
         }
-    }
+    }*/
 
     private void RegisterReloadHandler(InterstitialAd interstitialAd)
     {

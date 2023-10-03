@@ -80,17 +80,13 @@ public class CubeGenerator : MonoBehaviour
         
         if (!playable)
         {
-            /*
             Debug.Log("cant be play");
-            */
             Reshuffle();
             Autoplay();
         }
         else
         {
-            /*
             Debug.Log("playable");
-            */
             ShowCubes();
         }
         

@@ -237,7 +237,11 @@ public class CameraBehaviour : MonoBehaviour
                         if (tapCube != null && !tapCube.IsBlock())
                         {
                             tapCube.SetMoving();
-                        }    
+                        }
+                        else if (tapCube.IsBlock())
+                        {
+                            tapCube.TryMove();
+                        }
                     }
                     else
                     {

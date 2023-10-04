@@ -15,7 +15,7 @@ public class ShopManager : MonoBehaviour
     /// <summary>
     ///  Recognize last button want to "Observer pattern"
     /// </summary>
-    public ShopItemSO SubcriberSO;
+    [HideInInspector] public ShopItemSO SubcriberSO;
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class ShopManager : MonoBehaviour
         _tapEffectsData = Resources.LoadAll<TapEffectSO>("Shop Items/Effect Items/Tap Effects");
         _winEffectsData = Resources.LoadAll<WinEffectSO>("Shop Items/Effect Items/Win Effects");
 
-        SaveData();
+        //SaveData();
         LoadData();
 
         _randomSkinsData[5].IsUnlock = true;
@@ -100,6 +100,16 @@ public class ShopManager : MonoBehaviour
     public void MarkShopItemIsUnlock()
     {
         SubcriberSO.IsUnlock = true;
+        SaveData();
+        Subcribe(SubcriberSO);
+    }
+
+    public void SetSubcriberSOAdsUnlockProgressSuccess()
+    {
+        int adsWatched = SubcriberSO.AdsWatched;
+        SubcriberSO.AdsWatched = adsWatched + 1;
+        if (SubcriberSO.AdsWatched >= SubcriberSO.AdsToUnlock)
+            SubcriberSO.IsUnlock = true;
         SaveData();
         Subcribe(SubcriberSO);
     }    

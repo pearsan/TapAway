@@ -7,6 +7,12 @@ public class TapEffect
     public string Name;
     public bool IsUnlock;
     public int Price;
+
+    public bool CanUnlockByGold;
+    public bool CanUnlockByAds;
+
+    [HideInInspector] public int AdsWatched;
+    public int AdsToUnlock;
 }
 
 [CreateAssetMenu(fileName = "Tap effect SO", menuName = "Shop/Tap Effect", order = 1)]
@@ -14,6 +20,7 @@ public class TapEffectSO : ShopItemSO
 {
     private const string TAP_EFFECT_PATH = "Shop_TapEffect_";
 
+    [Header("Inheritance parameters")]
     public Sprite TapIcon;
     public GameObject tapPrefab;
 
@@ -29,7 +36,13 @@ public class TapEffectSO : ShopItemSO
             {
                 Name = Name,
                 IsUnlock = false,
-                Price = Price
+                Price = Price,
+                
+                CanUnlockByGold = CanUnlockByGold,
+                CanUnlockByAds = CanUnlockByAds,
+
+                AdsWatched = 0,
+                AdsToUnlock = AdsToUnlock
             };
 
             string newItemData = JsonUtility.ToJson(tap);
@@ -44,11 +57,17 @@ public class TapEffectSO : ShopItemSO
         Price = tapEffect.Price;
         IsUnlock = tapEffect.IsUnlock;
         Type = TYPE;
+
+        CanUnlockByAds = tapEffect.CanUnlockByAds;
+        CanUnlockByGold = tapEffect.CanUnlockByGold;
+
+        AdsWatched = tapEffect.AdsWatched;
+        AdsToUnlock = tapEffect.AdsToUnlock;
     }
 
     public void SaveData(TapEffectSO tap)
     {
-        TapEffect tapEffect = new TapEffect { Name = tap.Name, Price = tap.Price, IsUnlock = tap.IsUnlock };
+        TapEffect tapEffect = new TapEffect { Name = tap.Name, Price = tap.Price, IsUnlock = tap.IsUnlock, CanUnlockByAds = tap.CanUnlockByAds, CanUnlockByGold = tap.CanUnlockByGold, AdsToUnlock = tap.AdsToUnlock, AdsWatched = tap.AdsWatched };
 
         string jsonData = JsonUtility.ToJson(tapEffect);
         PlayerPrefs.SetString(TAP_EFFECT_PATH + Name, jsonData);

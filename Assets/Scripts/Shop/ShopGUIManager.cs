@@ -8,17 +8,24 @@ public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
 
+    [Header("Buy behaviours")]
     [Tooltip("This game object control buy and equip button (SetActive)")]
-    public GameObject BuyButton;
+    [SerializeField] private GameObject BuyButton;   
+    [SerializeField] private Button BuyByGoldButton;
+    [SerializeField] private TMP_Text ItemPriceText;
+    [Space(10f)]
+    [SerializeField] private Button BuyByAdsButton;
+    [SerializeField] private TMP_Text AdsPriceText;
+
+    [Header("Equip behaviours")]
     [Tooltip("This game object control buy and equip button")]
-    public GameObject EquipButton;
+    [SerializeField] private GameObject EquipButton;
 
     [Header("Button Behaviours")]
     public EquipButtonBehaviour EquipButtonBehaviour;
 
     [Header("Currency Behaviours")]
     [SerializeField] private TMP_Text GoldText;
-    [SerializeField] private TMP_Text ItemPriceText;
 
     private List<TabGUIManager> tabGUIManagers;
 
@@ -95,6 +102,13 @@ public class ShopGUIManager : MonoBehaviour
 
     }
 
+    public void OnBuyByAdsButtonClick()
+    {
+        ISHandler.Instance.ShowRewardedVideo("Buy by Ads button", ShopManager.Instance.SetSubcriberSOAdsUnlockProgressSuccess, () => { });
+
+        ShopManager.Instance.Subcribe();
+    }    
+
     public void OnAddGoldBuyADSButton()
     {
         ISHandler.Instance.ShowRewardedVideo("Add gold button", () => { GoldManager.Instance.ModifyGoldValue(200); }, () => { });
@@ -112,9 +126,13 @@ public class ShopGUIManager : MonoBehaviour
         else
         {
             BuyButton.SetActive(true);
-            ItemPriceText.text = shopItemSO.Price.ToString();
-
             EquipButton.SetActive(false);
+
+            ItemPriceText.text = (shopItemSO.CanUnlockByGold) ? shopItemSO.Price.ToString() : "Not available";
+            BuyByGoldButton.interactable = (shopItemSO.CanUnlockByGold) ? true : false;
+
+            AdsPriceText.text = (shopItemSO.CanUnlockByAds) ? $"By ads ({shopItemSO.AdsWatched}/{shopItemSO.AdsToUnlock})" : "Not available";
+            BuyByAdsButton.interactable = (shopItemSO.CanUnlockByAds) ? true : false;
         }
     }
     #endregion

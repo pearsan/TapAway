@@ -7,6 +7,12 @@ public class WinEffect
     public string Name;
     public bool IsUnlock;
     public int Price;
+
+    public bool CanUnlockByGold;
+    public bool CanUnlockByAds;
+
+    [HideInInspector] public int AdsWatched;
+    public int AdsToUnlock;
 }
 
 [CreateAssetMenu(fileName = "Win effect SO", menuName = "Shop/Win Effect", order = 1)]
@@ -14,6 +20,7 @@ public class WinEffectSO : ShopItemSO
 {
     private const string Win_EFFECT_PATH = "Shop_WinEffect_";
 
+    [Header("Inheritance parameters")]
     public Sprite WinIcon;
     public GameObject winPrefab;
 
@@ -29,7 +36,13 @@ public class WinEffectSO : ShopItemSO
             {
                 Name = Name,
                 IsUnlock = false,
-                Price = Price
+                Price = Price,
+
+                CanUnlockByGold = CanUnlockByGold,
+                CanUnlockByAds = CanUnlockByAds,
+
+                AdsWatched = 0,
+                AdsToUnlock = AdsToUnlock
             };
 
             string newItemData = JsonUtility.ToJson(win);
@@ -44,11 +57,17 @@ public class WinEffectSO : ShopItemSO
         Price = winEffect.Price;
         IsUnlock = winEffect.IsUnlock;
         Type = TYPE;
+
+        CanUnlockByAds = winEffect.CanUnlockByAds;
+        CanUnlockByGold = winEffect.CanUnlockByGold;
+
+        AdsWatched = winEffect.AdsWatched;
+        AdsToUnlock = winEffect.AdsToUnlock;
     }
 
     public void SaveData(WinEffectSO Win)
     {
-        WinEffect winEffect = new WinEffect { Name = Win.Name, Price = Win.Price, IsUnlock = Win.IsUnlock };
+        WinEffect winEffect = new WinEffect { Name = Win.Name, Price = Win.Price, IsUnlock = Win.IsUnlock, CanUnlockByAds = Win.CanUnlockByAds, CanUnlockByGold = Win.CanUnlockByGold, AdsToUnlock = Win.AdsToUnlock, AdsWatched = Win.AdsWatched };
 
         string jsonData = JsonUtility.ToJson(winEffect);
         PlayerPrefs.SetString(Win_EFFECT_PATH + Name, jsonData);

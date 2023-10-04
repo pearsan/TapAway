@@ -22,14 +22,16 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject cube;
+    [SerializeField] private GameObject cubePrefabs;
 
     public GameObject shapePrefab;
     private List<TapCube> _cubes;
 
     [SerializeField] private TextAsset jsonFile;
     [SerializeField] private string levelName;
-    
+    [SerializeField] private PurchaseSkinSO currentSkinSo;
+    [SerializeField] private PurchaseSkinSO defaultSkinSo;
+    [SerializeField] private bool isHollow;
     // ReSharper disable Unity.PerformanceAnalysis
     public void Create3DShapeLevel()
     {
@@ -115,6 +117,7 @@ public class CubeGenerator : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateGridLevel()
     {
+        SetSkin(cubePrefabs);
         _cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
@@ -127,7 +130,7 @@ public class CubeGenerator : MonoBehaviour
             {
                 for (int z = 0; z < depth; z++)
                 {
-                    GameObject cube = Instantiate(this.cube);
+                    GameObject cube = Instantiate(cubePrefabs);
                     cube.name ="" + x + ',' + y + ',' + z;
                     cube.transform.SetParent(transform);
 
@@ -140,7 +143,6 @@ public class CubeGenerator : MonoBehaviour
                     cube.transform.localRotation = randomRotation;
                     
                     cube.transform.localPosition = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
-                    
                     _cubes.Add(cube.gameObject.GetComponent<TapCube>());
                 }
             }
@@ -151,6 +153,7 @@ public class CubeGenerator : MonoBehaviour
     
     public void Generate3DShapeLevel()
     {
+        SetSkin(cubePrefabs);
         _cubes = new List<TapCube>();
         ClearCube();
         shapePrefab.SetActive(true);
@@ -171,17 +174,28 @@ public class CubeGenerator : MonoBehaviour
                     for (float z = bounds.min.z; z < bounds.max.z; z += gridSize + spacing)
                     {
                         Vector3 point =  new Vector3(x, y, z);
-                        if (IsInsideMeshCollider(meshCollider, point))
+                        if (!isHollow)
                         {
-                            points.Add(point);
+                            if (IsInsideMeshCollider(meshCollider, point))
+                            {
+                                points.Add(point);
+                            }                            
                         }
+                        else
+                        {
+                            if (IsOnMeshCollider(meshCollider, point))
+                            {
+                                points.Add(point);
+                            }
+                        }
+
                     } 
                 }
             }
 
             foreach (var point in points)
             {
-                GameObject cube = Instantiate(this.cube);
+                GameObject cube = Instantiate(this.cubePrefabs);
                 cube.transform.SetParent(transform);
                 cube.transform.localRotation = RandomRotation();
                 cube.transform.localPosition = point;
@@ -232,11 +246,48 @@ public class CubeGenerator : MonoBehaviour
 
     }
 
-    public void ShowCubes()
+    private void ShowCubes()
     {
         foreach (var cube in _cubes)
         {
             cube.ShowCube();
+        }
+    }
+    
+    bool IsOnMeshCollider(Collider collider, Vector3 point)
+    {
+        // Create a tiny box at the point's position
+        Vector3 boxSize = new Vector3(1.5f, 1.5f, 1.5f); // Can adjust size as needed
+
+        // Check if the box collides with the collider
+        Collider[] hitColliders = Physics.OverlapBox(point, boxSize / 2);
+
+        // If the box collides with the collider, the point is inside the collider
+        foreach (Collider hitCollider in hitColliders)
+        {
+            if (hitCollider == collider)
+            {
+                return true;
+            }
+        }
+
+        // If the box doesn't collide with the collider, the point is outside the collider
+        return false;
+    }
+
+    private void SetSkin(GameObject cube)
+    {
+        if (currentSkinSo == null)
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                defaultSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        else
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                currentSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
         }
     }
     
@@ -283,7 +334,7 @@ public class CubeGenerator : MonoBehaviour
         int i = 0;
         foreach (Vector3 position in positions)
         {
-            GameObject cube = Instantiate(this.cube);
+            GameObject cube = Instantiate(this.cubePrefabs);
             cube.name = "" + i;
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             cube.transform.SetParent(transform);

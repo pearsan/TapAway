@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b24db3d1eda69a4d921550a984897a1, type: 3}
-  m_Name: Dino 2
+  m_Name: Default
   m_EditorClassIdentifier: 
-  Name: Skin Dino 2
+  Name: Default
   IsUnlock: 1
-  Price: 60
+  Price: 0
   Type: Skin
-  SkinIcon: {fileID: 21300000, guid: 55837c3a50ae2b6488c235d8ea6ded28, type: 3}
-  CubePrefab: {fileID: 4384431853053489342, guid: 814414a5e8e0dd5498e3310723daaa13, type: 3}
+  SkinIcon: {fileID: 21300000, guid: 723cb564b1bf4444ab403fd62b25406d, type: 3}
+  CubePrefab: {fileID: 3064952745613011020, guid: 198d2ea9e4b0a0747ab0c79710a988ad, type: 3}

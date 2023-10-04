@@ -10,7 +10,7 @@ public class TapCube : MonoBehaviour
     [SerializeField] private bool isHidden = false;
     [SerializeField] private Transform cubeMesh;
     [SerializeField] private float speed;
-    private const float TweenDuration = 0.5f;
+    private const float TweenDuration = 0.25f;
     private bool _moving = false;
 
     private bool _canDoMove = true;
@@ -72,8 +72,8 @@ public class TapCube : MonoBehaviour
             out hit, maxDistance);
         if (isHit && _canDoMove)
         {
-            float distance = (hit.collider.transform.position - transform.position).sqrMagnitude;
-            if (distance >= 4)
+            
+            if (hit.distance >= 1)
             {
                 _canDoMove = false;
                 Vector3 localTargetPosition = transform.InverseTransformPoint(hit.collider.transform.position - transform.forward);
@@ -90,18 +90,18 @@ public class TapCube : MonoBehaviour
     private void TryMoveShort(Vector3 direction)
     {
         // move the next one if have
-        float maxDistance = 100f;
+        float maxDistance = 5f;
         bool isHit = Physics.Raycast(transform.position, direction,
             out var hit, maxDistance);
         bool firstLoopDone = false;
         
         if (isHit && _canDoMove)
         {
-            float distance = (hit.transform.position - transform.position).sqrMagnitude;
-            if (distance < 4)
+            
+            if (Mathf.Round(hit.distance) < 2)
             {
                 _canDoMove = false;
-                Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 20);
+                Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 10);
                 cubeMesh.DOLocalMove(localTargetPosition, TweenDuration / 4).SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo).OnStepComplete(() => {
                     if (!firstLoopDone)
                     {
@@ -115,7 +115,7 @@ public class TapCube : MonoBehaviour
         {
             // move the cube
             _canDoMove = false;
-            Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 20);
+            Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 10);
             cubeMesh.DOLocalMove(localTargetPosition, TweenDuration / 4).SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo)
                 .OnComplete(() => _canDoMove = true);
         }

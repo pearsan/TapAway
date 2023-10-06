@@ -60,11 +60,12 @@ public class GameUIManager : MonoBehaviour
         {
             GameObject gold = Instantiate<GameObject>(GoldFeedbackPrefab, GoldParentTransform);
             gold.GetComponent<RectTransform>().anchoredPosition = new Vector3(150, -540);
-            gold.GetComponent<SpriteTrail>().Direction = (new Vector3(150, -540) - (Vector3) EndPosition.anchoredPosition).normalized;
+            //gold.GetComponent<SpriteTrail>().Direction = (new Vector3(150, -540) - (Vector3) EndPosition.anchoredPosition).normalized;
             Vector2 offset = new Vector2 (Random.Range(-200, 200), Random.Range(-200,200));
             gold.GetComponent<RectTransform>().DOAnchorPos( gold.GetComponent<RectTransform>().anchoredPosition + offset, 0.5f).SetEase(Ease.InOutSine)
                 .OnComplete(()=> {
-                    gold.GetComponent<SpriteTrail>().SpawnSpriteTrail(); gold.GetComponent<RectTransform>().DOAnchorPos(EndPosition.anchoredPosition, 0.5f)
+                    StartCoroutine(gold.GetComponent<SpriteTrail>().SpawnSpriteTrail());
+                    gold.GetComponent<RectTransform>().DOAnchorPos(EndPosition.anchoredPosition, 0.5f)
                 .OnComplete(() => { StartCoroutine(AddGoldAnimation()); Destroy(gold); }) ; 
                 });
         }

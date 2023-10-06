@@ -111,7 +111,7 @@ public class ShopGUIManager : MonoBehaviour
 
     public void OnAddGoldBuyADSButton()
     {
-        ISHandler.Instance.ShowRewardedVideo("Add gold button", () => { GoldManager.Instance.ModifyGoldValue(200); }, () => { });
+        ISHandler.Instance.ShowRewardedVideo("Add gold button", () => { GameUIManager.Instance.OnAddGoldFeedbackAnimation(); }, () => { });
     }
     #endregion
 

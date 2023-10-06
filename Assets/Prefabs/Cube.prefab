@@ -62,7 +62,7 @@ MonoBehaviour:
   isHidden: 0
   cubeMesh: {fileID: 8579558795896219394}
   speed: 10
-  drawRay: 0
+  drawRay: 1
 --- !u!54 &8664533911761528415
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -89,11 +89,11 @@ PrefabInstance:
     - target: {fileID: 119810933200355453, guid: 198d2ea9e4b0a0747ab0c79710a988ad, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 99982452b25327347bb5a19364cdeb9f, type: 2}
+      objectReference: {fileID: 2100000, guid: 9bce05f1a2edce646a0382d5e8c86275, type: 2}
     - target: {fileID: 1869485050885866496, guid: 198d2ea9e4b0a0747ab0c79710a988ad, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -4975917563074984291, guid: 9585d419246651f43b8ce4bfd206d2dc, type: 3}
+      objectReference: {fileID: -5495902117074765545, guid: 112045bea3ceb3f448dc485e23dd7442, type: 3}
     - target: {fileID: 3064952745613011020, guid: 198d2ea9e4b0a0747ab0c79710a988ad, type: 3}
       propertyPath: m_Name
       value: Default

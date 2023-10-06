@@ -81,13 +81,17 @@ public class CubeGenerator : MonoBehaviour
         
         if (!playable)
         {
+            /*
             Debug.Log("cant be play");
+            */
             Reshuffle();
             Autoplay();
         }
         else
         {
+            /*
             Debug.Log("playable");
+            */
             ShowCubes();
         }
         
@@ -96,10 +100,17 @@ public class CubeGenerator : MonoBehaviour
     public void Reshuffle()
     {
         foreach (var cube in _cubes)
-        {
+        {             
             if (!cube.IsHidden())
             {
-                cube.transform.localRotation = RandomRotation();
+                if (cube.IsBlock())
+                {
+                    cube.transform.localRotation = RandomRotation();
+                    if (!cube.IsBlock())
+                    {
+                        cube.HiddenCube();
+                    }
+                }
             }
         }
     }

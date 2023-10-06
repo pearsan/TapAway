@@ -17,17 +17,12 @@ public class TapCube : MonoBehaviour
     public bool drawRay;
     
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_moving)
         {
             transform.position += transform.forward * (speed * Time.deltaTime);
         }
-    }
-    
-    public bool IsMoving()
-    {
-        return _moving;
     }
 
     public void SetMoving()
@@ -48,20 +43,9 @@ public class TapCube : MonoBehaviour
     public bool IsBlock()
     {
         float maxDistance = 100f;
-        RaycastHit hit;
-        bool isHit = Physics.Raycast(transform.position, transform.forward, out hit, maxDistance);
-        if (isHit)
-        {
-            if (hit.collider.gameObject.GetComponent<TapCube>().IsMoving())
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        return false;
+        bool isHit = Physics.Raycast(transform.position, transform.forward,
+            out var hit, maxDistance);
+        return isHit;
     }
 
     public void TryMove()

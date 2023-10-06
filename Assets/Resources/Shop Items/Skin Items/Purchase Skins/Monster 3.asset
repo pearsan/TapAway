@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Skin Monster 3
   IsUnlock: 0
-  Price: 60
-  Type: 
+  Price: 150
+  Type: Skin
+  CanUnlockByGold: 1
+  CanUnlockByAds: 0
+  AdsWatched: 0
+  AdsToUnlock: 0
   SkinIcon: {fileID: 21300000, guid: 2a95dfe6ed5c6fa408d012a1e7f6aefa, type: 3}
   CubePrefab: {fileID: 0}

@@ -5,6 +5,8 @@ using UnityEngine;
 public class GoldManager : MonoBehaviour
 {
     public static GoldManager Instance;
+
+    public int GOLD_EARN_EACH_ADS;
     private void Awake()
     {
         Instance = this;

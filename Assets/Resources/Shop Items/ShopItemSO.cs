@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class ShopItemSO : ScriptableObject
 {
+    [Header("Data")]
     public string Name;
     public bool IsUnlock;
-    public int Price;
+    [HideInInspector] public int Price;
     public string Type; //This type will recognize string path of PlayerPrefs
+
+    [Header("Unlock types")]
+    public bool CanUnlockByGold = true;
+    public bool CanUnlockByAds = true;
+
+    [HideInInspector] public int AdsWatched = 0;
+    [HideInInspector] public int AdsToUnlock;
 }

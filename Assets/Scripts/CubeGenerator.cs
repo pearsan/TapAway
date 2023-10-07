@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
-
 
 public class CubeGenerator : MonoBehaviour
 {
@@ -19,73 +22,76 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject _cube;
-    [SerializeField] private Texture2D map;
-    [SerializeField] private Color _color;
-    private TapCube[,,] cubes;
-    private bool[,,] canMove;
+    [SerializeField] private GameObject cubePrefabs;
 
+    public GameObject shapePrefab;
+    private List<TapCube> _cubes;
 
-    private void Start()
+    [SerializeField] private TextAsset jsonFile;
+    [SerializeField] private string levelName;
+    [SerializeField] private PurchaseSkinSO currentSkinSo;
+    [SerializeField] private PurchaseSkinSO defaultSkinSo;
+    [SerializeField] private bool isHollow;
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void Create3DShapeLevel()
     {
-        StartCoroutine(GenerateCubes());
+        Generate3DShapeLevel();
     }
-
-    private IEnumerator GenerateCubes()
+    
+    public void Create3DGridLevel()
     {
-        /*
-        GameObject parentCube = new GameObject("Cube");
-        */
-        GenerateLevel();
-        yield return new WaitForSeconds(0.05f);
-
-        Autoplay();
-        transform.position = new Vector3(0, 0, 0);
-
+        GenerateGridLevel();
     }
-
+    
     public void ResetGame()
     {
-        StartCoroutine(GenerateCubes());
+        LoadJson();
+    }
+    
+    //Call the function to make the puzzle Sovable
+    private IEnumerator SolveGame()
+    {
+        yield return new WaitForSeconds(0.05f);
+        Autoplay();
     }
 
-    public void Autoplay()
+    // Test and make the puzzle solvable
+    private void Autoplay()
     {
         bool canPlay = true;
         bool playable = true;
         while (canPlay)
         {
             canPlay = false;
-            for (int x = 0; x < width; x++)
+
+            foreach (var cube in _cubes)
             {
-                for (int y = 0; y < height; y++)
+                if (!cube.IsHidden())
                 {
-                    for (int z = 0; z < depth; z++)
+                    if (!cube.IsBlock())
                     {
-                        if (canMove[x, y, z] == false)
-                        {
-                            if (!cubes[x, y, z].IsBlock())
-                            {
-                                playable = false;
-                                canPlay = true;
-                                cubes[x, y, z].HiddenCube();
-                                canMove[x, y, z] = true;
-                            }
-                        }
+                        playable = false;
+                        canPlay = true;
+                        cube.HiddenCube();
                     }
                 }
             }
+            
         }
         
         if (!playable)
         {
+            /*
             Debug.Log("cant be play");
+            */
             Reshuffle();
             Autoplay();
         }
         else
         {
+            /*
             Debug.Log("playable");
+            */
             ShowCubes();
         }
         
@@ -93,18 +99,18 @@ public class CubeGenerator : MonoBehaviour
 
     public void Reshuffle()
     {
-        bool isPlayable = false;
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
+        foreach (var cube in _cubes)
+        {             
+            if (!cube.IsHidden())
             {
-                for (int z = 0; z < depth; z++)
+                if (cube.IsBlock())
                 {
-                    if (canMove[x, y, z] == false)
+                    cube.transform.localRotation = RandomRotation();
+                    if (!cube.IsBlock())
                     {
-                        cubes[x, y, z].transform.rotation = RandomRotation();
+                        cube.HiddenCube();
                     }
-                } 
+                }
             }
         }
     }
@@ -119,10 +125,11 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    public void GenerateLevel()
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void GenerateGridLevel()
     {
-        cubes = new TapCube[width, height, depth];
-        canMove = new bool[width, height, depth];
+        SetSkin(cubePrefabs);
+        _cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
         float centerOffsetY = (height - 1) * (1 + spacing) / 2f;
@@ -134,7 +141,7 @@ public class CubeGenerator : MonoBehaviour
             {
                 for (int z = 0; z < depth; z++)
                 {
-                    GameObject cube = Instantiate(_cube);
+                    GameObject cube = Instantiate(cubePrefabs);
                     cube.name ="" + x + ',' + y + ',' + z;
                     cube.transform.SetParent(transform);
 
@@ -144,48 +151,230 @@ public class CubeGenerator : MonoBehaviour
 
                     Quaternion randomRotation = RandomRotation();
 
-                    cube.transform.rotation = randomRotation;
+                    cube.transform.localRotation = randomRotation;
                     
-                    cube.transform.position = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
-                    canMove[x, y, z] = false;
-                    cubes[x, y, z] = cube.GetComponent<TapCube>();
+                    cube.transform.localPosition = new Vector3(offsetX - centerOffsetX, offsetY - centerOffsetY, offsetZ - centerOffsetZ);
+                    _cubes.Add(cube.gameObject.GetComponent<TapCube>());
                 }
             }
+        }
+        
+        StartCoroutine(SolveGame());
+    }
+    
+    public void Generate3DShapeLevel()
+    {
+        SetSkin(cubePrefabs);
+        _cubes = new List<TapCube>();
+        ClearCube();
+        shapePrefab.SetActive(true);
+
+        MeshCollider meshCollider = shapePrefab.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            Debug.Log(true);
+            Bounds bounds = meshCollider.bounds;
+            float gridSize = 1f; // size of each cube
+
+            List<Vector3> points = new List<Vector3>();
+
+            for (float x = bounds.min.x; x < bounds.max.x; x += gridSize + spacing)
+            {
+                for (float y = bounds.min.y; y < bounds.max.y; y += gridSize + spacing)
+                {
+                    for (float z = bounds.min.z; z < bounds.max.z; z += gridSize + spacing)
+                    {
+                        Vector3 point =  new Vector3(x, y, z);
+                        if (!isHollow)
+                        {
+                            if (IsInsideMeshCollider(meshCollider, point))
+                            {
+                                points.Add(point);
+                            }                            
+                        }
+                        else
+                        {
+                            if (IsOnMeshCollider(meshCollider, point))
+                            {
+                                points.Add(point);
+                            }
+                        }
+
+                    } 
+                }
+            }
+
+            foreach (var point in points)
+            {
+                GameObject cube = Instantiate(this.cubePrefabs);
+                cube.transform.SetParent(transform);
+                cube.transform.localRotation = RandomRotation();
+                cube.transform.localPosition = point;
+
+                _cubes.Add(cube.gameObject.GetComponent<TapCube>());
+            }
+            shapePrefab.SetActive(false);
+        }
+
+        StartCoroutine(SolveGame());
+    }
+
+    bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
+    {
+        var temp = Physics.queriesHitBackfaces;
+        Ray ray = new Ray(point, Vector3.back);
+
+        bool hitFrontFace = false;
+        RaycastHit hit = default;
+
+        Physics.queriesHitBackfaces = true;
+        bool hitFrontOrBackFace = col.Raycast(ray, out RaycastHit hit2, 100f);
+        if (hitFrontOrBackFace)
+        {
+            Physics.queriesHitBackfaces = false;
+            hitFrontFace = col.Raycast(ray, out hit, 100f);
+        }
+        Physics.queriesHitBackfaces = temp;
+
+        if (!hitFrontOrBackFace)
+        {
+            return false;
+        }
+        else if (!hitFrontFace)
+        {
+            return true;
+        }
+        else 
+        {
+            // This can happen when, for instance, the point is inside the torso but there's a part of the mesh (like the tail) that can still be hit on the front
+            if (hit.distance > hit2.distance)
+            {
+                return true;
+            }
+            else
+                return false;
         }
 
     }
 
-    public void ShowCubes()
+    private void ShowCubes()
     {
-        for (int x = 0; x < width; x++)
+        foreach (var cube in _cubes)
         {
-            for (int y = 0; y < height; y++)
-            {
-                for (int z = 0; z < depth; z++)
-                {
-                    canMove[x, y, z] = false;
-                    cubes[x, y, z].ShowCube();
-                }
-            }
+            cube.ShowCube();
         }
     }
     
-    private void ClearCube()
+    bool IsOnMeshCollider(Collider collider, Vector3 point)
     {
-        for (int i = 0; i < cubes.GetLength(0); i++)
+        // Create a tiny box at the point's position
+        Vector3 boxSize = new Vector3(1.5f, 1.5f, 1.5f); // Can adjust size as needed
+
+        // Check if the box collides with the collider
+        Collider[] hitColliders = Physics.OverlapBox(point, boxSize / 2);
+
+        // If the box collides with the collider, the point is inside the collider
+        foreach (Collider hitCollider in hitColliders)
         {
-            for (int j = 0; j < cubes.GetLength(1); j++)
+            if (hitCollider == collider)
             {
-                for (int k = 0; k < cubes.GetLength(2); k++)
-                {
-                    cubes[i, j, k] = null;
-                }
+                return true;
             }
         }
+
+        // If the box doesn't collide with the collider, the point is outside the collider
+        return false;
+    }
+
+    private void SetSkin(GameObject cube)
+    {
+        if (currentSkinSo == null)
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                defaultSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        else
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                currentSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+    
+    public void ClearCube()
+    {
+        _cubes.Clear();
         while (transform.childCount > 0)
         {
             Transform child = transform.GetChild(0);
             DestroyImmediate(child.gameObject);
+        }
+    }
+
+    public void ExportObject()
+    {
+        // Create a new list to hold the positions.
+        List<Vector3> positions = new List<Vector3>();
+
+        // Add the position of each game object to the list.
+
+        foreach (Transform child in transform)
+        {
+            // Now you can do something with each child GameObject
+            /*Debug.Log(child.name);*/
+            positions.Add(child.localPosition);
+        }
+
+        // Convert the list of positions to JSON.
+        string jsonString = JsonConvert.SerializeObject(positions, Formatting.Indented, new Vector3Converter());
+
+        // Write the JSON string to a file.
+        string path = Path.Combine("Assets", "Resources", levelName + ".json");
+        File.WriteAllText(path, jsonString);
+        //AssetDatabase.Refresh();
+        Debug.Log("saved");
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void LoadJson()
+    {
+        _cubes = new List<TapCube>();
+        ClearCube();
+        List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
+        int i = 0;
+        foreach (Vector3 position in positions)
+        {
+            GameObject cube = Instantiate(this.cubePrefabs);
+            cube.name = "" + i;
+            _cubes.Add(cube.gameObject.GetComponent<TapCube>());
+            cube.transform.SetParent(transform);
+            cube.transform.localRotation = RandomRotation();
+            cube.transform.localPosition = position;
+            i++;
+        }
+        Debug.Log("current cubes: " + i);
+        StartCoroutine(SolveGame());
+        transform.position = new Vector3(0, 0, 0);
+    }
+    
+    public class Vector3Converter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            Vector3 vector = (Vector3)value;
+            serializer.Serialize(writer, new float[] { vector.x, vector.y, vector.z });
+        }
+
+        public override object ReadJson(JsonReader reader, System.Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            var array = JArray.Load(reader);
+            return new Vector3(array[0].Value<float>(), array[1].Value<float>(), array[2].Value<float>());
+        }
+
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(Vector3);
         }
     }
 }

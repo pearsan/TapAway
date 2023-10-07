@@ -17,14 +17,29 @@ public class CubeGeneratorEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        if (GUILayout.Button("Create Cubes"))
+        if (GUILayout.Button("Create Cubes base on 3D Grid"))
         {
-            _generator.ResetGame();
+            _generator.Create3DGridLevel();
         }
         
-        if (GUILayout.Button("Create Shap"))
+        if (GUILayout.Button("Create Cubes base on 3D model"))
         {
-            _generator.GenerateLevel();
+            _generator.Create3DShapeLevel();
+        }
+        
+        if (GUILayout.Button("Clear"))
+        {
+            _generator.ClearCube();
+        }
+        
+        if (GUILayout.Button("Export"))
+        {
+            _generator.ExportObject();
+        }
+        
+        if (GUILayout.Button("LoadLevel"))
+        {
+            _generator.LoadJson();
         }
     }
 }

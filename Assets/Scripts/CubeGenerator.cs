@@ -290,15 +290,15 @@ public class CubeGenerator : MonoBehaviour
     {
         if (currentSkinSo == null)
         {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                defaultSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
+                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
         }
         else
         {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.CubePrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                currentSkinSo.CubePrefab.GetComponent<MeshRenderer>().sharedMaterial;
+                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
         }
     }
     

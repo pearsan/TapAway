@@ -9,6 +9,7 @@ public class ShopItemSO : ScriptableObject
     public bool IsUnlock;
     [HideInInspector] public int Price;
     public string Type; //This type will recognize string path of PlayerPrefs
+    public GameObject ShopItemPrefab;
 
     [Header("Unlock types")]
     public bool CanUnlockByGold = true;

@@ -23,7 +23,6 @@ public class PurchaseSkinSO : ShopItemSO
 
     [Header("Inheritance parameters")]
     public Sprite SkinIcon;
-    public GameObject CubePrefab;
 
     private const string TYPE = "Skin";
 

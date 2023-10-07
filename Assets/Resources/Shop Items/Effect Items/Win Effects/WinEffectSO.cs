@@ -22,7 +22,6 @@ public class WinEffectSO : ShopItemSO
 
     [Header("Inheritance parameters")]
     public Sprite WinIcon;
-    public GameObject winPrefab;
 
     private const string TYPE = "WinEffect";
 

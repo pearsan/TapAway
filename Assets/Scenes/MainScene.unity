@@ -1614,6 +1614,7 @@ GameObject:
   - component: {fileID: 800255982}
   - component: {fileID: 800255983}
   - component: {fileID: 800255984}
+  - component: {fileID: 800255985}
   m_Layer: 5
   m_Name: Gacha Panel
   m_TagString: Untagged
@@ -1660,7 +1661,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 800255981}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2b0fff486bb776f4dbd75397feaa0ee8, type: 3}
   m_Name: 
@@ -1776,6 +1777,19 @@ MonoBehaviour:
       m_Action: Test
       m_Flags: 0
     m_Flags: 0
+--- !u!114 &800255985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800255981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d9f466e58e6e54593b2a72cf15e7eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gachaCubeRotater: {fileID: 800255984}
 --- !u!1 &825579791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1794,7 +1808,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &825579792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2401,6 +2415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainLayer: {fileID: 987752756}
   ShopLayer: {fileID: 2408462539808427194}
+  GachaLayer: {fileID: 800255985}
   GoldFeedbackPrefab: {fileID: 147140817952833561, guid: bf1fbe473a178c34a8e2d189c562adf9, type: 3}
   GoldParentTransform: {fileID: 1537989441}
   StartPosition: {fileID: 2050704768}

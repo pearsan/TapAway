@@ -11,6 +11,7 @@ public class GameUIManager : MonoBehaviour
     [Header("Layers")]
     [SerializeField] private GameObject MainLayer;
     [SerializeField] private GameObject ShopLayer;
+    [SerializeField] private GachaEffect GachaLayer;
 
     [Header("Gold feedbacks")]
     [SerializeField] private GameObject GoldFeedbackPrefab;
@@ -32,6 +33,7 @@ public class GameUIManager : MonoBehaviour
     {
         MainLayer.GetComponent<CanvasGroup>().alpha = 1;
         ShopLayer.GetComponent<CanvasGroup>().alpha = 0;
+        GachaLayer.GetComponent<CanvasGroup>().alpha = 0;
 
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
     }
@@ -51,6 +53,19 @@ public class GameUIManager : MonoBehaviour
         MainLayer.GetComponent<CanvasGroup>().alpha = 1;
         ShopLayer.transform.DOLocalMoveX(1080, 0.1f).OnComplete(() => { ShopLayer.GetComponent<CanvasGroup>().alpha = 0f; });
     }
+    #endregion
+
+    #region Script behaviours
+    private void SetCanvasGroupValue(float MainLayerValue, float ShopLayerValue, float GachaLayerValue)
+    {
+        MainLayer.GetComponent<CanvasGroup>().alpha = MainLayerValue;
+        ShopLayer.GetComponent<CanvasGroup>().alpha = ShopLayerValue;
+        GachaLayer.GetComponent<CanvasGroup>().alpha = GachaLayerValue;
+
+        MainLayer.GetComponent<CanvasGroup>().blocksRaycasts = (MainLayerValue == 1) ? true : false;
+        ShopLayer.GetComponent<CanvasGroup>().blocksRaycasts = (ShopLayerValue == 1) ? true : false;
+        GachaLayer.GetComponent<CanvasGroup>().blocksRaycasts = (GachaLayerValue == 1) ? true : false;
+    }    
     #endregion
 
     #region Feedback Effect Behaviours
@@ -78,6 +93,11 @@ public class GameUIManager : MonoBehaviour
             GoldManager.Instance.ModifyGoldValue(1);
             yield return new WaitForSeconds(0.01f);
         }    
+    }    
+
+    public void OnGachaFeedbackAnimation(ShopItemSO target)
+    {
+        SetCanvasGroupValue(0, 0, 1);
     }    
     #endregion
 }

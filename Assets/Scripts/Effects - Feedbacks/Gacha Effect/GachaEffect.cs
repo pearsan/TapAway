@@ -12,5 +12,10 @@ public class GachaEffect : MonoBehaviour
     {
         if (_obtainedObject != null)
             Destroy(_obtainedObject);
+
+        gachaCubeRotater.enabled = true;
+
+        _obtainedObject = Instantiate<GameObject>(obtainedObject.ShopItemPrefab, transform);
+        gachaCubeRotater.SetTargert(_obtainedObject.transform);
     }    
 }

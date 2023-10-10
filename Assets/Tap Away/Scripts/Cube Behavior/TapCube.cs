@@ -149,4 +149,8 @@ public class TapCube : MonoBehaviour
         return isHidden;
     }
 
+    public void SetCanDoMove(bool canMove)
+    {
+        _canDoMove = canMove;
+    }
 }

@@ -9102,7 +9102,7 @@ MonoBehaviour:
   height: 4
   depth: 4
   spacing: 0.05
-  cubePrefabs: {fileID: 8664533911761528409, guid: 1fe266b54487bf74ea6322c6d64aeaf4, type: 3}
+  cubePrefabs: {fileID: 5966293222690816701, guid: bdd087f1255806c44926e3e788b98053, type: 3}
   shapePrefab: {fileID: 0}
   jsonFile: {fileID: 4900000, guid: 42dc2b0d4d344fe489612f0657ee8e9f, type: 3}
   levelName: 4layer

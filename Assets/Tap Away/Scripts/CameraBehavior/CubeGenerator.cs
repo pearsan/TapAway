@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using DG.Tweening;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -370,6 +371,33 @@ public class CubeGenerator : MonoBehaviour
 
         // Move children objects to have the parent in the center
         MoveChildrenToCenterPoint(offset);
+        foreach (var cube in _cubes)
+        {
+            MoveChild(cube.transform);
+        }
+
+        foreach (var cube in _cubes)
+        {
+            MoveAnimChild(cube.transform);
+        }
+    }
+    
+    private void MoveChild(Transform cube)
+    {
+        float distance = 10.0f; // Define how far you want to move the child
+        // Get the direction from the parent to the child
+        Vector3 direction = cube.position;
+        direction.Normalize(); // Make the direction a unit vector
+
+        // Move the child a certain distance along this line
+         cube.GetChild(0).position = cube.position + direction * distance;
+    }
+    
+    private void MoveAnimChild(Transform cube)
+    {
+        Transform cubeMesh = cube.GetChild(0);
+        cube.gameObject.GetComponent<TapCube>().SetCanDoMove(false);
+        cubeMesh.DOLocalMove(new Vector3(0, 0, 0), 1).SetEase(Ease.InOutSine).OnComplete((() => cube.gameObject.GetComponent<TapCube>().SetCanDoMove(true)));
     }
 
     private Bounds CalculateTotalBounds()
@@ -421,5 +449,10 @@ public class CubeGenerator : MonoBehaviour
         {
             return objectType == typeof(Vector3);
         }
+    }
+
+    public void SetLevel(TextAsset level)
+    {
+        jsonFile = level;
     }
 }

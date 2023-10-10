@@ -102,6 +102,7 @@ public class ShopManager : MonoBehaviour
         SubcriberSO.IsUnlock = true;
         SaveData();
         Subcribe(SubcriberSO);
+        GameUIManager.Instance.OnGachaFeedbackAnimation(SubcriberSO);
     }
 
     public void SetSubcriberSOAdsUnlockProgressSuccess()
@@ -109,7 +110,10 @@ public class ShopManager : MonoBehaviour
         int adsWatched = SubcriberSO.AdsWatched;
         SubcriberSO.AdsWatched = adsWatched + 1;
         if (SubcriberSO.AdsWatched >= SubcriberSO.AdsToUnlock)
+        {
             SubcriberSO.IsUnlock = true;
+            GameUIManager.Instance.OnGachaFeedbackAnimation(SubcriberSO);
+        }
         SaveData();
         Subcribe(SubcriberSO);
     }    

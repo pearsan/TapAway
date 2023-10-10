@@ -57,6 +57,11 @@ public class CameraBehaviour : MonoBehaviour
     
     }
 
+    private void OnEnable()
+    {
+        Debug.Log("Fuck?");
+    }
+
     private void SetRotate()
     {
         cam = Camera.main.transform;

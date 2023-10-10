@@ -12,9 +12,9 @@ public class WinEffectContentGUIBehaviour : TabContentGUIBehaviour
             GameObject item = Instantiate<GameObject>(ShopItemPrefab, TargetTransforms);
             ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
             shopItemButtonBehaviour.shopItemSO = win;
-            ShopItems.Add((item,win));
-            if (((WinEffectSO)win).IsUnlock)
-                item.GetComponent<Image>().sprite = ((WinEffectSO)win).WinIcon;
+            ShopItems.Add((item, win));
+            
+            item.GetComponent<Image>().sprite = ((WinEffectSO)win).WinIcon;
         }
     }
 }

@@ -41,8 +41,7 @@ public class GameUIManager : MonoBehaviour
     #region Button behaviours
     public void OnEnterShopAnimation()
     {
-        ShopLayer.GetComponent<CanvasGroup>().alpha = 1;
-        MainLayer.GetComponent<CanvasGroup>().alpha = 0;
+        SetCanvasGroupValue(0, 1, 0);
 
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
         ShopLayer.transform.DOLocalMoveX(0, 0.1f);
@@ -52,6 +51,12 @@ public class GameUIManager : MonoBehaviour
     {
         MainLayer.GetComponent<CanvasGroup>().alpha = 1;
         ShopLayer.transform.DOLocalMoveX(1080, 0.1f).OnComplete(() => { ShopLayer.GetComponent<CanvasGroup>().alpha = 0f; });
+    }
+
+    public void OnExitGachaAnimation()
+    {
+        SetCanvasGroupValue(1, 0, 0);
+        GachaLayer.OnExitGachaAnimation();
     }
     #endregion
 
@@ -98,6 +103,7 @@ public class GameUIManager : MonoBehaviour
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {
         SetCanvasGroupValue(0, 0, 1);
+        GachaLayer.OnGachaEffect(target);
     }    
     #endregion
 }

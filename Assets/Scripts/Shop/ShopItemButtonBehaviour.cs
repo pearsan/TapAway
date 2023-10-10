@@ -21,7 +21,7 @@ public class ShopItemButtonBehaviour : MonoBehaviour
 
     private void Initialize()
     {
-        button = GetComponent<Button>();
+        button = GetComponentInChildren<Button>();
         button.onClick.AddListener(OnClickButton);
     }   
     

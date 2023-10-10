@@ -16,9 +16,9 @@ MonoBehaviour:
   IsUnlock: 0
   Price: 150
   Type: Skin
+  ShopItemPrefab: {fileID: 4384431853053489342, guid: 814414a5e8e0dd5498e3310723daaa13, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 0
   AdsWatched: 0
   AdsToUnlock: 0
   SkinIcon: {fileID: 21300000, guid: 2a95dfe6ed5c6fa408d012a1e7f6aefa, type: 3}
-  CubePrefab: {fileID: 0}

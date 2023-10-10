@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Monster 2
   m_EditorClassIdentifier: 
   Name: Skin Monster 2
-  IsUnlock: 0
+  IsUnlock: 1
   Price: 180
   Type: Skin
+  ShopItemPrefab: {fileID: 4384431853053489342, guid: 814414a5e8e0dd5498e3310723daaa13, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0
   AdsToUnlock: 3
   SkinIcon: {fileID: 21300000, guid: dd7d08825795ec04999e7073a9359d44, type: 3}
-  CubePrefab: {fileID: 0}

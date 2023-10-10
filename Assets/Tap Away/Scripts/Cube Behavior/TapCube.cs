@@ -3,7 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-
+[SelectionBase]
 public class TapCube : MonoBehaviour
 {
 
@@ -142,6 +142,7 @@ public class TapCube : MonoBehaviour
         gameObject.GetComponent<Collider>().enabled = true;
         transform.GetChild(0).gameObject.SetActive(true);
     }
+    
 
     public bool IsHidden()
     {

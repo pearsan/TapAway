@@ -339,6 +339,7 @@ public class CubeGenerator : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public void LoadJson()
     {
+        SetSkin(cubePrefabs);
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
@@ -356,6 +357,49 @@ public class CubeGenerator : MonoBehaviour
         Debug.Log("current cubes: " + i);
         StartCoroutine(SolveGame());
         transform.position = new Vector3(0, 0, 0);
+        
+        // Get the total bounds of all the children objects
+        Bounds bounds = CalculateTotalBounds();
+
+        // Calculate the center point
+        Vector3 centerPoint = bounds.center;
+
+        // Calculate the offset
+        Vector3 offset = transform.position - centerPoint;
+
+        // Move children objects to have the parent in the center
+        MoveChildrenToCenterPoint(offset);
+    }
+
+    private Bounds CalculateTotalBounds()
+    {
+        Bounds bounds = new Bounds();
+
+        foreach (Transform child in transform)
+        {
+            Renderer renderer = child.GetComponentInChildren<Renderer>();
+
+            if (renderer != null)
+            {
+                if (bounds.size == Vector3.zero)
+                {
+                    bounds = renderer.bounds;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
+            }
+        }
+        return bounds;
+    }
+
+    void MoveChildrenToCenterPoint(Vector3 offset)
+    {
+        foreach (Transform child in transform)
+        {
+            child.position += offset; // Move the child object by applying the offset
+        }
     }
     
     public class Vector3Converter : JsonConverter

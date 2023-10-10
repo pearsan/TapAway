@@ -15,7 +15,7 @@ public class PurchaseSkinContentGUIBehaviour : TabContentGUIBehaviour
             ShopItems.Add((item, skin));
 
             item.GetComponent<Image>().sprite = ((PurchaseSkinSO)skin).SkinIcon;
-            item.transform.GetChild(0).GetComponent<Image>().sprite = skin.CanUnlockByAds ? AdsLockLayer : GoldLockLayer;       
+            item.transform.GetChild(0).GetComponent<Image>().sprite = skin.CanUnlockByAds ? AdsLockLayer : GoldLockLayer;
         }
     }
 }

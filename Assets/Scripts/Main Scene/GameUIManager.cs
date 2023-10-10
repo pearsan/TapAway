@@ -49,7 +49,7 @@ public class GameUIManager : MonoBehaviour
 
     public void OnExitShopAnimation()
     {
-        SetCanvasGroupValue(0, 1, 0);
+        SetCanvasGroupValue(1, 0, 0);
 
         MainLayer.GetComponent<CanvasGroup>().alpha = 1;
         ShopLayer.transform.DOLocalMoveX(1080, 0.1f).OnComplete(() => { ShopLayer.GetComponent<CanvasGroup>().alpha = 0f; });

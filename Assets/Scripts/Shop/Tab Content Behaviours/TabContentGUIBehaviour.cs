@@ -35,14 +35,16 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
         {
             item.Item1.transform.GetChild(0).GetComponent<Image>().color = (item.Item2).IsUnlock ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1f);
 
-            if (item.Item2.IsUnlock || item.Item2.CanUnlockByAds == false)
-                item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(false);
-            else
+            if (item.Item1.GetComponentInChildren<TMP_Text>() != null)
             {
-                item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(true);
-                item.Item1.GetComponentInChildren<TMP_Text>().text = $"{item.Item2.AdsWatched}/{item.Item2.AdsToUnlock}";
-            } 
-                
+                if (item.Item2.IsUnlock || item.Item2.CanUnlockByAds == false)
+                    item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(false);
+                else
+                {
+                    item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(true);
+                    item.Item1.GetComponentInChildren<TMP_Text>().text = $"{item.Item2.AdsWatched}/{item.Item2.AdsToUnlock}";
+                }
+            }
         }
     }    
 

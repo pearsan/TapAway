@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class RandomSkinContentGUIBehaviour : TabContentGUIBehaviour
 {
+    [SerializeField] private Sprite LockSprite;
+
     public override void CreateItemInShop(ShopItemSO[] data)
     {
         foreach (var skin in data)
@@ -13,8 +15,16 @@ public class RandomSkinContentGUIBehaviour : TabContentGUIBehaviour
             ShopItems.Add((item, skin));
             ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
             shopItemButtonBehaviour.shopItemSO = skin;
-            if (((RandomSkinSO)skin).IsUnlock)
-                item.GetComponent<Image>().sprite = ((RandomSkinSO)skin).SkinIcon;
+
+            item.GetComponent<Image>().sprite = ((RandomSkinSO)skin).IsUnlock ? ((RandomSkinSO)skin).SkinIcon : LockSprite;
+        }
+    }
+
+    public override void UpdateIcon()
+    {
+        foreach (var item in ShopItems)
+        {
+            item.Item1.GetComponent<Image>().sprite = ((RandomSkinSO)item.Item2).IsUnlock ?((RandomSkinSO)item.Item2).SkinIcon : LockSprite ;
         }
     }
 }

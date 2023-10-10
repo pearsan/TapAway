@@ -22,7 +22,6 @@ public class TapEffectSO : ShopItemSO
 
     [Header("Inheritance parameters")]
     public Sprite TapIcon;
-    public GameObject tapPrefab;
 
     private const string TYPE = "TapEffect";
 

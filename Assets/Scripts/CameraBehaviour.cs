@@ -57,6 +57,11 @@ public class CameraBehaviour : MonoBehaviour
     
     }
 
+    private void OnEnable()
+    {
+        Debug.Log("Fuck?");
+    }
+
     private void SetRotate()
     {
         cam = Camera.main.transform;
@@ -273,6 +278,11 @@ public class CameraBehaviour : MonoBehaviour
             }
         }
     }
+
+    public void SetTargert(Transform targert)
+    {
+        _targert = targert;
+    }    
 }
 
 

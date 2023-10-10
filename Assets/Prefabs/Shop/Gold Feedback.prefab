@@ -88,7 +88,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 396b9bcb6adf3c44392e564b52cfe01c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpritePrefab: {fileID: 147140817952833561, guid: 21ade4513c759014f96d045891fcd11f, type: 3}
-  SpriteQuantity: 10
-  LerpSpeed: 0.05
-  Direction: {x: 0, y: 0, z: 0}
+  TimeBetweenSpawn: 0.05
+  TimeFading: 0.3
+  CoinSegmentationPrefab: {fileID: 147140817952833561, guid: 21ade4513c759014f96d045891fcd11f, type: 3}

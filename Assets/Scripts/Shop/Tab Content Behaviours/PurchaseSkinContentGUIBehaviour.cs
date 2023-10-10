@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class PurchaseSkinContentGUIBehaviour : TabContentGUIBehaviour
 {
-
     public override void CreateItemInShop(ShopItemSO[] data)
     {
         foreach (var skin in data)
@@ -14,8 +13,8 @@ public class PurchaseSkinContentGUIBehaviour : TabContentGUIBehaviour
             ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
             shopItemButtonBehaviour.shopItemSO = skin;
             ShopItems.Add((item, skin));
-            if (((PurchaseSkinSO)skin).IsUnlock)
-                item.GetComponent<Image>().sprite = ((PurchaseSkinSO)skin).SkinIcon;
+
+            item.GetComponent<Image>().sprite = ((PurchaseSkinSO)skin).SkinIcon;
         }
     }
 }

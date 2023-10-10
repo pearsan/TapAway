@@ -10,25 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b24db3d1eda69a4d921550a984897a1, type: 3}
-<<<<<<<< HEAD:Assets/Resources/Shop Items/Skin Items/Purchase Skins/Monster 3.asset
-  m_Name: Monster 3
-  m_EditorClassIdentifier: 
-  Name: Skin Monster 3
-  IsUnlock: 0
-  Price: 60
-  Type: 
-  SkinIcon: {fileID: 21300000, guid: 2a95dfe6ed5c6fa408d012a1e7f6aefa, type: 3}
-========
   m_Name: Dino 1
   m_EditorClassIdentifier: 
   Name: Skin Dino 1
-  IsUnlock: 0
+  IsUnlock: 1
   Price: 60
   Type: Skin
+  ShopItemPrefab: {fileID: 4384431853053489342, guid: 814414a5e8e0dd5498e3310723daaa13, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0
   AdsToUnlock: 1
   SkinIcon: {fileID: 21300000, guid: a2d84d3e8b3e5ec42a43b67ccdaea501, type: 3}
->>>>>>>> UI-and-Shop-and-Level-but-from-Công-ty:Assets/Resources/Shop Items/Skin Items/Purchase Skins/Dino 1.asset
-  CubePrefab: {fileID: 0}

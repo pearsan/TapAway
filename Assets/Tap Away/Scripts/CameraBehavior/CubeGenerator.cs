@@ -330,9 +330,9 @@ public class CubeGenerator : MonoBehaviour
         string jsonString = JsonConvert.SerializeObject(positions, Formatting.Indented, new Vector3Converter());
 
         // Write the JSON string to a file.
-        string path = Path.Combine("Assets", "Resources", levelName + ".json");
+        string path = Path.Combine("Assets", "Tap Away", "Resources", levelName + ".json");
         File.WriteAllText(path, jsonString);
-        //AssetDatabase.Refresh();
+        AssetDatabase.Refresh();
         Debug.Log("saved");
     }
 

@@ -1482,7 +1482,7 @@ Canvas:
   m_GameObject: {fileID: 566886875}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1851,7 +1851,6 @@ GameObject:
   m_Component:
   - component: {fileID: 800255982}
   - component: {fileID: 800255983}
-  - component: {fileID: 800255984}
   - component: {fileID: 800255985}
   m_Layer: 5
   m_Name: Gacha Panel
@@ -1892,129 +1891,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &800255984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 800255981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b0fff486bb776f4dbd75397feaa0ee8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pressed:
-    m_Name: Pressed
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 6b61110b-96a4-440d-ac11-4dc572ac4229
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: fcffb647-9e34-4634-a67b-1ec2cd5a1d70
-      m_Path: <Touchscreen>/Press
-      m_Interactions: Hold(duration=0.1)
-      m_Processors: 
-      m_Groups: 
-      m_Action: Pressed
-      m_Flags: 0
-    - m_Name: 
-      m_Id: c4f60e71-afe5-48fc-9c03-02e189ec25c1
-      m_Path: <Mouse>/leftButton
-      m_Interactions: Hold(duration=0.1)
-      m_Processors: 
-      m_Groups: 
-      m_Action: Pressed
-      m_Flags: 0
-    m_Flags: 0
-  axis:
-    m_Name: Axis
-    m_Type: 0
-    m_ExpectedControlType: Vector2
-    m_Id: f37ce7c7-6e59-43f3-bcd3-cee32af1fe77
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: b00c081c-0f2a-42ea-bc68-557011f7d82f
-      m_Path: <Touchscreen>/delta
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Axis
-      m_Flags: 0
-    - m_Name: 
-      m_Id: cdb5b926-6d47-410d-9e5f-8e2e47f1b756
-      m_Path: <Mouse>/delta
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Axis
-      m_Flags: 0
-    m_Flags: 0
-  _targert: {fileID: 0}
-  clicked:
-    m_Name: Clicked
-    m_Type: 1
-    m_ExpectedControlType: Button
-    m_Id: 261e8e08-28dd-4134-b6e4-4dd29364abfb
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: d209db7b-d732-46f4-bb25-c066364e8acf
-      m_Path: <Mouse>/leftButton
-      m_Interactions: Tap
-      m_Processors: 
-      m_Groups: 
-      m_Action: Clicked
-      m_Flags: 0
-    - m_Name: 
-      m_Id: 79e00aa1-72bb-49fe-9b39-8f4439b73966
-      m_Path: <Mouse>/rightButton
-      m_Interactions: Tap
-      m_Processors: 
-      m_Groups: 
-      m_Action: Clicked
-      m_Flags: 0
-    m_Flags: 0
-  speedRotate: 0.3
-  inverted: 0
-  speedZoom: 0.03
-  minZoom: 20
-  maxZoom: 200
-  dragAction:
-    m_Name: Drag
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 7f0fa3e5-be87-4587-982c-26b8bcaf301f
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  dragSpeed: 2
-  parent: {fileID: 0}
-  child: {fileID: 8664533911761528409, guid: fac9329531d52e04095b6a78bd548c68, type: 3}
-  editCube: 0
-  test:
-    m_Name: Test
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 90473617-94e7-4fc5-a9d7-d3de135c782a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: c1b07b64-5d9a-45de-9213-363043e3d225
-      m_Path: <Mouse>/middleButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Test
-      m_Flags: 0
-    m_Flags: 0
 --- !u!114 &800255985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,7 +1903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d9f466e58e6e54593b2a72cf15e7eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gachaCubeRotater: {fileID: 800255984}
+  gachaCubeRotater: {fileID: 0}
   FlashMaterial: {fileID: 2100000, guid: e7a4d71bb838d7941963042b5640d938, type: 2}
 --- !u!1 &825579791
 GameObject:
@@ -2197,7 +2073,7 @@ Canvas:
   m_GameObject: {fileID: 866027232}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -2619,6 +2495,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1050517559}
   - component: {fileID: 1050517560}
+  - component: {fileID: 1050517561}
   m_Layer: 0
   m_Name: Gameplay Manager
   m_TagString: Untagged
@@ -2653,7 +2530,129 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cubeGenerator: {fileID: 8051748942213060918, guid: 002b971d1baf6dc40af69addd9277a62, type: 3}
-  cameraBehaviour: {fileID: 800255984}
+--- !u!114 &1050517561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050517558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0fff486bb776f4dbd75397feaa0ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pressed:
+    m_Name: Pressed
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 6b61110b-96a4-440d-ac11-4dc572ac4229
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: fcffb647-9e34-4634-a67b-1ec2cd5a1d70
+      m_Path: <Touchscreen>/Press
+      m_Interactions: Hold(duration=0.1)
+      m_Processors: 
+      m_Groups: 
+      m_Action: Pressed
+      m_Flags: 0
+    - m_Name: 
+      m_Id: c4f60e71-afe5-48fc-9c03-02e189ec25c1
+      m_Path: <Mouse>/leftButton
+      m_Interactions: Hold(duration=0.1)
+      m_Processors: 
+      m_Groups: 
+      m_Action: Pressed
+      m_Flags: 0
+    m_Flags: 0
+  axis:
+    m_Name: Axis
+    m_Type: 0
+    m_ExpectedControlType: Vector2
+    m_Id: f37ce7c7-6e59-43f3-bcd3-cee32af1fe77
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b00c081c-0f2a-42ea-bc68-557011f7d82f
+      m_Path: <Touchscreen>/delta
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Axis
+      m_Flags: 0
+    - m_Name: 
+      m_Id: cdb5b926-6d47-410d-9e5f-8e2e47f1b756
+      m_Path: <Mouse>/delta
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Axis
+      m_Flags: 0
+    m_Flags: 0
+  _targert: {fileID: 0}
+  clicked:
+    m_Name: Clicked
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 261e8e08-28dd-4134-b6e4-4dd29364abfb
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: d209db7b-d732-46f4-bb25-c066364e8acf
+      m_Path: <Mouse>/leftButton
+      m_Interactions: Tap
+      m_Processors: 
+      m_Groups: 
+      m_Action: Clicked
+      m_Flags: 0
+    - m_Name: 
+      m_Id: 79e00aa1-72bb-49fe-9b39-8f4439b73966
+      m_Path: <Mouse>/rightButton
+      m_Interactions: Tap
+      m_Processors: 
+      m_Groups: 
+      m_Action: Clicked
+      m_Flags: 0
+    m_Flags: 0
+  speedRotate: 0.3
+  inverted: 0
+  speedZoom: 0.03
+  minZoom: 20
+  maxZoom: 200
+  dragAction:
+    m_Name: Drag
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 7f0fa3e5-be87-4587-982c-26b8bcaf301f
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  dragSpeed: 2
+  parent: {fileID: 0}
+  child: {fileID: 8664533911761528409, guid: fac9329531d52e04095b6a78bd548c68, type: 3}
+  editCube: 0
+  test:
+    m_Name: Test
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 90473617-94e7-4fc5-a9d7-d3de135c782a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: c1b07b64-5d9a-45de-9213-363043e3d225
+      m_Path: <Mouse>/middleButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Test
+      m_Flags: 0
+    m_Flags: 0
 --- !u!1 &1081445590
 GameObject:
   m_ObjectHideFlags: 0
@@ -5797,7 +5796,7 @@ Canvas:
   m_GameObject: {fileID: 2408462539352712211}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

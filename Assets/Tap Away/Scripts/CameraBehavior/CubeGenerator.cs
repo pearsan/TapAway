@@ -312,6 +312,7 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
+#if  UNITY_EDITOR
     public void ExportObject()
     {
         // Create a new list to hold the positions.
@@ -335,7 +336,7 @@ public class CubeGenerator : MonoBehaviour
         AssetDatabase.Refresh();
         Debug.Log("saved");
     }
-
+#endif
     // ReSharper disable Unity.PerformanceAnalysis
     public void LoadJson()
     {

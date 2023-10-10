@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,6 +63,12 @@ public class CameraBehaviour : MonoBehaviour
         Debug.Log("Fuck?");
     }
 
+    private void OnDisable()
+    {
+        pressed.Disable();
+        axis.Disable();
+    }
+
     private void SetRotate()
     {
         cam = Camera.main.transform;
@@ -92,7 +99,7 @@ public class CameraBehaviour : MonoBehaviour
     private IEnumerator Rotate()
     {
         rotateAllowed = true;
-        while(rotateAllowed)
+        while(rotateAllowed && _targert != null)
         {
             // apply rotation
             /*

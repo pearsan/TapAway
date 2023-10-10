@@ -13,6 +13,7 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
     [SerializeField] protected GameObject ShopItemPrefab;
     [Space(10f)]
     [SerializeField] protected Sprite AdsLockLayer;
+    [SerializeField] protected Sprite AdsLockStandard;
 
 
     public List<(GameObject, ShopItemSO)> ShopItems;

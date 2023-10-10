@@ -5360,6 +5360,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetTransforms: {fileID: 2408462540052966410}
   ShopItemPrefab: {fileID: 2283054836346394110, guid: 3d552541ae540394ca34250dcfdbc109, type: 3}
+  AdsLockLayer: {fileID: 0}
+  GoldLockLayer: {fileID: 0}
   LockSprite: {fileID: 21300000, guid: ceb7a3fde2eb58c428fc282462d101f5, type: 3}
 --- !u!114 &2408462539168157800
 MonoBehaviour:
@@ -6981,6 +6983,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetTransforms: {fileID: 2408462539518807384}
   ShopItemPrefab: {fileID: 5290449445157445597, guid: 5c888e754b7b60b4bbb4094734353dae, type: 3}
+  AdsLockLayer: {fileID: 21300000, guid: d27aea177cc944c4ca1be444cad7fa8d, type: 3}
+  GoldLockLayer: {fileID: 21300000, guid: 0891da364df3da848b3b56f73c63e7be, type: 3}
 --- !u!222 &2408462539998549107
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7989,6 +7993,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetTransforms: {fileID: 2408462539093471459}
   ShopItemPrefab: {fileID: 5290449445157445597, guid: 5c888e754b7b60b4bbb4094734353dae, type: 3}
+  AdsLockLayer: {fileID: 21300000, guid: d27aea177cc944c4ca1be444cad7fa8d, type: 3}
+  GoldLockLayer: {fileID: 21300000, guid: 0891da364df3da848b3b56f73c63e7be, type: 3}
 --- !u!114 &2408462540282575796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8468,6 +8474,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetTransforms: {fileID: 2408462538325130986}
   ShopItemPrefab: {fileID: 5290449445157445597, guid: 5c888e754b7b60b4bbb4094734353dae, type: 3}
+  AdsLockLayer: {fileID: 21300000, guid: d27aea177cc944c4ca1be444cad7fa8d, type: 3}
+  GoldLockLayer: {fileID: 21300000, guid: 0891da364df3da848b3b56f73c63e7be, type: 3}
 --- !u!222 &2408462540406326308
 CanvasRenderer:
   m_ObjectHideFlags: 0

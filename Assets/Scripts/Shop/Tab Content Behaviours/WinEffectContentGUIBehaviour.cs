@@ -15,6 +15,7 @@ public class WinEffectContentGUIBehaviour : TabContentGUIBehaviour
             ShopItems.Add((item, win));
             
             item.GetComponent<Image>().sprite = ((WinEffectSO)win).WinIcon;
+            item.transform.GetChild(0).GetComponent<Image>().sprite = win.CanUnlockByAds ? AdsLockLayer : GoldLockLayer;
         }
     }
 }

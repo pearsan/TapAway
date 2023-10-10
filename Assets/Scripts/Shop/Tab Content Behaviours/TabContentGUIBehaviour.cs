@@ -31,7 +31,7 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
     {
         foreach (var item in ShopItems)
         {
-            item.Item1.transform.GetChild(0).GetComponent<Image>().color = (item.Item2).IsUnlock ? new Color(1, 1, 1, 0) : new Color(0, 0, 0, 0.75f);
+            item.Item1.transform.GetChild(0).GetComponent<Image>().color = (item.Item2).IsUnlock ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1f);
         }
     }    
 

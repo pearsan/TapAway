@@ -2,41 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class SpriteTrail : MonoBehaviour
 {
-    [SerializeField] private GameObject SpritePrefab;
+    [SerializeField] private float TimeBetweenSpawn;
+    [SerializeField] private float TimeFading;
 
-    [Tooltip("How many sprites to show sprite trail")]
-    [SerializeField] private int SpriteQuantity;
-    [SerializeField] private float LerpSpeed;
+    [Space(10f)]
+    [SerializeField] private GameObject CoinSegmentationPrefab;
 
-    [HideInInspector] public Vector3 Direction;
-
-    private Transform _targetTransform;
+    private Transform TargetTransform;
 
     private void Start()
     {
-        Initialize();
+        Initialize(); 
     }
 
     private void Initialize()
     {
-        _targetTransform = transform.parent;
-    } 
+        TargetTransform = transform.parent;
+    }
     
-    public void SpawnSpriteTrail()
+    public IEnumerator SpawnSpriteTrail()
     {
-        for (int i = 1; i <= SpriteQuantity; i++)
-        {
-            GameObject sprite = Instantiate<GameObject>(SpritePrefab, _targetTransform);
-            sprite.GetComponent<RectTransform>().anchoredPosition = (Vector3) GetComponent<RectTransform>().anchoredPosition + Direction * i*50;
-            Debug.Log(sprite.GetComponent<RectTransform>().anchoredPosition);
-            sprite.transform.localScale = (1 / (float)(SpriteQuantity + 1) * (float)(SpriteQuantity + 1 - i)) * Vector3.one;
-            sprite.GetComponent<Image>().color = new Color(sprite.GetComponent<Image>().color.r, sprite.GetComponent<Image>().color.g, sprite.GetComponent<Image>().color.b, (1 / (float)(SpriteQuantity + 1) * (float)(SpriteQuantity + 1 - i)));
-            SegmentationBehaviour segmentationBehaviour = sprite.AddComponent<SegmentationBehaviour>();
-            segmentationBehaviour.LerpSpeed = LerpSpeed;
-            segmentationBehaviour.Target = transform;
-        }
+        GameObject sprite = Instantiate<GameObject>(CoinSegmentationPrefab, TargetTransform);
+        sprite.transform.localScale = Vector3.one;
+        sprite.GetComponent<RectTransform>().anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
+        FadeSprite(sprite.GetComponent<Image>());
+        yield return new WaitForSeconds(TimeBetweenSpawn);
+        StartCoroutine(SpawnSpriteTrail());
+    }    
+
+    private void FadeSprite(Image target)
+    {
+        target.DOFade(0, TimeFading).OnComplete(() => Destroy(target.gameObject));
     }    
 }

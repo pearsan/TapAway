@@ -13,8 +13,8 @@ public class TapEffectContentGUIBehaviour : TabContentGUIBehaviour
             ShopItemButtonBehaviour shopItemButtonBehaviour = item.AddComponent<ShopItemButtonBehaviour>();
             shopItemButtonBehaviour.shopItemSO = tap;
             ShopItems.Add((item, tap));
-            if (((TapEffectSO)tap).IsUnlock)
-                item.GetComponent<Image>().sprite = ((TapEffectSO)tap).TapIcon;
+            
+            item.GetComponent<Image>().sprite = ((TapEffectSO)tap).TapIcon;
         }
     }
 }

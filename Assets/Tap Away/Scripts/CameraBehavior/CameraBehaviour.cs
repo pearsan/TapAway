@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,12 +12,12 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private Transform _targert;
     [SerializeField] private InputAction clicked;
 
-    private Transform cam;
+    private Transform _cam;
     [SerializeField] private float speedRotate = 0.3f;
     [SerializeField] private bool inverted;
-    private Vector2 rotation;
-    private bool rotateAllowed;
-    private Vector3 previousPosition;
+    private Vector2 _rotation;
+    private bool _rotateAllowed;
+    private Vector3 _previousPosition;
     
     [SerializeField] private float speedZoom = 0.01f;
     [SerializeField] private float minZoom = 20f;
@@ -27,8 +28,8 @@ public class CameraBehaviour : MonoBehaviour
     
     [SerializeField] private InputAction dragAction;
     [SerializeField] private float dragSpeed = 0.1f;
-    private bool isDragging = false;
-    private Vector2 lastDragPosition;
+    private bool _isDragging = false;
+    private Vector2 _lastDragPosition;
     
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
@@ -41,9 +42,7 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private GameObject child;
     [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
 
-
-    public InputAction test;
-
+    
     private void Awake()
     {
         SetZoom();
@@ -52,56 +51,65 @@ public class CameraBehaviour : MonoBehaviour
         clicked.Enable();
         clicked.performed += _ =>
         {
-            ShootRay();
+            if (editCube)
+            {
+                EditLevel();
+            }
+            else
+            {
+                ShootRay();
+            }
         };
     
     }
 
+    private void OnEnable()
+    {
+        Debug.Log("Fuck?");
+    }
+
+    private void OnDisable()
+    {
+        pressed.Disable();
+        axis.Disable();
+    }
+
     private void SetRotate()
     {
-        cam = Camera.main.transform;
+        _cam = Camera.main.transform;
         pressed.Enable();
         axis.Enable();
         pressed.performed += _ =>
         {
             if (touchCount > 1)
             {
-                rotateAllowed = false;
+                _rotateAllowed = false;
                 return;
             }
-            rotation = Vector2.zero;
+            _rotation = Vector2.zero;
             StartCoroutine(Rotate());
         };
-        pressed.canceled += _ => { rotateAllowed = false; };
+        pressed.canceled += _ => { _rotateAllowed = false; };
         axis.performed += context =>
         {
             if (touchCount > 1)
             {
-                rotateAllowed = false;
+                _rotateAllowed = false;
                 return;
             }
-            rotation = context.ReadValue<Vector2>();
+            _rotation = context.ReadValue<Vector2>();
         };	        
     }
 
     private IEnumerator Rotate()
     {
-        rotateAllowed = true;
-        while(rotateAllowed)
+        _rotateAllowed = true;
+        while(_rotateAllowed && _targert != null)
         {
-            // apply rotation
-            /*
-            transform.position = _targert.position;
-            */
 
-            rotation *= speedRotate;
-            _targert.transform.Rotate(Vector3.up * (inverted? 1: -1), rotation.x, Space.World);
-            _targert.transform.Rotate(cam.right * (inverted? -1: 1), rotation.y, Space.World);
-            
-            /*
-            transform.Translate(new Vector3(0, 1, -8));
-            */
-
+            _rotation *= speedRotate;
+            _targert.transform.Rotate(Vector3.up * (inverted? 1: -1), _rotation.x, Space.World);
+            _targert.transform.Rotate(_cam.right * (inverted? -1: 1), _rotation.y, Space.World);
             
             yield return null;
         }
@@ -182,7 +190,7 @@ public class CameraBehaviour : MonoBehaviour
             }
             Vector2 differenceDrag = currentPos - prevPos;
 
-            Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed, -differenceDrag.y * dragSpeed, 0) * Time.deltaTime, Space.Self);
+            Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
 
             touch0StartPos = touch0CurrentPos;
             touch1StartPos = touch1CurrentPos;
@@ -198,28 +206,55 @@ public class CameraBehaviour : MonoBehaviour
         // For mouse
         dragAction = new InputAction(binding: "<Mouse>/middleButton");
         dragAction.Enable();
-        dragAction.started += ctx => { isDragging = true; };
-        dragAction.canceled += ctx => { isDragging = false; };
+        dragAction.started += ctx => { _isDragging = true; };
+        dragAction.canceled += ctx => { _isDragging = false; };
     }
 
     private void Update()
     {
-        if (isDragging)
+        if (_isDragging)
         {
             Vector2 currentDragPosition = Input.mousePosition;
-            if (lastDragPosition == Vector2.zero)
-                lastDragPosition = currentDragPosition;
-            Vector2 difference = currentDragPosition - lastDragPosition;
+            if (_lastDragPosition == Vector2.zero)
+                _lastDragPosition = currentDragPosition;
+            Vector2 difference = currentDragPosition - _lastDragPosition;
             Camera.main.transform.Translate(new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0) * Time.deltaTime, Space.Self);
 
-            lastDragPosition = currentDragPosition;
+            _lastDragPosition = currentDragPosition;
         }
         else
         {
-            lastDragPosition = Vector2.zero;
+            _lastDragPosition = Vector2.zero;
         }
     }
     private void ShootRay()
+    {
+        RaycastHit hit;
+        Ray ray;
+        
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            if (hit.collider != null)
+            {
+                TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                if (!editCube)
+                {
+                    if (tapCube != null && !tapCube.IsBlock())
+                    { 
+                        tapCube.SetMoving();
+                    }
+                    else if (tapCube.IsBlock())
+                    { 
+                        tapCube.TryMove();
+                    }
+                }
+            }
+        }
+    }
+
+    private void EditLevel()
     {
         RaycastHit hit;
         Ray ray;
@@ -232,25 +267,12 @@ public class CameraBehaviour : MonoBehaviour
                 if (hit.collider != null)
                 {
                     TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
-                    if (!editCube)
-                    {
-                        if (tapCube != null && !tapCube.IsBlock())
-                        {
-                            tapCube.SetMoving();
-                        }
-                        else if (tapCube.IsBlock())
-                        {
-                            tapCube.TryMove();
-                        }
-                    }
-                    else
-                    {
-                        Vector3 positionToInstantiate = tapCube.transform.position + hit.normal;
-                        GameObject newCube = Instantiate(child);
-                        newCube.transform.SetParent(parent.transform);
-                        newCube.transform.position = positionToInstantiate;
-                        newCube.transform.localRotation = tapCube.transform.localRotation;
-                    }
+                    
+                    Vector3 positionToInstantiate = tapCube.transform.position + hit.normal;
+                    GameObject newCube = Instantiate(child);
+                    newCube.transform.SetParent(parent.transform);
+                    newCube.transform.position = positionToInstantiate;
+                    newCube.transform.localRotation = tapCube.transform.localRotation;
                     
                 }
             }
@@ -262,17 +284,17 @@ public class CameraBehaviour : MonoBehaviour
                 if (hit.collider != null)
                 {
                     TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
-                    if (editCube)
-                    {
-                        if (tapCube != null)
-                        {
-                            Destroy(tapCube.gameObject);
-                        }    
-                    }
+                    Destroy(tapCube.gameObject);
+  
                 }
             }
         }
     }
+
+    public void SetTargert(Transform targert)
+    {
+        _targert = targert;
+    }    
 }
 
 

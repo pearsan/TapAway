@@ -56,7 +56,6 @@ public class TapCube : MonoBehaviour
             out hit, maxDistance);
         if (isHit && _canDoMove)
         {
-            
             if (hit.distance >= 1)
             {
                 _canDoMove = false;
@@ -78,24 +77,20 @@ public class TapCube : MonoBehaviour
         bool isHit = Physics.Raycast(transform.position, direction,
             out var hit, maxDistance);
         bool firstLoopDone = false;
-        
         if (isHit && _canDoMove)
         {
-            
-            if (Mathf.Round(hit.distance) < 2)
-            {
-                _canDoMove = false;
-                Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 10);
-                cubeMesh.DOLocalMove(localTargetPosition, TweenDuration / 4).SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo).OnStepComplete(() => {
-                    if (!firstLoopDone)
-                    {
-                        firstLoopDone = true;
+            _canDoMove = false;
+            Vector3 localTargetPosition = transform.InverseTransformPoint(transform.position + direction / 10);
+            cubeMesh.DOLocalMove(localTargetPosition, TweenDuration / 4).SetEase(Ease.InOutSine).SetLoops(2, LoopType.Yoyo).OnStepComplete(() => {
+                if (!firstLoopDone)
+                {
+                    firstLoopDone = true;
+                    if (hit.collider.gameObject.GetComponent<TapCube>()._canDoMove) 
                         hit.collider.gameObject.GetComponent<TapCube>().TryMoveShort(direction);
-                    }
-                }).OnComplete(() => _canDoMove = true);
-            }
+                }
+            }).OnComplete(() => _canDoMove = true);
         }
-        else
+        else if (_canDoMove)
         {
             // move the cube
             _canDoMove = false;
@@ -109,10 +104,9 @@ public class TapCube : MonoBehaviour
     {
         if (!drawRay) return;
         float maxDistance = 10f;
-        RaycastHit hit;
 
-        bool isHit = Physics.BoxCast(transform.position, Vector3.one / 100 * 80 / 2, transform.forward,
-            out hit, transform.localRotation, maxDistance);
+        bool isHit = Physics.Raycast(transform.position, transform.forward,
+            out var hit, maxDistance);
 
         if (isHit)
         {

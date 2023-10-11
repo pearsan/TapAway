@@ -14,7 +14,16 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private TextAsset[] jsonFile;
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
         cameraBehaviour = gameObject.GetComponent<CameraBehaviour>();
     }
 

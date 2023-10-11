@@ -2680,8 +2680,8 @@ MonoBehaviour:
       m_Flags: 0
     - m_Name: 
       m_Id: 6493a431-dfe4-43e1-b9e3-43dee0631405
-      m_Path: <Touchscreen>/primaryTouch/tap
-      m_Interactions: 
+      m_Path: <Touchscreen>/Press
+      m_Interactions: Tap
       m_Processors: 
       m_Groups: 
       m_Action: Clicked
@@ -2703,25 +2703,8 @@ MonoBehaviour:
     m_Flags: 0
   dragSpeed: 2
   parent: {fileID: 0}
-  child: {fileID: 8664533911761528409, guid: fac9329531d52e04095b6a78bd548c68, type: 3}
+  child: {fileID: 5966293222690816701, guid: bdd087f1255806c44926e3e788b98053, type: 3}
   editCube: 0
-  test:
-    m_Name: Test
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 90473617-94e7-4fc5-a9d7-d3de135c782a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: c1b07b64-5d9a-45de-9213-363043e3d225
-      m_Path: <Mouse>/middleButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Test
-      m_Flags: 0
-    m_Flags: 0
 --- !u!1 &1081445590
 GameObject:
   m_ObjectHideFlags: 0

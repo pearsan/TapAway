@@ -85,7 +85,7 @@ public class TapCube : MonoBehaviour
                 if (!firstLoopDone)
                 {
                     firstLoopDone = true;
-                    if (hit.collider.gameObject.GetComponent<TapCube>()._canDoMove) 
+                    if (hit.collider.gameObject.GetComponent<TapCube>()._canDoMove && hit.distance < 1) 
                         hit.collider.gameObject.GetComponent<TapCube>().TryMoveShort(direction);
                 }
             }).OnComplete(() => _canDoMove = true);

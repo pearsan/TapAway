@@ -384,10 +384,7 @@ public class CubeGenerator : MonoBehaviour
                 if (cube.IsBlock())
                 {
                     cube.transform.localRotation = RandomRotation();
-                    if (!cube.IsBlock())
-                    {
-                        cube.HiddenCube();
-                    }
+
                 }
             }
         }

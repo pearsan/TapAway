@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public abstract class TabContentGUIBehaviour : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] protected GameObject ShopItemPrefab;
+    [Space(10f)]
+    [SerializeField] protected Sprite AdsLockLayer;
+    [SerializeField] protected Sprite GoldLockLayer;
+
 
     public List<(GameObject, ShopItemSO)> ShopItems;
 
@@ -28,7 +33,18 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
     {
         foreach (var item in ShopItems)
         {
-            item.Item1.transform.GetChild(0).GetComponent<Image>().color = (item.Item2).IsUnlock ? new Color(1, 1, 1, 0) : new Color(0, 0, 0, 0.75f);
+            item.Item1.transform.GetChild(0).GetComponent<Image>().color = (item.Item2).IsUnlock ? new Color(1, 1, 1, 0) : new Color(1, 1, 1, 1f);
+
+            if (item.Item1.GetComponentInChildren<TMP_Text>() != null)
+            {
+                if (item.Item2.IsUnlock || item.Item2.CanUnlockByAds == false)
+                    item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(false);
+                else
+                {
+                    item.Item1.GetComponentInChildren<TMP_Text>().gameObject.SetActive(true);
+                    item.Item1.GetComponentInChildren<TMP_Text>().text = $"{item.Item2.AdsWatched}/{item.Item2.AdsToUnlock}";
+                }
+            }
         }
     }    
 

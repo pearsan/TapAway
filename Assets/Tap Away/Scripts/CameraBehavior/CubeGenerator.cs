@@ -277,7 +277,8 @@ public class CubeGenerator : MonoBehaviour
             MoveAnimChild(cube.transform);
         }
     }
-    private void LoadJson()
+
+    public void LoadJson()
     {
         bool hasCubes = false;
         /*

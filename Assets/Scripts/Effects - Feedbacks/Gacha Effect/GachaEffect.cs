@@ -5,43 +5,37 @@ using DG.Tweening;
 
 public class GachaEffect : MonoBehaviour
 {
-    [SerializeField] private CameraBehaviour gachaCubeRotater;
+    [Header("Gacha Animation Prefab")]
+    [SerializeField] private GameObject AnimationPrefab;
 
-    [Header("Gacha Materials")]
-    [SerializeField] private Material FlashMaterial;
+    [Header("Camera Behaviours")]
+    //Control camera behaviours by set active game object contain them
+    [SerializeField] private GameObject MainCamera;
 
-    private GameObject _obtainedObject;
+    private GameObject _animationCamera;
+    private MeshRenderer _animationCubeMesh;
+    private MeshFilter _animationCubeMeshFilter;
 
-    public void OnGachaEffect (ShopItemSO obtainedObject)
+    public IEnumerator OnTriggerGachaAnimation (ShopItemSO obtainedObject)
     {
-        if (_obtainedObject != null)
-            Destroy(_obtainedObject);
+        MainCamera.SetActive(false);
 
-        gachaCubeRotater.enabled = true;
+        if (_animationCamera != null)
+            Destroy(_animationCamera);
 
-        _obtainedObject = Instantiate<GameObject>(obtainedObject.ShopItemPrefab);
-        StartCoroutine(OnGachaAnimation());
+        _animationCamera = Instantiate<GameObject>(AnimationPrefab);
+        _animationCubeMesh = _animationCamera.transform.Find("Box").GetComponentInChildren<MeshRenderer>();
+        _animationCubeMeshFilter = _animationCamera.transform.Find("Box").GetComponentInChildren<MeshFilter>();
+
+        _animationCubeMesh.material = obtainedObject.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        _animationCubeMeshFilter.mesh = obtainedObject.ShopItemPrefab.GetComponentInChildren<MeshFilter>().sharedMesh;
+
+        yield return new WaitForSeconds(5f);
     }
 
     public void OnExitGachaAnimation()
     {
-        Destroy(_obtainedObject);
-        gachaCubeRotater.SetTargert(null);
-        gachaCubeRotater.enabled = false;
-    }    
-
-    private IEnumerator OnGachaAnimation()
-    {
-        Material temp = _obtainedObject.GetComponentInChildren<MeshRenderer>().material;
-        Vector3 tempScale = _obtainedObject.transform.localScale;
-
-        _obtainedObject.GetComponentInChildren<MeshRenderer>().material = FlashMaterial;
-        _obtainedObject.transform.localScale = new Vector3(200, 200, 200);
-        _obtainedObject.transform.DOMoveX(_obtainedObject.transform.position.x - 0.1f, 0f);
-        _obtainedObject.transform.DOScale(tempScale, 0.3f).SetEase(Ease.InSine);
-        yield return new WaitForSeconds(0.6f);
-        _obtainedObject.GetComponentInChildren<MeshRenderer>().material = temp;
-        _obtainedObject.transform.DOMoveX(_obtainedObject.transform.position.x + 0.1f, 0.5f);
-        gachaCubeRotater.SetTargert(_obtainedObject.transform);
+        Destroy(_animationCamera);
+        MainCamera.SetActive(true);
     }    
 }

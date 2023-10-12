@@ -105,7 +105,7 @@ public class GameUIManager : MonoBehaviour
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {
         SetCanvasGroupValue(0, 0, 1);
-        GachaLayer.OnGachaEffect(target);
+        StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
     }    
     #endregion
 }

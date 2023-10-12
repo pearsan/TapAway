@@ -48,6 +48,7 @@ public class GameplayManager : MonoBehaviour
         cameraBehaviour.SetTargert(_currentPuzzle);
         Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+        _moveAttemps = _currentPuzzle.childCount + 2;
     }
     
     void Start()

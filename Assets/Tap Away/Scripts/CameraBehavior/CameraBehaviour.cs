@@ -236,10 +236,11 @@ public class CameraBehaviour : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
+            
             if (hit.collider != null)
             {
                 TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
-                if (tapCube != null && !tapCube.IsBlock())
+                if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
                     GameplayManager.Instance.MinusMoveAttemps();
                     if (!tapCube.IsBlock())

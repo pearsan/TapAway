@@ -132,7 +132,6 @@ public class GameUIManager : MonoBehaviour
     private void OnTriggerExitWinPanel()
     {
         WinPanel.SetActive(false);
-        GameplayManager.Instance.ResetMoveAttemps();
     }    
     #endregion
 

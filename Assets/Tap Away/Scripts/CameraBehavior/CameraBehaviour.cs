@@ -293,7 +293,7 @@ public class CameraBehaviour : MonoBehaviour
     public void SetTargert(Transform targert)
     {
         _targert = targert;
-    }    
+    }
 }
 
 

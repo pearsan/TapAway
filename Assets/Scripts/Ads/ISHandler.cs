@@ -152,6 +152,7 @@ public class ISHandler : MonoBehaviour
     private void BannerOnAdLoadFailedEvent(IronSourceError ironSourceError)
     {
         LoadBanner();
+        ISHandler.Instance.ShowBanner();
     }
 
     // Invoked when end user clicks on the banner ad

@@ -41,15 +41,26 @@ public class GameplayManager : MonoBehaviour
         cameraBehaviour.SetTargert(_currentPuzzel);
         Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
         Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
-
     }
 
     private void Update()
     {
         if (_currentPuzzel != null && _currentPuzzel.childCount == 0)
         {
-            _currentStage++;
-            HandlePlayButton();
+            GameUIManager.Instance.OnTriggerEnterWinPanel();
         }
     }
+
+    #region Stage behaviours
+    public int GetCurrentStage()
+    {
+        return _currentStage;
+    }
+
+    public void OnTriggerNextStage()
+    {
+        _currentStage++;
+        HandlePlayButton();
+    }    
+    #endregion
 }

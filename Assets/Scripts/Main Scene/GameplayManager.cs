@@ -46,11 +46,17 @@ public class GameplayManager : MonoBehaviour
         _currentPuzzle.GetComponent<CubeGenerator>().SetLevel(jsonFile[_currentStage]);
         _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel());
         cameraBehaviour.SetTargert(_currentPuzzle);
-        Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
-        _moveAttemps = _currentPuzzle.childCount + 2;
+        if (Camera.main != null)
+        {
+            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+        }
+
+        SetMoveAttemps();
     }
-    
+
+
+
     void Start()
     {
         string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
@@ -67,12 +73,16 @@ public class GameplayManager : MonoBehaviour
             _levelInProgress = new TextAsset(json);
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
+            _moveAttemps = loadedData.move;
             _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
             
             cameraBehaviour.SetTargert(_currentPuzzle);
-            
-            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+
+            if (Camera.main != null)
+            {
+                Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+                Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+            }
         }
         else
         {
@@ -97,6 +107,7 @@ public class GameplayManager : MonoBehaviour
         // Create a dictionary to hold the level and transform data
         Dictionary<string, object> jsonData = new Dictionary<string, object>();
         jsonData["level"] = _currentStage;
+        jsonData["move"] = _moveAttemps;
         jsonData["transforms"] = transformDataList;
 
         // Convert the list of transforms to JSON.
@@ -133,6 +144,7 @@ public class GameplayManager : MonoBehaviour
     public class LoadedData
     {
         public int level;
+        public int move;
         public List<TransformData> transforms;
     }
     
@@ -187,6 +199,13 @@ public class GameplayManager : MonoBehaviour
     public void ResetMoveAttemps()
     {
         _moveAttemps = 10;
+    }
+    
+    private void SetMoveAttemps()
+    {
+        var childCount = _currentPuzzle.childCount;
+        _moveAttemps = Mathf.RoundToInt(childCount + childCount * 10 / 100);
+        Debug.Log(childCount * 10 / 100);
     }
 
     public bool CheckIfLose()

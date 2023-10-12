@@ -22,6 +22,9 @@ public class GameUIManager : MonoBehaviour
 
     [Header("Level feedbacks")]
     [SerializeField] private List<TMP_Text> LevelText;
+
+    [Header("Texts")]
+    [SerializeField] private TMP_Text MoveAttemptText;
     private const float TIME_TO_FEEDBACK = 0.5f;
 
     [Header("Panels")]

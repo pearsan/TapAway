@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -18,7 +19,13 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private Transform GoldParentTransform;
     [SerializeField] private RectTransform StartPosition;
     [SerializeField] private RectTransform EndPosition;
+
+    [Header("Level feedbacks")]
+    [SerializeField] private List<TMP_Text> LevelText;
     private const float TIME_TO_FEEDBACK = 0.5f;
+
+    [Header("Panels")]
+    [SerializeField] private GameObject WinPanel;
 
     private void Awake()
     {
@@ -36,6 +43,11 @@ public class GameUIManager : MonoBehaviour
         GachaLayer.GetComponent<CanvasGroup>().alpha = 0;
 
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
+    }
+
+    private void Update()
+    {
+        UpdateTextLevel();
     }
 
     #region Button behaviours
@@ -60,6 +72,20 @@ public class GameUIManager : MonoBehaviour
         SetCanvasGroupValue(0,1,0);
         GachaLayer.OnExitGachaAnimation();
     }
+
+    public void OnNextLevelWithAdsButton()
+    {
+        ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
+            () => { OnAddGoldFeedbackAnimation(800); GameplayManager.Instance.OnTriggerNextStage(); OnTriggerExitWinPanel(); }
+            , () => { });
+    }    
+
+    public void OnNextLevelWithoutAdsButton()
+    {
+        OnAddGoldFeedbackAnimation(400);
+        GameplayManager.Instance.OnTriggerNextStage();
+        OnTriggerExitWinPanel();
+    }    
     #endregion
 
     #region Script behaviours
@@ -72,11 +98,31 @@ public class GameUIManager : MonoBehaviour
         MainLayer.GetComponent<CanvasGroup>().blocksRaycasts = (MainLayerValue == 1) ? true : false;
         ShopLayer.GetComponent<CanvasGroup>().blocksRaycasts = (ShopLayerValue == 1) ? true : false;
         GachaLayer.GetComponent<CanvasGroup>().blocksRaycasts = (GachaLayerValue == 1) ? true : false;
+    }
+    #endregion
+
+    #region UI Behaviours
+    private void UpdateTextLevel()
+    {
+        foreach(var text in LevelText)
+        {
+            text.text = "Level " + (GameplayManager.Instance.GetCurrentStage() + 1);
+        }    
+    }
+
+    public void OnTriggerEnterWinPanel()
+    {
+        WinPanel.SetActive(true);
+    }
+
+    private void OnTriggerExitWinPanel()
+    {
+        WinPanel.SetActive(false);
     }    
     #endregion
 
     #region Feedback Effect Behaviours
-    public void OnAddGoldFeedbackAnimation()
+    public void OnAddGoldFeedbackAnimation(int goldAddValue)
     {
         for (int i = 1; i <= 4; i++)
         {
@@ -88,19 +134,19 @@ public class GameUIManager : MonoBehaviour
                 .OnComplete(()=> {
                     StartCoroutine(gold.GetComponent<SpriteTrail>().SpawnSpriteTrail());
                     gold.GetComponent<RectTransform>().DOAnchorPos(EndPosition.anchoredPosition, 0.5f)
-                .OnComplete(() => { StartCoroutine(AddGoldAnimation()); Destroy(gold); }) ; 
+                .OnComplete(() => { StartCoroutine(AddGoldAnimation(goldAddValue)); Destroy(gold); }) ; 
                 });
         }
     }
     
-    private IEnumerator AddGoldAnimation()
+    private IEnumerator AddGoldAnimation(int goldAddValue)
     {
-        for(int i = 1; i <= GoldManager.Instance.GOLD_EARN_EACH_ADS / 4;i++)
+        for(int i = 1; i <= goldAddValue / 4;i++)
         {
             GoldManager.Instance.ModifyGoldValue(1);
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.01f * 200 / goldAddValue);
         }    
-    }    
+    }
 
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {

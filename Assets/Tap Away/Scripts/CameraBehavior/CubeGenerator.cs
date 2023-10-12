@@ -34,6 +34,9 @@ public class CubeGenerator : MonoBehaviour
     [SerializeField] private PurchaseSkinSO defaultSkinSo;
     [SerializeField] private bool isHollow;
     // ReSharper disable Unity.PerformanceAnalysis
+
+    #region Level Editor
+
     public void Create3DShapeLevel()
     {
         Generate3DShapeLevel();
@@ -44,89 +47,7 @@ public class CubeGenerator : MonoBehaviour
         GenerateGridLevel();
     }
     
-    public void ResetGame()
-    {
-        LoadJson();
-    }
-    
-    //Call the function to make the puzzle Sovable
-    private IEnumerator SolveGame()
-    {
-        yield return new WaitForSeconds(0.05f);
-        Autoplay();
-    }
-
-    // Test and make the puzzle solvable
-    private void Autoplay()
-    {
-        bool canPlay = true;
-        bool playable = true;
-        while (canPlay)
-        {
-            canPlay = false;
-
-            foreach (var cube in _cubes)
-            {
-                if (!cube.IsHidden())
-                {
-                    if (!cube.IsBlock())
-                    {
-                        playable = false;
-                        canPlay = true;
-                        cube.HiddenCube();
-                    }
-                }
-            }
-            
-        }
-        
-        if (!playable)
-        {
-            /*
-            Debug.Log("cant be play");
-            */
-            Reshuffle();
-            Autoplay();
-        }
-        else
-        {
-            /*
-            Debug.Log("playable");
-            */
-            ShowCubes();
-        }
-        
-    }
-
-    public void Reshuffle()
-    {
-        foreach (var cube in _cubes)
-        {             
-            if (!cube.IsHidden())
-            {
-                if (cube.IsBlock())
-                {
-                    cube.transform.localRotation = RandomRotation();
-                    if (!cube.IsBlock())
-                    {
-                        cube.HiddenCube();
-                    }
-                }
-            }
-        }
-    }
-        
-    private Quaternion RandomRotation()
-    {
-        Quaternion randomRotation = Quaternion.Euler(
-            Random.Range(0, 4) * 90f,
-            Random.Range(0, 4) * 90f,
-            Random.Range(0, 4) * 90f
-        );
-        return randomRotation;
-    }
-    
-    // ReSharper disable Unity.PerformanceAnalysis
+        // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateGridLevel()
     {
         SetSkin(cubePrefabs);
@@ -220,6 +141,14 @@ public class CubeGenerator : MonoBehaviour
         StartCoroutine(SolveGame());
     }
 
+    #endregion
+    
+    
+    public void ResetGame()
+    {
+        StartCoroutine(SetupLevel());
+    }
+    
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
     {
         var temp = Physics.queriesHitBackfaces;
@@ -257,14 +186,6 @@ public class CubeGenerator : MonoBehaviour
         }
 
     }
-
-    private void ShowCubes()
-    {
-        foreach (var cube in _cubes)
-        {
-            cube.ShowCube();
-        }
-    }
     
     bool IsOnMeshCollider(Collider collider, Vector3 point)
     {
@@ -287,21 +208,7 @@ public class CubeGenerator : MonoBehaviour
         return false;
     }
 
-    private void SetSkin(GameObject cube)
-    {
-        if (currentSkinSo == null)
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-        else
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-    }
+
     
     public void ClearCube()
     {
@@ -338,26 +245,15 @@ public class CubeGenerator : MonoBehaviour
         Debug.Log("saved");
     }
 #endif
-    // ReSharper disable Unity.PerformanceAnalysis
-    public void LoadJson()
+
+    #region Setup Level
+
+    public IEnumerator SetupLevel()
     {
-        SetSkin(cubePrefabs);
-        _cubes = new List<TapCube>();
-        ClearCube();
-        List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
-        int i = 0;
-        foreach (Vector3 position in positions)
-        {
-            GameObject cube = Instantiate(this.cubePrefabs);
-            cube.name = "" + i;
-            _cubes.Add(cube.gameObject.GetComponent<TapCube>());
-            cube.transform.SetParent(transform);
-            cube.transform.localRotation = RandomRotation();
-            cube.transform.localPosition = position;
-            i++;
-        }
-        Debug.Log("current cubes: " + i);
-        StartCoroutine(SolveGame());
+        LoadJson();
+        yield return new WaitForSeconds(1f);
+        Autoplay();
+
         transform.position = new Vector3(0, 0, 0);
         
         // Get the total bounds of all the children objects
@@ -381,6 +277,165 @@ public class CubeGenerator : MonoBehaviour
             MoveAnimChild(cube.transform);
         }
     }
+
+    public void LoadJson()
+    {
+        bool hasCubes = false;
+        /*
+        SetSkin(cubePrefabs);
+        */
+        _cubes = new List<TapCube>();
+        ClearCube();
+        List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
+        int i = 0;
+        foreach (Vector3 position in positions)
+        {
+            GameObject cube = Instantiate(this.cubePrefabs);
+            cube.name = "" + i;
+            _cubes.Add(cube.gameObject.GetComponent<TapCube>());
+            cube.transform.SetParent(transform);
+            cube.transform.localRotation = RandomRotation();
+            cube.transform.localPosition = position;
+            i++;
+        }
+        Debug.Log("current cubes: " + i);
+        hasCubes = true;
+    }
+    
+    public void LoadCurrentLevel(TextAsset _levelInProgress)
+    {
+        _cubes = new List<TapCube>();
+        ClearCube();
+        
+        GameplayManager.LoadedData loadedData = JsonConvert.DeserializeObject<GameplayManager.LoadedData>(_levelInProgress.text);
+
+        // Apply the transform for each object.
+        for (int i = 0; i < loadedData.transforms.Count; i++)
+        {
+            GameObject cube = Instantiate(this.cubePrefabs);
+            cube.transform.SetParent(transform);
+            // Getting the values
+            cube.transform.localPosition = loadedData.transforms[i].position.ToVector();
+            cube.transform.localRotation = Quaternion.Euler(loadedData.transforms[i].rotation.ToVector());
+            _cubes.Add(cube.GetComponent<TapCube>());
+        }
+        ShowCubes();
+        foreach (var cube in _cubes)
+        {
+            MoveChild(cube.transform);
+        }
+        foreach (var cube in _cubes)
+        {
+            MoveAnimChild(cube.transform);
+        }
+    }
+    
+    private IEnumerator SolveGame()
+    {
+        yield return new WaitForSeconds(0.05f);
+        Autoplay();
+    }
+
+    // Test and make the puzzle solvable
+    private void Autoplay()
+    {
+        
+        bool playable = AutoCheck();
+
+        if (!playable)
+        {
+            Reshuffle();
+            Autoplay();
+        }
+        else
+        {
+            ShowCubes();
+        }
+    }
+
+    private bool AutoCheck()
+    {
+        bool rePlay = true;
+        bool playable = true;
+        while (rePlay)
+        {
+            rePlay = false;
+
+            foreach (var cube in _cubes)
+            {
+                if (!cube.IsHidden())
+                {
+                    if (!cube.IsBlock())
+                    {
+                        playable = false;
+                        rePlay = true;
+                        
+                        cube.HiddenCube();
+                    }
+                }
+            }
+        }
+
+        return playable;
+    }
+
+    public void Reshuffle()
+    {
+        foreach (var cube in _cubes)
+        {             
+            if (!cube.IsHidden())
+            {
+                if (cube.IsBlock())
+                {
+                    cube.transform.localRotation = RandomRotation();
+                    if (!cube.IsBlock())
+                    {
+                        cube.HiddenCube();
+                    }
+                }
+            }
+        }
+    }
+        
+    private Quaternion RandomRotation()
+    {
+        Quaternion randomRotation = Quaternion.Euler(
+            Random.Range(0, 4) * 90f,
+            Random.Range(0, 4) * 90f,
+            Random.Range(0, 4) * 90f
+        );
+        return randomRotation;
+    }
+    
+    private void SetSkin(GameObject cube)
+    {
+        if (currentSkinSo == null)
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        else
+        {
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
+        }
+    }
+    
+    private void ShowCubes()
+    {
+        foreach (var cube in _cubes)
+        {
+            cube.ShowCube();
+            SetSkin(cube.gameObject);
+        }
+    }
+    
+    #endregion
+    
+    
+    
     
     private void MoveChild(Transform cube)
     {
@@ -390,7 +445,7 @@ public class CubeGenerator : MonoBehaviour
         direction.Normalize(); // Make the direction a unit vector
 
         // Move the child a certain distance along this line
-         cube.GetChild(0).position = cube.position + direction * distance;
+        cube.GetChild(0).position = cube.position + direction * distance;
     }
     
     private void MoveAnimChild(Transform cube)

@@ -43,7 +43,7 @@ public class CubeGeneratorEditor : Editor
         
         if (GUILayout.Button("LoadLevel"))
         {
-            _generator.LoadJson();
+            _generator.StartCoroutine(_generator.SetupLevel());
         }
     }
 }

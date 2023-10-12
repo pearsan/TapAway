@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &94567013006372481
 Transform:
   m_ObjectHideFlags: 0
@@ -34394,23 +34394,6 @@ MonoBehaviour:
   parent: {fileID: 0}
   child: {fileID: 8664533911761528409, guid: fac9329531d52e04095b6a78bd548c68, type: 3}
   editCube: 0
-  test:
-    m_Name: Test
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 90473617-94e7-4fc5-a9d7-d3de135c782a
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings:
-    - m_Name: 
-      m_Id: c1b07b64-5d9a-45de-9213-363043e3d225
-      m_Path: <Mouse>/middleButton
-      m_Interactions: 
-      m_Processors: 
-      m_Groups: 
-      m_Action: Test
-      m_Flags: 0
-    m_Flags: 0
 --- !u!1 &5313906817469668243
 GameObject:
   m_ObjectHideFlags: 0

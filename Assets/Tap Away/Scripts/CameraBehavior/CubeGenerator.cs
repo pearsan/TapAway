@@ -280,8 +280,6 @@ public class CubeGenerator : MonoBehaviour
 
     public void LoadJson()
     {
-        bool hasCubes = false;
-
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
@@ -297,7 +295,7 @@ public class CubeGenerator : MonoBehaviour
             i++;
         }
         Debug.Log("current cubes: " + i);
-        hasCubes = true;
+        
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)

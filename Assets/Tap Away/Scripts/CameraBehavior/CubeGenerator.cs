@@ -281,9 +281,7 @@ public class CubeGenerator : MonoBehaviour
     public void LoadJson()
     {
         bool hasCubes = false;
-        /*
-        SetSkin(cubePrefabs);
-        */
+
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());

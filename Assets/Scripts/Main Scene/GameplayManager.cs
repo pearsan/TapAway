@@ -14,6 +14,7 @@ public class GameplayManager : MonoBehaviour
     private int _currentStage = 0;
     private Transform _currentPuzzle;
     private TextAsset _levelInProgress;
+    [SerializeField] private int _moveAttemps = 10;
 
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
@@ -170,6 +171,31 @@ public class GameplayManager : MonoBehaviour
             }
             GameUIManager.Instance.OnTriggerEnterWinPanel();
         }
+    }
+
+    public int GetMoveAttemps()
+    {
+        return _moveAttemps;
+    }
+
+    public void MinusMoveAttemps()
+    {
+        _moveAttemps--;
+    }
+
+    public void ResetMoveAttemps()
+    {
+        _moveAttemps = 10;
+    }
+
+    public bool CheckIfLose()
+    {
+        if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     #region Stage behaviours

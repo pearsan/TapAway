@@ -51,6 +51,7 @@ public class GameUIManager : MonoBehaviour
     private void Update()
     {
         UpdateTextLevel();
+        UpdateMove();
     }
 
     #region Button behaviours
@@ -112,15 +113,26 @@ public class GameUIManager : MonoBehaviour
             text.text = "Level " + (GameplayManager.Instance.GetCurrentStage() + 1);
         }    
     }
+    
+    private void UpdateMove()
+    {
+        MoveAttemptText.text = "Move:  " + (GameplayManager.Instance.GetMoveAttemps());
+    }
 
     public void OnTriggerEnterWinPanel()
     {
         WinPanel.SetActive(true);
     }
+    
+    public void OnTriggerEnterLosePanel()
+    {
+        Debug.Log("loser!");
+    }
 
     private void OnTriggerExitWinPanel()
     {
         WinPanel.SetActive(false);
+        GameplayManager.Instance.ResetMoveAttemps();
     }    
     #endregion
 

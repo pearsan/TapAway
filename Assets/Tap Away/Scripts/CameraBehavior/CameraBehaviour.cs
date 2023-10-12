@@ -240,15 +240,23 @@ public class CameraBehaviour : MonoBehaviour
             {
                 TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
                 if (tapCube != null && !tapCube.IsBlock())
-                { 
-                    SoundManager.Instance.TapCube();
-                    tapCube.SetMoving();
-                }
-                else if (tapCube.IsBlock())
-                { 
-                    tapCube.TryMove();
-                }
+                {
+                    GameplayManager.Instance.MinusMoveAttemps();
+                    if (!tapCube.IsBlock())
+                    {
+                        SoundManager.Instance.TapCube();
+                        tapCube.SetMoving();
+                    }
+                    else
+                    {
+                        tapCube.TryMove();
+                    }
 
+                    if (GameplayManager.Instance.CheckIfLose())
+                    {
+                        GameUIManager.Instance.OnTriggerEnterLosePanel();
+                    }
+                }
             }
         }
     }

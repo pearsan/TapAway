@@ -1762,6 +1762,10 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2981336032836722024, guid: 548d0100e15299d44a719cff1d0fa791, type: 3}
+      propertyPath: m_Name
+      value: Game Background
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 548d0100e15299d44a719cff1d0fa791, type: 3}
 --- !u!1 &476415754
@@ -3756,6 +3760,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 639c072c791f62040af683fba6f601c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moveAttemps: 10
+  playButton: {fileID: 415592796}
   cubeGenerator: {fileID: 8051748942213060918, guid: 002b971d1baf6dc40af69addd9277a62, type: 3}
   jsonFile:
   - {fileID: 4900000, guid: 2f7d5ce79e6f13044a0000fc15c5aaaa, type: 3}

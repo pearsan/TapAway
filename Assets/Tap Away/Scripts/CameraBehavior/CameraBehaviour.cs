@@ -236,19 +236,28 @@ public class CameraBehaviour : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
+            
             if (hit.collider != null)
             {
                 TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
-                if (tapCube != null && !tapCube.IsBlock())
-                { 
-                    SoundManager.Instance.TapCube();
-                    tapCube.SetMoving();
-                }
-                else if (tapCube.IsBlock())
-                { 
-                    tapCube.TryMove();
-                }
+                if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
+                {
+                    GameplayManager.Instance.MinusMoveAttemps();
+                    if (!tapCube.IsBlock())
+                    {
+                        SoundManager.Instance.TapCube();
+                        tapCube.SetMoving();
+                    }
+                    else
+                    {
+                        tapCube.TryMove();
+                    }
 
+                    if (GameplayManager.Instance.CheckIfLose())
+                    {
+                        GameUIManager.Instance.OnTriggerEnterLosePanel();
+                    }
+                }
             }
         }
     }
@@ -293,7 +302,7 @@ public class CameraBehaviour : MonoBehaviour
     public void SetTargert(Transform targert)
     {
         _targert = targert;
-    }    
+    }
 }
 
 

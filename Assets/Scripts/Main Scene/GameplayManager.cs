@@ -134,7 +134,9 @@ public class GameplayManager : MonoBehaviour
         
         string path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
         File.WriteAllText(path, jsonString);
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
+#endif
     }
     
     void OnApplicationQuit()
@@ -290,6 +292,7 @@ public class GameplayManager : MonoBehaviour
 
     public void EnableTarget()
     {
+
         _currentPuzzle.gameObject.SetActive(true);
         cameraBehaviour.SetTargert(_currentPuzzle);
     }

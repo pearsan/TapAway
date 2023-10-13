@@ -33,30 +33,7 @@ public class GameplayManager : MonoBehaviour
         
         cameraBehaviour = gameObject.GetComponent<CameraBehaviour>();
     }
-
-    public void HandlePlayButton()
-    {
-        if (_currentPuzzle != null)
-        {
-            Destroy(_currentPuzzle.gameObject);
-        }
-        GameObject level = GameObject.Instantiate(cubeGenerator);
-        level.transform.position = Vector3.zero;
-        _currentPuzzle = level.transform;
-        _currentPuzzle.GetComponent<CubeGenerator>().SetLevel(jsonFile[_currentStage]);
-        _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel());
-        cameraBehaviour.SetTargert(_currentPuzzle);
-        if (Camera.main != null)
-        {
-            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
-        }
-
-        SetMoveAttemps();
-    }
-
-
-
+    
     void Start()
     {
         string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
@@ -84,13 +61,32 @@ public class GameplayManager : MonoBehaviour
                 Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
             }
         }
-        else
-        {
-
-        }
     }
-    
-    public void ExportCurrentLevel()
+
+    public void HandlePlayButton()
+    {
+        if (_currentPuzzle != null)
+        {
+            Destroy(_currentPuzzle.gameObject);
+        }
+        GameObject level = GameObject.Instantiate(cubeGenerator);
+        level.transform.position = Vector3.zero;
+        _currentPuzzle = level.transform;
+        _currentPuzzle.GetComponent<CubeGenerator>().SetLevel(jsonFile[_currentStage]);
+        _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel());
+        cameraBehaviour.SetTargert(_currentPuzzle);
+        if (Camera.main != null)
+        {
+            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+        }
+
+        SetDefaultMoveAttemps();
+    }
+
+    #region DataHandle
+
+     public void ExportCurrentLevel()
     {
         if (_currentPuzzle == null || _currentPuzzle.childCount == 0)
             return;
@@ -130,8 +126,6 @@ public class GameplayManager : MonoBehaviour
             ExportCurrentLevel();
         }
     }
-
-
     
     [System.Serializable]
     public class TransformData
@@ -169,6 +163,10 @@ public class GameplayManager : MonoBehaviour
             return new Vector3(x, y, z);
         }
     }
+
+    #endregion
+    
+   
     
     public int GetMoveAttemps()
     {
@@ -185,13 +183,14 @@ public class GameplayManager : MonoBehaviour
         _moveAttemps = 10;
     }
     
-    private void SetMoveAttemps()
+    private void SetDefaultMoveAttemps()
     {
-        var childCount = _currentPuzzle.childCount;
-        _moveAttemps = Mathf.RoundToInt(childCount + childCount * 10 / 100);
+        var childCount = (float)_currentPuzzle.childCount;
+        _moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
         Debug.Log(childCount * 10 / 100);
     }
 
+    #region Game State
     public bool CheckIfLose()
     {
         if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
@@ -224,6 +223,7 @@ public class GameplayManager : MonoBehaviour
         }
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }
+    #endregion
 
     #region Stage behaviours
     public int GetCurrentStage()

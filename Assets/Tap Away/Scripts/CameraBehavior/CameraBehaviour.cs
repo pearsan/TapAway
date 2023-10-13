@@ -87,8 +87,7 @@ public class CameraBehaviour : MonoBehaviour
                 return;
             }
             _rotation = Vector2.zero;
-            if (cameraEnable)
-                StartCoroutine(Rotate());
+            StartCoroutine(Rotate());
         };
         pressed.canceled += _ => { _rotateAllowed = false; };
         axis.performed += context =>
@@ -105,7 +104,7 @@ public class CameraBehaviour : MonoBehaviour
     private IEnumerator Rotate()
     {
         _rotateAllowed = true;
-        while(_rotateAllowed && _targert != null)
+        while(_rotateAllowed && _targert != null && cameraEnable)
         {
 
             _rotation *= speedRotate;

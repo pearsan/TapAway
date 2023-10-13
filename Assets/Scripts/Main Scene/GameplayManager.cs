@@ -14,13 +14,11 @@ public class GameplayManager : MonoBehaviour
     private int _currentStage = 0;
     private Transform _currentPuzzle;
     private TextAsset _levelInProgress;
-    private GameState _gameState;
-    private enum GameState
-    {
-        WIN,
-        LOSE,
-        PLAYING
-    }
+    private string _gameState;
+
+    public const string WIN_STATE = "WIN";
+    public const string LOSE_STATE = "LOSE";
+    public const string PLAYING_STATE = "PLAYING";
     
     [SerializeField] private int _moveAttemps = 10;
 
@@ -42,14 +40,14 @@ public class GameplayManager : MonoBehaviour
         cameraBehaviour = gameObject.GetComponent<CameraBehaviour>();
     }
     
-    void Start()
+    private void Start()
     {
         string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
         string jsonFilePath = Path.Combine(folderPath, "current.json");
 
         if (File.Exists(jsonFilePath))
         {
-            _gameState = GameState.PLAYING;
+            _gameState = PLAYING_STATE;
             playButton.SetActive(false);
             
             GameObject level = GameObject.Instantiate(cubeGenerator);
@@ -60,14 +58,28 @@ public class GameplayManager : MonoBehaviour
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
             _moveAttemps = loadedData.move;
-            _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
+            string loadedState = loadedData.state;
             
-            cameraBehaviour.SetTargert(_currentPuzzle);
 
-            if (Camera.main != null)
+            switch (loadedState)
             {
-                Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-                Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+                case PLAYING_STATE:
+                    _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
+                    cameraBehaviour.SetTargert(_currentPuzzle);
+
+                    if (Camera.main != null)
+                    {
+                        Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+                    }
+                    break;
+                case LOSE_STATE:
+                    HandlePlayButton();
+                    break;
+                case WIN_STATE:
+                    _currentStage++;
+                    HandlePlayButton();
+                    break;
             }
         }
     }
@@ -79,7 +91,7 @@ public class GameplayManager : MonoBehaviour
             Destroy(_currentPuzzle.gameObject);
         }
 
-        _gameState = GameState.PLAYING;
+        _gameState = PLAYING_STATE;
         GameObject level = GameObject.Instantiate(cubeGenerator);
         level.transform.position = Vector3.zero;
         _currentPuzzle = level.transform;
@@ -99,8 +111,6 @@ public class GameplayManager : MonoBehaviour
 
      public void ExportCurrentLevel()
     {
-        if (_currentPuzzle == null || _currentPuzzle.childCount == 0)
-            return;
         List<TransformData> transformDataList = new List<TransformData>();
         // Add the position and rotation of each game object to the list.
         foreach (Transform child in _currentPuzzle.transform)
@@ -113,7 +123,9 @@ public class GameplayManager : MonoBehaviour
         }
         // Create a dictionary to hold the level and transform data
         Dictionary<string, object> jsonData = new Dictionary<string, object>();
+        Debug.Log(_gameState);
         jsonData["level"] = _currentStage;
+        jsonData["state"] = _gameState;
         jsonData["move"] = _moveAttemps;
         jsonData["transforms"] = transformDataList;
 
@@ -127,16 +139,14 @@ public class GameplayManager : MonoBehaviour
     
     void OnApplicationQuit()
     {
-        if (_gameState == GameState.PLAYING)
-            ExportCurrentLevel();
+        ExportCurrentLevel();
     }
     
     void OnApplicationPause(bool pauseStatus)
     {
         if (pauseStatus)
         {
-            if (_gameState == GameState.PLAYING)
-                ExportCurrentLevel();
+            ExportCurrentLevel();
         }
     }
     
@@ -151,6 +161,7 @@ public class GameplayManager : MonoBehaviour
     public class LoadedData
     {
         public int level;
+        public string state;
         public int move;
         public List<TransformData> transforms;
     }
@@ -179,8 +190,6 @@ public class GameplayManager : MonoBehaviour
 
     #endregion
     
-   
-    
     public int GetMoveAttemps()
     {
         return _moveAttemps;
@@ -193,9 +202,15 @@ public class GameplayManager : MonoBehaviour
 
     public void SetBonusMovesAttemps()
     {
-        _gameState = GameState.PLAYING;
+        _gameState = PLAYING_STATE;
         var childCount = (float)JsonConvert.DeserializeObject<List<Vector3>>(jsonFile[_currentStage].text, new CubeGenerator.Vector3Converter()).Count;
         _moveAttemps = Mathf.CeilToInt(childCount * 10 / 100);
+    }
+    
+    public int GetBonusMovesAttemps()
+    {
+        var childCount = (float)JsonConvert.DeserializeObject<List<Vector3>>(jsonFile[_currentStage].text, new CubeGenerator.Vector3Converter()).Count;
+        return Mathf.CeilToInt(childCount * 10 / 100);;
     }
     
     private void SetDefaultMoveAttemps()
@@ -210,7 +225,7 @@ public class GameplayManager : MonoBehaviour
     {
         if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
         {
-            _gameState = GameState.LOSE;
+            _gameState = LOSE_STATE;
             return true;
         }
 
@@ -221,7 +236,7 @@ public class GameplayManager : MonoBehaviour
     {
         if (_moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
         {
-            _gameState = GameState.WIN;
+            _gameState = WIN_STATE;
             return true;
         }
 
@@ -230,16 +245,22 @@ public class GameplayManager : MonoBehaviour
 
     public void OnTriggerWin()
     {
-        string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
-        string jsonFilePath = Path.Combine(folderPath, "current.json");
-        if (File.Exists(jsonFilePath))
-        {
-            // Delete the file
-            File.Delete(jsonFilePath);
-            AssetDatabase.Refresh();
-        }
+        Debug.Log("win");
+        _gameState = WIN_STATE;
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }
+
+    public void OnTriggerLose()
+    {
+        _gameState = LOSE_STATE;
+        GameUIManager.Instance.OnTriggerEnterLosePanel();
+    }
+
+    public string GetGameState()
+    {
+        return _gameState;
+    }
+    
     #endregion
 
     #region Stage behaviours
@@ -253,5 +274,30 @@ public class GameplayManager : MonoBehaviour
         _currentStage++;
         HandlePlayButton();
     }    
+    #endregion
+
+    #region Camera
+
+    public void Pause()
+    {
+        cameraBehaviour.SetDisable();
+    }
+
+    public void Resume()
+    {
+        cameraBehaviour.SetEnable();
+    }
+
+    public void EnableTarget()
+    {
+        _currentPuzzle.gameObject.SetActive(true);
+        cameraBehaviour.SetTargert(_currentPuzzle);
+    }
+
+    public void DisableTarget()
+    {
+        _currentPuzzle.gameObject.SetActive(false);
+    }
+
     #endregion
 }

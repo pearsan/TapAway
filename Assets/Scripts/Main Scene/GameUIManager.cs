@@ -25,6 +25,7 @@ public class GameUIManager : MonoBehaviour
 
     [Header("Texts")]
     [SerializeField] private TMP_Text MoveAttemptText;
+    [SerializeField] private TMP_Text BonusMoveWithAd;
     private const float TIME_TO_FEEDBACK = 0.5f;
 
     [Header("Panels")]
@@ -59,9 +60,11 @@ public class GameUIManager : MonoBehaviour
     public void OnEnterShopAnimation()
     {
         SetCanvasGroupValue(0, 1, 0);
-
+        
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
         ShopLayer.transform.DOLocalMoveX(0, 0.1f);
+        
+        GameplayManager.Instance.Pause();
     }    
 
     public void OnExitShopAnimation()
@@ -70,12 +73,15 @@ public class GameUIManager : MonoBehaviour
 
         MainLayer.GetComponent<CanvasGroup>().alpha = 1;
         ShopLayer.transform.DOLocalMoveX(1080, 0.1f).OnComplete(() => { ShopLayer.GetComponent<CanvasGroup>().alpha = 0f; });
+        
+        GameplayManager.Instance.Resume();
     }
 
     public void OnExitGachaAnimation()
     {
         SetCanvasGroupValue(0,1,0);
         GachaLayer.OnExitGachaAnimation();
+        GameplayManager.Instance.EnableTarget();
     }
 
     public void OnNextLevelWithAdsButton()
@@ -106,6 +112,7 @@ public class GameUIManager : MonoBehaviour
     public void OnTryAgainWithoutAdsButton()
     {
         OnTriggerExitLosePanel();
+        GameplayManager.Instance.HandlePlayButton();
         Debug.Log("Restart level");
     }    
     #endregion
@@ -151,6 +158,7 @@ public class GameUIManager : MonoBehaviour
     public void OnTriggerEnterLosePanel()
     {
         LosePanel.SetActive(true);
+        BonusMoveWithAd.text = "+" + GameplayManager.Instance.GetBonusMovesAttemps() + " moves";
     }
 
     private void OnTriggerExitWinPanel()
@@ -193,6 +201,7 @@ public class GameUIManager : MonoBehaviour
 
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {
+        GameplayManager.Instance.DisableTarget();
         SetCanvasGroupValue(0, 0, 1);
         StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
     }    

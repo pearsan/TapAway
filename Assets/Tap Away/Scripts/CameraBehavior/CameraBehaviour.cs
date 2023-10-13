@@ -45,6 +45,11 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
+        SetEnable();
+    }
+
+    public void SetEnable()
+    {
         SetZoom();
         SetRotate();
         SetDrag();
@@ -55,23 +60,19 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null)
+            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE)
             {
                 ShootRay();
             }
         };
-    
     }
 
-    private void OnEnable()
+    public void SetDisable()
     {
-        Debug.Log("Fuck?");
-    }
-
-    private void OnDisable()
-    {
-        pressed.Disable();
-        axis.Disable();
+        DisableDrag();
+        DisableZoom();
+        DisableRotate();
+        clicked.Disable();
     }
 
     private void SetRotate()
@@ -99,6 +100,12 @@ public class CameraBehaviour : MonoBehaviour
             }
             _rotation = context.ReadValue<Vector2>();
         };	        
+    }
+
+    private void DisableRotate()
+    {
+        pressed.Disable();
+        axis.Disable();
     }
 
     private IEnumerator Rotate()
@@ -197,6 +204,29 @@ public class CameraBehaviour : MonoBehaviour
             
         };
     }
+
+    private void DisableZoom()
+    {
+        var scrollAction = new InputAction(binding: "<Mouse>/scroll");
+        scrollAction.Disable();
+        var touch0contact = new InputAction( type: InputActionType.Button,
+            binding: "<Touchscreen>/touch0/press"
+        );
+        touch0contact.Disable();
+        
+        var touch1contact = new InputAction( type: InputActionType.Button,
+            binding: "<Touchscreen>/touch1/press"
+        );
+        touch1contact.Disable();
+
+        var touch0pos = new InputAction (type: InputActionType.Value,
+            binding: "<TouchScreen>/touch0/position");
+        touch0pos.Disable();
+        
+        var touch1pos = new InputAction (type: InputActionType.Value,
+            binding: "<TouchScreen>/touch1/position");
+        touch1pos.Disable();
+    }
     
     private void CameraZoom(float increment) =>
         Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView + increment, minZoom, maxZoom);
@@ -208,6 +238,11 @@ public class CameraBehaviour : MonoBehaviour
         dragAction.Enable();
         dragAction.started += ctx => { _isDragging = true; };
         dragAction.canceled += ctx => { _isDragging = false; };
+    }
+
+    private void DisableDrag()
+    {
+        dragAction.Disable();
     }
 
     private void Update()
@@ -255,12 +290,11 @@ public class CameraBehaviour : MonoBehaviour
 
                     if (GameplayManager.Instance.CheckIfLose())
                     {
-                        GameUIManager.Instance.OnTriggerEnterLosePanel();
+                        GameplayManager.Instance.OnTriggerLose();
                     }
 
                     if (GameplayManager.Instance.CheckIfWin())
                     {
-                        Debug.Log(true);
                         GameplayManager.Instance.OnTriggerWin();
                     }
                 }

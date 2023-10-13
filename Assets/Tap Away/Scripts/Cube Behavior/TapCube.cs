@@ -50,6 +50,12 @@ public class TapCube : MonoBehaviour
 
     public void TryMove()
     {
+        if (!_canDoMove)
+        {
+            DOTween.Kill(cubeMesh);
+            _canDoMove = true;
+        }
+        cubeMesh.position = transform.position;
         float maxDistance = 100f;
         RaycastHit hit;
         bool isHit = Physics.Raycast(transform.position, transform.forward,

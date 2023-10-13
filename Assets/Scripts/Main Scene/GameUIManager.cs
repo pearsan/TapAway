@@ -29,6 +29,7 @@ public class GameUIManager : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject WinPanel;
+    [SerializeField] private GameObject LosePanel;
 
     private void Awake()
     {
@@ -80,7 +81,7 @@ public class GameUIManager : MonoBehaviour
     public void OnNextLevelWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
-            () => { OnAddGoldFeedbackAnimation(800); OnTriggerExitWinPanel(); }
+            () => { OnAddGoldFeedbackAnimation(800); OnTriggerExitWinPanel(); StartCoroutine(WaitForNextLevel(0.3f)); }
             , () => { });
     }    
 
@@ -88,6 +89,20 @@ public class GameUIManager : MonoBehaviour
     {
         OnAddGoldFeedbackAnimation(400); 
         OnTriggerExitWinPanel();
+        StartCoroutine(WaitForNextLevel(0.3f));
+    }
+    
+    public void OnTryAgainWithAdsButton()
+    {
+        ISHandler.Instance.ShowRewardedVideo("Try again with ads",
+            () => { OnTriggerExitLosePanel(); },
+            () => { });
+    }
+
+    public void OnTryAgainWithoutAdsButton()
+    {
+        OnTriggerExitLosePanel();
+        Debug.Log("Restart level");
     }    
     #endregion
 
@@ -126,20 +141,23 @@ public class GameUIManager : MonoBehaviour
 
     public void OnTriggerEnterWinPanel()
     {
-        Debug.Log("Really?");
         WinPanel.SetActive(true);
     }
     
     public void OnTriggerEnterLosePanel()
     {
-        Debug.Log("loser!");
+        LosePanel.SetActive(true);
     }
 
     private void OnTriggerExitWinPanel()
     {
-        Debug.Log("Run");
         WinPanel.SetActive(false);
-    }    
+    }
+
+    private void OnTriggerExitLosePanel()
+    {
+        LosePanel.SetActive(false);
+    }
     #endregion
 
     #region Feedback Effect Behaviours

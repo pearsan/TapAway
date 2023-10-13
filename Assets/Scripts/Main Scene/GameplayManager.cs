@@ -25,6 +25,8 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
+
+    private int LevelPassedEachPlaySection; //Each time player play, this counter will count how many level passed each section
     private void Awake()
     {
         if (Instance == null)
@@ -147,9 +149,7 @@ public class GameplayManager : MonoBehaviour
             File.Create(path);
         }
         File.WriteAllText(path, jsonString);
-#if UNITY_EDITOR
         AssetDatabase.Refresh();
-#endif
     }
     
     void OnApplicationQuit()
@@ -262,14 +262,12 @@ public class GameplayManager : MonoBehaviour
     {
         Debug.Log("win");
         _gameState = WIN_STATE;
-        ExportCurrentLevel();
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }
 
     public void OnTriggerLose()
     {
         _gameState = LOSE_STATE;
-        ExportCurrentLevel();
         GameUIManager.Instance.OnTriggerEnterLosePanel();
     }
 
@@ -307,7 +305,6 @@ public class GameplayManager : MonoBehaviour
 
     public void EnableTarget()
     {
-
         _currentPuzzle.gameObject.SetActive(true);
         cameraBehaviour.SetTargert(_currentPuzzle);
     }
@@ -317,5 +314,16 @@ public class GameplayManager : MonoBehaviour
         _currentPuzzle.gameObject.SetActive(false);
     }
 
+    #endregion
+
+    #region Ads behaviours
+    public bool OnValidateTriggerIntersitialAdsEvent()
+    {
+        LevelPassedEachPlaySection++;
+        if (LevelPassedEachPlaySection % 2 == 0)
+            return true;
+        else
+            return false;
+    }    
     #endregion
 }

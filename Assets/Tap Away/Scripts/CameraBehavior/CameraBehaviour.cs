@@ -55,7 +55,7 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else
+            else if (_targert != null)
             {
                 ShootRay();
             }
@@ -256,6 +256,12 @@ public class CameraBehaviour : MonoBehaviour
                     if (GameplayManager.Instance.CheckIfLose())
                     {
                         GameUIManager.Instance.OnTriggerEnterLosePanel();
+                    }
+
+                    if (GameplayManager.Instance.CheckIfWin())
+                    {
+                        Debug.Log(true);
+                        GameplayManager.Instance.OnTriggerWin();
                     }
                 }
             }

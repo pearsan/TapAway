@@ -169,23 +169,7 @@ public class GameplayManager : MonoBehaviour
             return new Vector3(x, y, z);
         }
     }
-
-    private void Update()
-    {
-        if (_currentPuzzle != null && _currentPuzzle.childCount == 0)
-        {
-            string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
-            string jsonFilePath = Path.Combine(folderPath, "current.json");
-            if (File.Exists(jsonFilePath))
-            {
-                // Delete the file
-                File.Delete(jsonFilePath);
-                AssetDatabase.Refresh();
-            }
-            GameUIManager.Instance.OnTriggerEnterWinPanel();
-        }
-    }
-
+    
     public int GetMoveAttemps()
     {
         return _moveAttemps;
@@ -216,6 +200,29 @@ public class GameplayManager : MonoBehaviour
         }
 
         return false;
+    }
+    
+    public bool CheckIfWin()
+    {
+        if (_moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void OnTriggerWin()
+    {
+        string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
+        string jsonFilePath = Path.Combine(folderPath, "current.json");
+        if (File.Exists(jsonFilePath))
+        {
+            // Delete the file
+            File.Delete(jsonFilePath);
+            AssetDatabase.Refresh();
+        }
+        GameUIManager.Instance.OnTriggerEnterWinPanel();
     }
 
     #region Stage behaviours

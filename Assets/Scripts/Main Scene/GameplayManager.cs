@@ -249,12 +249,14 @@ public class GameplayManager : MonoBehaviour
     {
         Debug.Log("win");
         _gameState = WIN_STATE;
+        ExportCurrentLevel();
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }
 
     public void OnTriggerLose()
     {
         _gameState = LOSE_STATE;
+        ExportCurrentLevel();
         GameUIManager.Instance.OnTriggerEnterLosePanel();
     }
 

@@ -14,6 +14,14 @@ public class GameplayManager : MonoBehaviour
     private int _currentStage = 0;
     private Transform _currentPuzzle;
     private TextAsset _levelInProgress;
+    private GameState _gameState;
+    private enum GameState
+    {
+        WIN,
+        LOSE,
+        PLAYING
+    }
+    
     [SerializeField] private int _moveAttemps = 10;
 
     [SerializeField] private GameObject playButton;
@@ -41,6 +49,7 @@ public class GameplayManager : MonoBehaviour
 
         if (File.Exists(jsonFilePath))
         {
+            _gameState = GameState.PLAYING;
             playButton.SetActive(false);
             
             GameObject level = GameObject.Instantiate(cubeGenerator);
@@ -69,6 +78,8 @@ public class GameplayManager : MonoBehaviour
         {
             Destroy(_currentPuzzle.gameObject);
         }
+
+        _gameState = GameState.PLAYING;
         GameObject level = GameObject.Instantiate(cubeGenerator);
         level.transform.position = Vector3.zero;
         _currentPuzzle = level.transform;
@@ -116,14 +127,16 @@ public class GameplayManager : MonoBehaviour
     
     void OnApplicationQuit()
     {
-        ExportCurrentLevel();
+        if (_gameState == GameState.PLAYING)
+            ExportCurrentLevel();
     }
     
     void OnApplicationPause(bool pauseStatus)
     {
         if (pauseStatus)
         {
-            ExportCurrentLevel();
+            if (_gameState == GameState.PLAYING)
+                ExportCurrentLevel();
         }
     }
     
@@ -178,23 +191,26 @@ public class GameplayManager : MonoBehaviour
         _moveAttemps--;
     }
 
-    public void ResetMoveAttemps()
+    public void SetBonusMovesAttemps()
     {
-        _moveAttemps = 10;
+        _gameState = GameState.PLAYING;
+        var childCount = (float)JsonConvert.DeserializeObject<List<Vector3>>(jsonFile[_currentStage].text, new CubeGenerator.Vector3Converter()).Count;
+        _moveAttemps = Mathf.CeilToInt(childCount * 10 / 100);
     }
     
     private void SetDefaultMoveAttemps()
     {
         var childCount = (float)_currentPuzzle.childCount;
         _moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
-        Debug.Log(childCount * 10 / 100);
     }
 
-    #region Game State
+    #region GAME STATE
+    
     public bool CheckIfLose()
     {
         if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
         {
+            _gameState = GameState.LOSE;
             return true;
         }
 
@@ -205,6 +221,7 @@ public class GameplayManager : MonoBehaviour
     {
         if (_moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
         {
+            _gameState = GameState.WIN;
             return true;
         }
 

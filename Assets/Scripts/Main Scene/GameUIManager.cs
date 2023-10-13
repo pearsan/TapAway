@@ -95,7 +95,11 @@ public class GameUIManager : MonoBehaviour
     public void OnTryAgainWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("Try again with ads",
-            () => { OnTriggerExitLosePanel(); },
+            () =>
+            {
+                OnTriggerExitLosePanel();
+                GameplayManager.Instance.SetBonusMovesAttemps();
+            },
             () => { });
     }
 

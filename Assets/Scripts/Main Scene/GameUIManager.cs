@@ -79,14 +79,13 @@ public class GameUIManager : MonoBehaviour
     public void OnNextLevelWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
-            () => { OnAddGoldFeedbackAnimation(800); GameplayManager.Instance.OnTriggerNextStage(); OnTriggerExitWinPanel(); }
+            () => { OnAddGoldFeedbackAnimation(800); OnTriggerExitWinPanel(); }
             , () => { });
     }    
 
     public void OnNextLevelWithoutAdsButton()
     {
-        OnAddGoldFeedbackAnimation(400);
-        GameplayManager.Instance.OnTriggerNextStage();
+        OnAddGoldFeedbackAnimation(400); 
         OnTriggerExitWinPanel();
     }    
     #endregion
@@ -102,6 +101,12 @@ public class GameUIManager : MonoBehaviour
         ShopLayer.GetComponent<CanvasGroup>().blocksRaycasts = (ShopLayerValue == 1) ? true : false;
         GachaLayer.GetComponent<CanvasGroup>().blocksRaycasts = (GachaLayerValue == 1) ? true : false;
     }
+
+    private IEnumerator WaitForNextLevel(float timer)
+    {
+        yield return new WaitForSeconds(timer);
+        GameplayManager.Instance.OnTriggerNextStage();
+    }    
     #endregion
 
     #region UI Behaviours
@@ -115,11 +120,13 @@ public class GameUIManager : MonoBehaviour
 
     public void OnTriggerEnterWinPanel()
     {
+        Debug.Log("Really?");
         WinPanel.SetActive(true);
     }
 
     private void OnTriggerExitWinPanel()
     {
+        Debug.Log("Run");
         WinPanel.SetActive(false);
     }    
     #endregion

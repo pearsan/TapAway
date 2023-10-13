@@ -133,6 +133,19 @@ public class GameplayManager : MonoBehaviour
         string jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
         
         string path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
+        if (!File.Exists(path))
+        {
+            string directoryPath = Path.GetDirectoryName(path);
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Create the file
+            File.Create(path);
+        }
         File.WriteAllText(path, jsonString);
 #if UNITY_EDITOR
         AssetDatabase.Refresh();

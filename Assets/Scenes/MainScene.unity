@@ -827,7 +827,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1081445592}
         m_TargetAssemblyTypeName: GameUIManager, Assembly-CSharp
-        m_MethodName: OnNextLevelWithoutAdsButton
+        m_MethodName: OnTryAgainWithoutAdsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4061,7 +4061,9 @@ MonoBehaviour:
   - {fileID: 1200123687}
   - {fileID: 1150159945}
   MoveAttemptText: {fileID: 952969549}
+  BonusMoveWithAd: {fileID: 952969549}
   WinPanel: {fileID: 1935562121}
+  LosePanel: {fileID: 589369975}
 --- !u!1 &1132345634
 GameObject:
   m_ObjectHideFlags: 0
@@ -7248,7 +7250,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1081445592}
         m_TargetAssemblyTypeName: GameUIManager, Assembly-CSharp
-        m_MethodName: OnNextLevelWithAdsButton
+        m_MethodName: OnTryAgainWithAdsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

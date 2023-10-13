@@ -131,6 +131,10 @@ public class GameUIManager : MonoBehaviour
 
     private IEnumerator WaitForNextLevel(float timer)
     {
+        if(GameplayManager.Instance.OnValidateTriggerIntersitialAdsEvent())
+        {
+            ISHandler.Instance.ShowInterstitial("After complete level");
+        }    
         yield return new WaitForSeconds(timer);
         GameplayManager.Instance.OnTriggerNextStage();
     }    

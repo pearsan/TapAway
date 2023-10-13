@@ -25,6 +25,8 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
+
+    private int LevelPassedEachPlaySection; //Each time player play, this counter will count how many level passed each section
     private void Awake()
     {
         if (Instance == null)
@@ -134,7 +136,7 @@ public class GameplayManager : MonoBehaviour
         
         string path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
         File.WriteAllText(path, jsonString);
-        AssetDatabase.Refresh();
+        //AssetDatabase.Refresh();
     }
     
     void OnApplicationQuit()
@@ -299,5 +301,16 @@ public class GameplayManager : MonoBehaviour
         _currentPuzzle.gameObject.SetActive(false);
     }
 
+    #endregion
+
+    #region Ads behaviours
+    public bool OnValidateTriggerIntersitialAdsEvent()
+    {
+        LevelPassedEachPlaySection++;
+        if (LevelPassedEachPlaySection % 2 == 0)
+            return true;
+        else
+            return false;
+    }    
     #endregion
 }

@@ -39,6 +39,7 @@ public class ShopGUIManager : MonoBehaviour
     private void Start()
     {
         Initialize();
+        OnRandomTapClick();
     }
 
     private void Update()
@@ -73,6 +74,12 @@ public class ShopGUIManager : MonoBehaviour
     #region Button behaviours
     public void OnTabClick()
     {
+        if(EventSystem.current.currentSelectedGameObject.GetComponent<RandomSkinContentGUIBehaviour>() != null)
+        {
+            OnRandomTapClick();
+            return;
+        }    
+
         BuyButton.SetActive(false);
         EquipButton.SetActive(false);
         foreach (var tab in tabGUIManagers)
@@ -87,6 +94,49 @@ public class ShopGUIManager : MonoBehaviour
                 tab.OnTabUnselect();
         }
     }
+
+    private void OnRandomTapClick()
+    {
+        BuyButton.SetActive(false);
+        EquipButton.SetActive(false);
+        foreach (var tab in tabGUIManagers)
+        {
+            if (tab.gameObject == EventSystem.current.currentSelectedGameObject)
+            {
+                ShopItemButtonBehaviour randomSkin = OnRandomSkinToSubcribe(tab.GetComponent<RandomSkinContentGUIBehaviour>().TargetTransforms.GetComponentsInChildren<ShopItemButtonBehaviour>());
+
+                if (randomSkin != null)
+                    ShopManager.Instance.Subcribe(randomSkin.shopItemSO);
+
+                bool temp = IsAscendingTab(lastTabSelected, tab);
+                lastTabSelected = tab;
+                tab.OnTabSelect(temp);
+            }
+            else
+                tab.OnTabUnselect();
+        }
+    }
+
+    private ShopItemButtonBehaviour OnRandomSkinToSubcribe(ShopItemButtonBehaviour[] behaviours)
+    {
+        List<ShopItemButtonBehaviour> itemLockeds = new List<ShopItemButtonBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i].shopItemSO.IsUnlock == false)
+                itemLockeds.Add(behaviours[i]);
+        }
+
+        if (itemLockeds.Count == 0)
+            return null;
+        else
+        {
+            var randomIndex = Random.Range(0, itemLockeds.Count);
+            return itemLockeds[randomIndex];
+        } 
+            
+            
+    }    
+
     public void OnBuyButtonClick()
     {
         if (ShopManager.Instance.SubcriberSO.Price <= GoldManager.Instance.GetGold())

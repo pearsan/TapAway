@@ -8,7 +8,7 @@ public abstract class TabContentGUIBehaviour : MonoBehaviour
 {
     [Header("Contents")]
     [Tooltip("Transform where to instantiate shop item")]
-    [SerializeField] protected Transform TargetTransforms;
+    [SerializeField] public Transform TargetTransforms;
 
     [Header("Prefabs")]
     [SerializeField] protected GameObject ShopItemPrefab;

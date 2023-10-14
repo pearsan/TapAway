@@ -39,7 +39,7 @@ public class ShopGUIManager : MonoBehaviour
     private void Start()
     {
         Initialize();
-        OnRandomTapClick();
+        //OnRandomTapClick();
     }
 
     private void Update()
@@ -101,12 +101,14 @@ public class ShopGUIManager : MonoBehaviour
         EquipButton.SetActive(false);
         foreach (var tab in tabGUIManagers)
         {
-            if (tab.gameObject == EventSystem.current.currentSelectedGameObject)
+            if (tab.gameObject.name == "Random Skin Tab")
             {
                 ShopItemButtonBehaviour randomSkin = OnRandomSkinToSubcribe(tab.GetComponent<RandomSkinContentGUIBehaviour>().TargetTransforms.GetComponentsInChildren<ShopItemButtonBehaviour>());
 
                 if (randomSkin != null)
                     ShopManager.Instance.Subcribe(randomSkin.shopItemSO);
+                else
+                    BuyButton.SetActive(false);
 
                 bool temp = IsAscendingTab(lastTabSelected, tab);
                 lastTabSelected = tab;
@@ -139,6 +141,21 @@ public class ShopGUIManager : MonoBehaviour
 
     public void OnBuyButtonClick()
     {
+        #region Choose new random skin
+        foreach (var tab in tabGUIManagers)
+        {
+            if (tab.gameObject.name == "Random Skin Tab")
+            {
+                ShopItemButtonBehaviour randomSkin = OnRandomSkinToSubcribe(tab.GetComponent<RandomSkinContentGUIBehaviour>().TargetTransforms.GetComponentsInChildren<ShopItemButtonBehaviour>());
+
+                if (randomSkin != null)
+                    ShopManager.Instance.Subcribe(randomSkin.shopItemSO);
+                else
+                    BuyButton.SetActive(false);
+            }
+        }
+        #endregion
+
         if (ShopManager.Instance.SubcriberSO.Price <= GoldManager.Instance.GetGold())
         {
             GoldManager.Instance.ModifyGoldValue(-ShopManager.Instance.SubcriberSO.Price);
@@ -149,11 +166,25 @@ public class ShopGUIManager : MonoBehaviour
         {
             Debug.Log("Ban co the xem quang cao");
         }
-
     }
 
     public void OnBuyByAdsButtonClick()
     {
+        #region Choose new random skin
+        foreach (var tab in tabGUIManagers)
+        {
+            if (tab.gameObject.name == "Random Skin Tab")
+            {
+                ShopItemButtonBehaviour randomSkin = OnRandomSkinToSubcribe(tab.GetComponent<RandomSkinContentGUIBehaviour>().TargetTransforms.GetComponentsInChildren<ShopItemButtonBehaviour>());
+
+                if (randomSkin != null)
+                    ShopManager.Instance.Subcribe(randomSkin.shopItemSO);
+                else
+                    BuyButton.SetActive(false);
+            }
+        }
+        #endregion
+
         ISHandler.Instance.ShowRewardedVideo("Buy by Ads button", ShopManager.Instance.SetSubcriberSOAdsUnlockProgressSuccess, () => { });
 
         ShopManager.Instance.Subcribe();
@@ -170,8 +201,8 @@ public class ShopGUIManager : MonoBehaviour
     {
         if (shopItemSO.IsUnlock)
         {
-            BuyButton.SetActive(false);
-            EquipButton.SetActive(true);
+            BuyButton.SetActive(shopItemSO is RandomSkinSO);
+            EquipButtonBehaviour.Instance.OnEquipItem();
         }
         else
         {

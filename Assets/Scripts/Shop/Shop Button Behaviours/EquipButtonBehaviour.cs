@@ -6,6 +6,13 @@ using TMPro;
 
 public class EquipButtonBehaviour : MonoBehaviour
 {
+    public static EquipButtonBehaviour Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     [Header("Sprites Transition")]
     [SerializeField] private Sprite EquippedSprite;
     [SerializeField] private Sprite EquipSprite;

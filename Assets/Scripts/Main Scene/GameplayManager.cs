@@ -44,10 +44,11 @@ public class GameplayManager : MonoBehaviour
     
     private void Start()
     {
-        string folderPath = "Assets/Tap Away/Resources/CurrentLevel";
-        string jsonFilePath = Path.Combine(folderPath, "current.json");
-
-        if (File.Exists(jsonFilePath))
+        string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
+#if  UNITY_EDITOR
+        path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
+#endif
+        if (File.Exists(path))
         {
             _gameState = PLAYING_STATE;
             playButton.SetActive(false);
@@ -55,7 +56,7 @@ public class GameplayManager : MonoBehaviour
             GameObject level = GameObject.Instantiate(cubeGenerator);
             level.transform.position = Vector3.zero;
             _currentPuzzle = level.transform;
-            string json = System.IO.File.ReadAllText(jsonFilePath);
+            string json = System.IO.File.ReadAllText(path);
             _levelInProgress = new TextAsset(json);
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
@@ -133,10 +134,26 @@ public class GameplayManager : MonoBehaviour
 
         // Convert the list of transforms to JSON.
         string jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-        
-        string path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
+
+        string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
+#if  UNITY_EDITOR
+        path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
+#endif
+        if (!File.Exists(path))
+        {
+            string directoryPath = Path.GetDirectoryName(path);
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            // Create the file
+            using (File.Create(path)) { }
+        }
         File.WriteAllText(path, jsonString);
-        //AssetDatabase.Refresh();
+        AssetDatabase.Refresh();
     }
     
     void OnApplicationQuit()
@@ -228,6 +245,7 @@ public class GameplayManager : MonoBehaviour
         if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
         {
             _gameState = LOSE_STATE;
+            ExportCurrentLevel();
             return true;
         }
 
@@ -239,6 +257,7 @@ public class GameplayManager : MonoBehaviour
         if (_moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
         {
             _gameState = WIN_STATE;
+            ExportCurrentLevel();
             return true;
         }
 

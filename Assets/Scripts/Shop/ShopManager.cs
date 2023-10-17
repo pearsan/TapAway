@@ -120,12 +120,18 @@ public class ShopManager : MonoBehaviour
     #endregion
 
 
-
-    public void Subcribe(ShopItemSO subcriber)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="subcriber"></param>
+    /// <param name="FeedbackToPlayer">If this bool set to false, player don't know feedback of their choice</param>
+    public void Subcribe(ShopItemSO subcriber, bool FeedbackToPlayer = true)
     {
         SubcriberSO = subcriber;
         ShopGUIManager.Instance.OnShopItemButtonClick(subcriber);
-        ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
+
+        if(FeedbackToPlayer)
+            ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
     }
 
     public void Subcribe()

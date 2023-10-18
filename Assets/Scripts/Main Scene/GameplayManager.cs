@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.Events;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent OnResumeEvent;
+    [SerializeField] private UnityEvent OnPauseEvent;
 
     private int LevelPassedEachPlaySection; //Each time player play, this counter will count how many level passed each section
     private void Awake()
@@ -301,11 +306,13 @@ public class GameplayManager : MonoBehaviour
 
     public void Pause()
     {
+        OnPauseEvent.Invoke();
         cameraBehaviour.SetDisable();
     }
 
     public void Resume()
     {
+        OnResumeEvent.Invoke();
         cameraBehaviour.SetEnable();
     }
 

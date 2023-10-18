@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.Events;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -32,12 +33,16 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject WinPanel;
     [SerializeField] private GameObject LosePanel;
 
+    [Header("Events")]
+    [SerializeField] private UnityEvent OnStartEvent;
+
     private void Awake()
     {
         Instance = this;
     }
     private void Start()
     {
+        OnStartEvent.Invoke();
         Initialize();
     }
 
@@ -62,7 +67,7 @@ public class GameUIManager : MonoBehaviour
         SetCanvasGroupValue(0, 1, 0);
         
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
-        ShopLayer.transform.DOLocalMoveX(0, 0.1f);
+        ShopLayer.transform.DOLocalMoveX(0, 0.2f);
         
         GameplayManager.Instance.Pause();
     }    

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class CameraBehaviour : MonoBehaviour 
+public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] private InputAction pressed, axis;
     [SerializeField] private Transform _targert;

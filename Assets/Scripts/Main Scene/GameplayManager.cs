@@ -126,7 +126,6 @@ public class GameplayManager : MonoBehaviour
         }
         // Create a dictionary to hold the level and transform data
         Dictionary<string, object> jsonData = new Dictionary<string, object>();
-        Debug.Log(_gameState);
         jsonData["level"] = _currentStage;
         jsonData["state"] = _gameState;
         jsonData["move"] = _moveAttemps;
@@ -153,7 +152,9 @@ public class GameplayManager : MonoBehaviour
             using (File.Create(path)) { }
         }
         File.WriteAllText(path, jsonString);
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
+#endif
     }
     
     void OnApplicationQuit()
@@ -266,7 +267,6 @@ public class GameplayManager : MonoBehaviour
 
     public void OnTriggerWin()
     {
-        Debug.Log("win");
         _gameState = WIN_STATE;
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }

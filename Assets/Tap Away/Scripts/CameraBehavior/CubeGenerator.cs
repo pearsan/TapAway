@@ -50,7 +50,6 @@ public class CubeGenerator : MonoBehaviour
         // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateGridLevel()
     {
-        SetSkin(cubePrefabs);
         _cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;

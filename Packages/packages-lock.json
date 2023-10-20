@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "appsflyer-unity-adrevenue-generic-connector": {
+      "version": "https://github.com/AppsFlyerSDK/appsflyer-unity-adrevenue-generic-connector.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7baa26f4a94bbbcffcc2c5c7497e54fa82daf1d0"
+    },
+    "appsflyer-unity-plugin": {
+      "version": "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "bc65bd3b4999439e447ec1cb524a9d3efbca90de"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

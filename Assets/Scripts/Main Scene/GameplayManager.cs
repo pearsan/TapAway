@@ -26,6 +26,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
+    [SerializeField] private GameObject tutorialCursor;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -72,6 +73,11 @@ public class GameplayManager : MonoBehaviour
             switch (loadedState)
             {
                 case PLAYING_STATE:
+                    tutorialCursor.SetActive(false);
+
+                    if (_currentStage == 0)
+                        tutorialCursor.SetActive(true);
+
                     _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
                     cameraBehaviour.SetTargert(_currentPuzzle);
 
@@ -98,6 +104,15 @@ public class GameplayManager : MonoBehaviour
         {
             Destroy(_currentPuzzle.gameObject);
         }
+        Debug.Log(_currentStage);
+        if (_currentStage == 0)
+        {
+            tutorialCursor.SetActive(true);
+        }
+        else
+        {
+            tutorialCursor.SetActive(false);
+        }
 
         _gameState = PLAYING_STATE;
         GameObject level = GameObject.Instantiate(cubeGenerator);
@@ -117,6 +132,14 @@ public class GameplayManager : MonoBehaviour
 
     #region DataHandle
 
+    public void ChangeCurrentSkin(GameObject skin)
+    {
+        foreach (var cube in _currentPuzzle)
+        {
+            
+        }
+    }
+    
      public void ExportCurrentLevel()
     {
         List<TransformData> transformDataList = new List<TransformData>();
@@ -223,6 +246,7 @@ public class GameplayManager : MonoBehaviour
     public void MinusMoveAttemps()
     {
         _moveAttemps--;
+        tutorialCursor.SetActive(false);
     }
 
     public void SetBonusMovesAttemps()

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b24db3d1eda69a4d921550a984897a1, type: 3}
   m_Name: Bird4
   m_EditorClassIdentifier: 
-  Name: Skin Monster 4
-  IsUnlock: 1
+  Name: Bird 4
+  IsUnlock: 0
   Price: 60
   Type: Skin
+  ShopItemPrefab: {fileID: 0}
   CanUnlockByGold: 0
   CanUnlockByAds: 1
-  AdsWatched: 8
+  AdsWatched: 1
   AdsToUnlock: 8
   SkinIcon: {fileID: 21300000, guid: 79c2f329c9ca65e4dbf79ea41d2605fa, type: 3}
-  CubePrefab: {fileID: 919132149155446097, guid: 6c1de08be55d1284e9df26926eb875c6, type: 3}

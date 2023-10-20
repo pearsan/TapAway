@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b24db3d1eda69a4d921550a984897a1, type: 3}
   m_Name: Ball1
   m_EditorClassIdentifier: 
-  Name: Ball
+  Name: Ball 1
   IsUnlock: 1
   Price: 60
   Type: Skin

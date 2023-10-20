@@ -141,7 +141,7 @@ public class GameplayManager : MonoBehaviour
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
                 skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
         }
-        _currentPuzzle.GetComponent<CubeGenerator>().SetSkin(skin);
+        //_currentPuzzle.GetComponent<CubeGenerator>().SetSkin(skin);
     }
     
      public void ExportCurrentLevel()

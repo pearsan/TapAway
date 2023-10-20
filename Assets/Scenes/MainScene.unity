@@ -4016,7 +4016,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1006183369
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4341,6 +4341,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: 42e5dedba30d17040b44d6cb97e4445a, type: 3}
   - {fileID: 4900000, guid: cf87728e8a3f1ba43b8df6e288c40f7e, type: 3}
   tutorialCursor: {fileID: 1982089742}
+  cubePrefabs: {fileID: 5966293222690816701, guid: bdd087f1255806c44926e3e788b98053, type: 3}
   OnResumeEvent:
     m_PersistentCalls:
       m_Calls:
@@ -6640,7 +6641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5762606601122915784, guid: 480870ece3249d445bb15d24a653c61e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6502522744032550833, guid: 480870ece3249d445bb15d24a653c61e, type: 3}
       propertyPath: m_LocalScale.x

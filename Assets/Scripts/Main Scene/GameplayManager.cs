@@ -26,7 +26,9 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
-    [SerializeField] private GameObject tutorialCursor;
+    [SerializeField] private GameObject tutorialCursor; 
+    [SerializeField] private GameObject cubePrefabs;
+
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -118,8 +120,10 @@ public class GameplayManager : MonoBehaviour
         GameObject level = GameObject.Instantiate(cubeGenerator);
         level.transform.position = Vector3.zero;
         _currentPuzzle = level.transform;
+
         _currentPuzzle.GetComponent<CubeGenerator>().SetLevel(jsonFile[_currentStage]);
-        _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel());
+
+        _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel(cubePrefabs));
         cameraBehaviour.SetTargert(_currentPuzzle);
         if (Camera.main != null)
         {
@@ -134,14 +138,20 @@ public class GameplayManager : MonoBehaviour
 
     public void ChangeCurrentSkin(GameObject skin)
     {
-        foreach (Transform cube in _currentPuzzle.transform)
-        {
-            cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
-                skin.GetComponentInChildren<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
-        }
-        //_currentPuzzle.GetComponent<CubeGenerator>().SetSkin(skin);
+        if (_currentPuzzle != null)
+            foreach (Transform cube in _currentPuzzle.transform)
+            {
+                cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+                    skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+                cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                    skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+            }
+        cubePrefabs.transform.GetChild(0).gameObject.SetActive(true);
+        cubePrefabs.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+            skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+        cubePrefabs.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+            skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+        cubePrefabs.transform.GetChild(0).gameObject.SetActive(false);
     }
     
      public void ExportCurrentLevel()
@@ -334,23 +344,31 @@ public class GameplayManager : MonoBehaviour
 
     public void Pause()
     {
+        if (_currentStage == 0)
+            tutorialCursor.SetActive(false);
         OnPauseEvent.Invoke();
         cameraBehaviour.SetDisable();
     }
 
     public void Resume()
     {
+        if (_currentStage == 0)
+            tutorialCursor.SetActive(true);
         OnResumeEvent.Invoke();
         cameraBehaviour.SetEnable();
     }
 
     public void EnableTarget()
     {
+        if (_currentStage == 0)
+            tutorialCursor.SetActive(true);
         _currentPuzzle.gameObject.SetActive(true);
     }
 
     public void DisableTarget()
     {
+        if (_currentStage == 0)
+            tutorialCursor.SetActive(false);
         _currentPuzzle.gameObject.SetActive(false);
     }
 

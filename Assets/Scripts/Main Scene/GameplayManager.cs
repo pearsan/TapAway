@@ -132,6 +132,14 @@ public class GameplayManager : MonoBehaviour
 
     #region DataHandle
 
+    public void ChangeCurrentSkin(GameObject skin)
+    {
+        foreach (var cube in _currentPuzzle)
+        {
+            
+        }
+    }
+    
      public void ExportCurrentLevel()
     {
         List<TransformData> transformDataList = new List<TransformData>();

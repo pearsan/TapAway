@@ -26,6 +26,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
+    [SerializeField] private GameObject tutorialCursor;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -72,6 +73,11 @@ public class GameplayManager : MonoBehaviour
             switch (loadedState)
             {
                 case PLAYING_STATE:
+                    tutorialCursor.SetActive(false);
+
+                    if (_currentStage == 0)
+                        tutorialCursor.SetActive(true);
+
                     _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
                     cameraBehaviour.SetTargert(_currentPuzzle);
 
@@ -98,6 +104,15 @@ public class GameplayManager : MonoBehaviour
         {
             Destroy(_currentPuzzle.gameObject);
         }
+        Debug.Log(_currentStage);
+        if (_currentStage == 0)
+        {
+            tutorialCursor.SetActive(true);
+        }
+        else
+        {
+            tutorialCursor.SetActive(false);
+        }
 
         _gameState = PLAYING_STATE;
         GameObject level = GameObject.Instantiate(cubeGenerator);
@@ -117,6 +132,18 @@ public class GameplayManager : MonoBehaviour
 
     #region DataHandle
 
+    public void ChangeCurrentSkin(GameObject skin)
+    {
+        foreach (Transform cube in _currentPuzzle.transform)
+        {
+            cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+                skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+        }
+        //_currentPuzzle.GetComponent<CubeGenerator>().SetSkin(skin);
+    }
+    
      public void ExportCurrentLevel()
     {
         List<TransformData> transformDataList = new List<TransformData>();
@@ -131,7 +158,6 @@ public class GameplayManager : MonoBehaviour
         }
         // Create a dictionary to hold the level and transform data
         Dictionary<string, object> jsonData = new Dictionary<string, object>();
-        Debug.Log(_gameState);
         jsonData["level"] = _currentStage;
         jsonData["state"] = _gameState;
         jsonData["move"] = _moveAttemps;
@@ -158,7 +184,9 @@ public class GameplayManager : MonoBehaviour
             using (File.Create(path)) { }
         }
         File.WriteAllText(path, jsonString);
+#if UNITY_EDITOR
         AssetDatabase.Refresh();
+#endif
     }
     
     void OnApplicationQuit()
@@ -222,6 +250,7 @@ public class GameplayManager : MonoBehaviour
     public void MinusMoveAttemps()
     {
         _moveAttemps--;
+        tutorialCursor.SetActive(false);
     }
 
     public void SetBonusMovesAttemps()
@@ -271,7 +300,6 @@ public class GameplayManager : MonoBehaviour
 
     public void OnTriggerWin()
     {
-        Debug.Log("win");
         _gameState = WIN_STATE;
         GameUIManager.Instance.OnTriggerEnterWinPanel();
     }

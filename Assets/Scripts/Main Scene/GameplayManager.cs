@@ -347,7 +347,6 @@ public class GameplayManager : MonoBehaviour
     public void EnableTarget()
     {
         _currentPuzzle.gameObject.SetActive(true);
-        cameraBehaviour.SetTargert(_currentPuzzle);
     }
 
     public void DisableTarget()

@@ -134,10 +134,14 @@ public class GameplayManager : MonoBehaviour
 
     public void ChangeCurrentSkin(GameObject skin)
     {
-        foreach (var cube in _currentPuzzle)
+        foreach (Transform cube in _currentPuzzle.transform)
         {
-            
+            cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+                skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
         }
+        _currentPuzzle.GetComponent<CubeGenerator>().SetSkin(skin);
     }
     
      public void ExportCurrentLevel()

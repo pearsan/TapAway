@@ -85,7 +85,9 @@ public class CubeGenerator : MonoBehaviour
     
     public void Generate3DShapeLevel()
     {
+        /*
         SetSkin(cubePrefabs);
+        */
         _cubes = new List<TapCube>();
         ClearCube();
         shapePrefab.SetActive(true);
@@ -399,9 +401,14 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    private void SetSkin(GameObject cube)
+    public void SetSkin(GameObject cube)
     {
-        if (currentSkinSo == null)
+        cubePrefabs.GetComponentInChildren<MeshFilter>().sharedMesh =
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh;
+        cubePrefabs.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+        
+        /*if (currentSkinSo == null)
         {
             cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
@@ -412,15 +419,17 @@ public class CubeGenerator : MonoBehaviour
             cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
                 currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
+        }*/
     }
-    
+
     private void ShowCubes()
     {
         foreach (var cube in _cubes)
         {
             cube.ShowCube();
+            /*
             SetSkin(cube.gameObject);
+        */
         }
     }
     

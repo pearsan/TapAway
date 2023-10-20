@@ -47,5 +47,6 @@ public class EquipButtonBehaviour : MonoBehaviour
         ShopReadWriteData.Instance.SetEquippedEquipment();
         OnStartFeedbackToPlayer(ShopManager.Instance.SubcriberSO);
         ShopGUIManager.Instance.OnUpdateAllSelectedItemFeedbacks();
+        GameplayManager.Instance.ChangeCurrentSkin(ShopManager.Instance.SubcriberSO.ShopItemPrefab);
     }    
 }

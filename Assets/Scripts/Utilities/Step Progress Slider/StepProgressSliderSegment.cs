@@ -8,17 +8,24 @@ public class StepProgressSliderSegment : MonoBehaviour
 {
     private GameObject Fill;
 
-    public void OnTriggerSegmentFill()
+    public void OnTriggerFillSegment()
     {
         Fill = transform.Find("Segment Fill").gameObject;
-        Debug.Log(Fill);
-        Fill.GetComponent<Image>().DOFillAmount(1, 0.2f).From(0);
+        Fill.GetComponent<Image>().DOFillAmount(1, 0f);
     }
 
-    public void OnTriggerSegmentFillnt()
+    /// <summary>
+    /// When the next level has not been completed, this segment only stops at displaying itself without connecting to the next segment.
+    /// </summary>
+    public void OnTriggerHalfFillSegment()
     {
         Fill = transform.Find("Segment Fill").gameObject;
-        Debug.Log(Fill);
+        Fill.GetComponent<Image>().DOFillAmount(0.44f, 0f);
+    }
+
+    public void OnTriggerFillntSegment()
+    {
+        Fill = transform.Find("Segment Fill").gameObject;
         Fill.GetComponent<Image>().DOFillAmount(0, 0f);
     }    
 }

@@ -25,5 +25,5 @@ public class ShopReadWriteData : MonoBehaviour
         string TypeEquipInput = EQUIP_PATH + ShopManager.Instance.SubcriberSO.Type;
         PlayerPrefs.SetString(TypeEquipInput, ShopManager.Instance.SubcriberSO.Name);
 
-    }    
+    }  
 }

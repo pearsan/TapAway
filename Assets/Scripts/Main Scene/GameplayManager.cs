@@ -106,7 +106,6 @@ public class GameplayManager : MonoBehaviour
         {
             Destroy(_currentPuzzle.gameObject);
         }
-        Debug.Log(_currentStage);
         if (_currentStage == 0)
         {
             tutorialCursor.SetActive(true);
@@ -311,7 +310,7 @@ public class GameplayManager : MonoBehaviour
     public void OnTriggerWin()
     {
         _gameState = WIN_STATE;
-        GameUIManager.Instance.OnTriggerEnterWinPanel();
+        StartCoroutine(GameUIManager.Instance.OnTriggerEnterWinPanel());
     }
 
     public void OnTriggerLose()
@@ -333,9 +332,13 @@ public class GameplayManager : MonoBehaviour
         return _currentStage;
     }
 
-    public void OnTriggerNextStage()
+    public void OnLoadNextStage()
     {
-        _currentStage++;
+        _currentStage++;    
+    }
+
+    public void OnShowNextStage()
+    {
         HandlePlayButton();
     }    
     #endregion

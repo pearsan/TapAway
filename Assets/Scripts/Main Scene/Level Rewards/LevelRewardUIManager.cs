@@ -8,6 +8,7 @@ public class LevelRewardUIManager : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject SegmentPrefab;
+    [SerializeField] private GameObject RewardPrefab;
 
     [Space(10f)]
     [SerializeField] private Transform RewardProgressTransform;
@@ -32,15 +33,16 @@ public class LevelRewardUIManager : MonoBehaviour
         int completed = LevelRewardManager.Instance.GetData().Item1;
         int total = LevelRewardManager.Instance.GetData().Item2;
 
-        Debug.Log(completed + "/" + total);
-
-        for(int i = 1;i <=total;i++)
+        GameObject reward = Instantiate<GameObject>(RewardPrefab, RewardProgressTransform);
+        for(int i = total - 1;i >=1;i--)
         {
             GameObject segment = Instantiate<GameObject>(SegmentPrefab, RewardProgressTransform);
-            if (i <= completed)
-                segment.GetComponent<StepProgressSliderSegment>().OnTriggerSegmentFill();
+            if (i < completed)
+                segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillSegment();
+            else if (i == completed)
+                segment.GetComponent<StepProgressSliderSegment>().OnTriggerHalfFillSegment();
             else
-                segment.GetComponent<StepProgressSliderSegment>().OnTriggerSegmentFillnt();
+                segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
         }    
-    }    
+    }
 }

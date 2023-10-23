@@ -11,6 +11,8 @@ public class LevelRewardManager : MonoBehaviour
     private int _totalLevelToClaim;
     private int _totalLevelCompleted;
 
+    [HideInInspector] public bool IsRewardClaim = false;
+
     private void Awake()
     {
         Instance = this;
@@ -39,7 +41,7 @@ public class LevelRewardManager : MonoBehaviour
 
     public bool OnValidateTriggerClaimRewardEvent()
     {
-        return _totalLevelCompleted == _totalLevelToClaim;
+        return _totalLevelCompleted + 1 == _totalLevelToClaim;
     }    
 
     /// <summary>

@@ -11,7 +11,6 @@ public class StepProgressSliderSegment : MonoBehaviour
     public void OnTriggerFillSegment()
     {
         Fill = transform.Find("Segment Fill").gameObject;
-        Debug.Log(Fill);
         Fill.GetComponent<Image>().DOFillAmount(1, 0f);
     }
 
@@ -27,7 +26,6 @@ public class StepProgressSliderSegment : MonoBehaviour
     public void OnTriggerFillntSegment()
     {
         Fill = transform.Find("Segment Fill").gameObject;
-        Debug.Log(Fill);
         Fill.GetComponent<Image>().DOFillAmount(0, 0f);
     }    
 }

@@ -37,5 +37,5 @@ public class GachaEffect : MonoBehaviour
     {
         Destroy(_animationCamera);
         MainCamera.SetActive(true);
-    }    
+    }
 }

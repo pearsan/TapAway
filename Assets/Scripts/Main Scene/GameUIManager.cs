@@ -15,6 +15,9 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject ShopLayer;
     [SerializeField] private GachaEffect GachaLayer;
 
+    [Header("Buttons")]
+    [SerializeField] private Button GachaClaimButton;
+
     [Header("Gold feedbacks")]
     [SerializeField] private GameObject GoldFeedbackPrefab;
     [SerializeField] private Transform GoldParentTransform;
@@ -89,6 +92,15 @@ public class GameUIManager : MonoBehaviour
         GameplayManager.Instance.EnableTarget();
     }
 
+    public void OnExitLevelRewardAnimation()
+    {
+        Debug.Log("Set IsRewardClaim");
+        LevelRewardManager.Instance.IsRewardClaim = true;
+        GachaLayer.OnExitGachaAnimation();
+        GameplayManager.Instance.EnableTarget();
+        SetCanvasGroupValue(1, 0, 0);
+    }    
+
     public void OnNextLevelWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
@@ -141,14 +153,7 @@ public class GameUIManager : MonoBehaviour
             ISHandler.Instance.ShowInterstitial("After complete level");
         }
 
-        yield return new WaitForSeconds(timer);
-        GameplayManager.Instance.OnLoadNextStage();
-
-        if(LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
-        {
-            Debug.Log("Show Claim reward event");
-            yield return new WaitUntil(() => LevelRewardUIManager.Instance.IsRewardClaim);
-        }    
+        GameplayManager.Instance.OnLoadNextStage(); 
 
         yield return new WaitForSeconds(timer);
         GameplayManager.Instance.OnShowNextStage();
@@ -171,8 +176,15 @@ public class GameUIManager : MonoBehaviour
         MoveAttemptText.text = "Move:  " + (GameplayManager.Instance.GetMoveAttemps());
     }
 
-    public void OnTriggerEnterWinPanel()
+    public IEnumerator OnTriggerEnterWinPanel()
     {
+        if (LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
+        {
+            OnLevelRewardFeedbackAnimation(ShopManager.Instance.SubcriberSO);
+            yield return new WaitUntil(() => LevelRewardManager.Instance.IsRewardClaim);
+            Debug.Log("Run?");
+        }
+
         WinPanel.SetActive(true);
     }
     
@@ -222,9 +234,20 @@ public class GameUIManager : MonoBehaviour
 
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {
+        GachaClaimButton.onClick.RemoveAllListeners();
+        GachaClaimButton.onClick.AddListener(OnExitGachaAnimation);
         GameplayManager.Instance.DisableTarget();
         SetCanvasGroupValue(0, 0, 1);
         StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
-    }    
+    }
+
+    public void OnLevelRewardFeedbackAnimation(ShopItemSO target)
+    {
+        GachaClaimButton.onClick.RemoveAllListeners();
+        GachaClaimButton.onClick.AddListener(OnExitLevelRewardAnimation);
+        GameplayManager.Instance.DisableTarget();
+        SetCanvasGroupValue(0, 0, 1);
+        StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
+    }
     #endregion
 }

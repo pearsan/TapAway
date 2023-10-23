@@ -296,9 +296,7 @@ public class CubeGenerator : MonoBehaviour
             cube.transform.localRotation = RandomRotation();
             cube.transform.localPosition = position;
             i++;
-        }
-        Debug.Log("current cubes: " + i);
-        
+        }     
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)

@@ -13,8 +13,6 @@ public class LevelRewardUIManager : MonoBehaviour
     [Space(10f)]
     [SerializeField] private Transform RewardProgressTransform;
 
-    [HideInInspector] public bool IsRewardClaim = false;
-
     private void Awake()
     {
         Instance = this;
@@ -35,8 +33,6 @@ public class LevelRewardUIManager : MonoBehaviour
         int completed = LevelRewardManager.Instance.GetData().Item1;
         int total = LevelRewardManager.Instance.GetData().Item2;
 
-        Debug.LogWarning(completed + "/" + total);
-
         GameObject reward = Instantiate<GameObject>(RewardPrefab, RewardProgressTransform);
         for(int i = total - 1;i >=1;i--)
         {
@@ -48,5 +44,5 @@ public class LevelRewardUIManager : MonoBehaviour
             else
                 segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
         }    
-    }    
+    }
 }

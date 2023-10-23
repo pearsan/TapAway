@@ -323,9 +323,13 @@ public class GameplayManager : MonoBehaviour
         return _currentStage;
     }
 
-    public void OnTriggerNextStage()
+    public void OnLoadNextStage()
     {
-        _currentStage++;
+        _currentStage++;    
+    }
+
+    public void OnShowNextStage()
+    {
         HandlePlayButton();
     }    
     #endregion

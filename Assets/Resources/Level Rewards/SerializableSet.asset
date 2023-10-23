@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SerializableSet
   m_EditorClassIdentifier: 
   LevelRewards:
-  - Level: 5
+  - Level: 3
     Reward: Key
   - Level: 8
     Reward: Egg

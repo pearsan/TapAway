@@ -139,9 +139,21 @@ public class GameUIManager : MonoBehaviour
         if(GameplayManager.Instance.OnValidateTriggerIntersitialAdsEvent())
         {
             ISHandler.Instance.ShowInterstitial("After complete level");
-        }    
+        }
+
         yield return new WaitForSeconds(timer);
-        GameplayManager.Instance.OnTriggerNextStage();
+        GameplayManager.Instance.OnLoadNextStage();
+
+        if(LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
+        {
+            Debug.Log("Show Claim reward event");
+            yield return new WaitUntil(() => LevelRewardUIManager.Instance.IsRewardClaim);
+        }    
+
+        yield return new WaitForSeconds(timer);
+        GameplayManager.Instance.OnShowNextStage();
+        yield return new WaitForSeconds(0.4f);
+        LevelRewardUIManager.Instance.CreateNewRewardProgress();
     }    
     #endregion
 

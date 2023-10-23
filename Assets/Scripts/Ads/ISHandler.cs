@@ -251,6 +251,7 @@ public class ISHandler : MonoBehaviour
     //Invoked when the initialization process has failed.
     private void InterstitialOnAdLoadFailed(IronSourceError ironSourceError)
     {
+        Debug.Log("Trying to load intersitial ads again");
         LoadInterstitial();
         interCall?.Invoke();
     }
@@ -297,6 +298,7 @@ public class ISHandler : MonoBehaviour
         IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
         IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
         IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
+        IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedVideoOnAdFailedLoad;
         IronSourceRewardedVideoEvents.onAdUnavailableEvent += RewardedVideoOnAdUnavailable;
         IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
         IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
@@ -353,11 +355,17 @@ public class ISHandler : MonoBehaviour
 
     }
 
+    private void RewardedVideoOnAdFailedLoad(IronSourceError errorInfo)
+    {
+        Debug.Log("Failed to load rewarded video but trying to load again");
+        IronSource.Agent.loadRewardedVideo();
+    }
+
     //Indicates that no ads are available to be displayed
     //This replaces the RewardedVideoAvailabilityChangedEvent(false) event
     private void RewardedVideoOnAdUnavailable()
     {
-
+        Debug.Log("No available ads to show");
     }
 
     //The Rewarded Video ad view has opened. Your activity will loose focus.

@@ -31,6 +31,7 @@ public class EquipButtonBehaviour : MonoBehaviour
         {
             GetComponent<Image>().sprite = EquippedSprite;
             GetComponent<Button>().interactable = false;
+            GameplayManager.Instance.ChangeCurrentSkin(itemPlayerSelected.ShopItemPrefab);
             EquipButtonText.text = "Equipped";
         }
         else

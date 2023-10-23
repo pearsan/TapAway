@@ -147,7 +147,7 @@ public class CubeGenerator : MonoBehaviour
     
     public void ResetGame()
     {
-        StartCoroutine(SetupLevel());
+        StartCoroutine(SetupLevel(null));
     }
     
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
@@ -249,9 +249,9 @@ public class CubeGenerator : MonoBehaviour
 
     #region Setup Level
 
-    public IEnumerator SetupLevel()
+    public IEnumerator SetupLevel(GameObject tapCube)
     {
-        LoadJson();
+        LoadJson(tapCube);
         yield return new WaitForSeconds(1f);
         Autoplay();
 
@@ -279,15 +279,17 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
-    public void LoadJson()
+    public void LoadJson(GameObject tapCube)
     {
+        if (tapCube == null)
+            tapCube = cubePrefabs;
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
         int i = 0;
         foreach (Vector3 position in positions)
         {
-            GameObject cube = Instantiate(this.cubePrefabs);
+            GameObject cube = Instantiate(tapCube);
             cube.name = "" + i;
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             cube.transform.SetParent(transform);

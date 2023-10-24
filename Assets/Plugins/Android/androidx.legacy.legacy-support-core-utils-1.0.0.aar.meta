@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Plugins/Android/androidx.concurrent.concurrent-futures-1.1.0.jar.meta
-guid: b166e93e2f797204bba3308829be3c9a
+<<<<<<<< HEAD:Assets/Plugins/Android/com.google.android.gms.play-services-measurement-api-21.3.0.aar.meta
+guid: 95e62f7c664b1af449d25d41b3ffd02c
 ========
-guid: efcf0bec0d5f2d54ead738ee577a58c7
->>>>>>>> main:Assets/Plugins/Android/androidx.annotation.annotation-1.5.0.jar.meta
+guid: a042b70da049c0e4399b771589bf7810
+>>>>>>>> main:Assets/Plugins/Android/androidx.legacy.legacy-support-core-utils-1.0.0.aar.meta
 labels:
 - gpsr
 PluginImporter:

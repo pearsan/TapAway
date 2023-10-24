@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Plugins/Android/com.google.android.gms.play-services-base-18.2.0.aar.meta
 guid: 5aad92c948b395747b16fe30ba4a8332
+========
+guid: b166e93e2f797204bba3308829be3c9a
+>>>>>>>> main:Assets/Plugins/Android/androidx.concurrent.concurrent-futures-1.1.0.jar.meta
 labels:
 - gpsr
 PluginImporter:

@@ -182,7 +182,9 @@ public class GameUIManager : MonoBehaviour
         {
             OnLevelRewardFeedbackAnimation(ShopManager.Instance.SubcriberSO);
             yield return new WaitUntil(() => LevelRewardManager.Instance.IsRewardClaim);
-            Debug.Log("Run?");
+            LevelRewardManager.Instance.IsRewardClaim = false;
+            StartCoroutine(WaitForNextLevel(0.3f));
+            yield break;
         }
 
         WinPanel.SetActive(true);

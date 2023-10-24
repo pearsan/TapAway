@@ -15,17 +15,17 @@ MonoBehaviour:
   LevelRewards:
   - Level: 1
     Reward: Key
+  - Level: 2
+    Reward: Egg
+  - Level: 5
+    Reward: Chest
   - Level: 8
-    Reward: Egg
-  - Level: 10
-    Reward: Chest
-  - Level: 12
     Reward: Mystery Chest
-  - Level: 15
+  - Level: 10
     Reward: Key
-  - Level: 18
+  - Level: 12
     Reward: Egg
-  - Level: 20
+  - Level: 14
     Reward: Chest
-  - Level: 22
+  - Level: 16
     Reward: Chest

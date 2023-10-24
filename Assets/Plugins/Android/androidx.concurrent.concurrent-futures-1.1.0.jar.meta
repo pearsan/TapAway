@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Plugins/Android/androidx.concurrent.concurrent-futures-1.1.0.jar.meta
 guid: b166e93e2f797204bba3308829be3c9a
-========
-guid: efcf0bec0d5f2d54ead738ee577a58c7
->>>>>>>> main:Assets/Plugins/Android/androidx.annotation.annotation-1.5.0.jar.meta
 labels:
 - gpsr
 PluginImporter:

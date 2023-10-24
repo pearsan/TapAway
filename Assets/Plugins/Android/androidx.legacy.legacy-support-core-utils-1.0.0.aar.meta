@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:Assets/Plugins/Android/com.google.android.gms.play-services-measurement-api-21.3.0.aar.meta
 guid: 95e62f7c664b1af449d25d41b3ffd02c
-========
-guid: a042b70da049c0e4399b771589bf7810
->>>>>>>> main:Assets/Plugins/Android/androidx.legacy.legacy-support-core-utils-1.0.0.aar.meta
 labels:
 - gpsr
 PluginImporter:

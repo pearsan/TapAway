@@ -1,5 +1,42 @@
 {
   "dependencies": {
+    "appsflyer-unity-adrevenue-generic-connector": {
+      "version": "https://github.com/AppsFlyerSDK/appsflyer-unity-adrevenue-generic-connector.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "7baa26f4a94bbbcffcc2c5c7497e54fa82daf1d0"
+    },
+    "appsflyer-unity-plugin": {
+      "version": "https://github.com/AppsFlyerSDK/appsflyer-unity-plugin.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "bc65bd3b4999439e447ec1cb524a9d3efbca90de"
+    },
+    "com.google.external-dependency-manager": {
+      "version": "https://github.com/google-unity/external-dependency-manager.git#1.2.176",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "9653785bd7f9edae4689c3e3d99a9186ddbf6cb2"
+    },
+    "com.google.firebase.analytics": {
+      "version": "file:com.google.firebase.analytics-11.3.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "11.3.0"
+      }
+    },
+    "com.google.firebase.app": {
+      "version": "file:com.google.firebase.app-11.3.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.176"
+      }
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

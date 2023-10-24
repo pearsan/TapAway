@@ -85,7 +85,9 @@ public class CubeGenerator : MonoBehaviour
     
     public void Generate3DShapeLevel()
     {
+        /*
         SetSkin(cubePrefabs);
+        */
         _cubes = new List<TapCube>();
         ClearCube();
         shapePrefab.SetActive(true);
@@ -145,7 +147,7 @@ public class CubeGenerator : MonoBehaviour
     
     public void ResetGame()
     {
-        StartCoroutine(SetupLevel());
+        StartCoroutine(SetupLevel(null));
     }
     
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
@@ -247,9 +249,9 @@ public class CubeGenerator : MonoBehaviour
 
     #region Setup Level
 
-    public IEnumerator SetupLevel()
+    public IEnumerator SetupLevel(GameObject tapCube)
     {
-        LoadJson();
+        LoadJson(tapCube);
         yield return new WaitForSeconds(1f);
         Autoplay();
 
@@ -277,24 +279,24 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
-    public void LoadJson()
+    public void LoadJson(GameObject tapCube)
     {
+        if (tapCube == null)
+            tapCube = cubePrefabs;
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
         int i = 0;
         foreach (Vector3 position in positions)
         {
-            GameObject cube = Instantiate(this.cubePrefabs);
+            GameObject cube = Instantiate(tapCube);
             cube.name = "" + i;
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             cube.transform.SetParent(transform);
             cube.transform.localRotation = RandomRotation();
             cube.transform.localPosition = position;
             i++;
-        }
-        Debug.Log("current cubes: " + i);
-        
+        }     
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)
@@ -399,9 +401,14 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    private void SetSkin(GameObject cube)
+    public void SetSkin(GameObject cube)
     {
-        if (currentSkinSo == null)
+        cubePrefabs.GetComponentInChildren<MeshFilter>().sharedMesh =
+            cube.GetComponentInChildren<MeshFilter>().sharedMesh;
+        cubePrefabs.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+        
+        /*if (currentSkinSo == null)
         {
             cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
@@ -412,15 +419,17 @@ public class CubeGenerator : MonoBehaviour
             cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
             cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
                 currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
+        }*/
     }
-    
+
     private void ShowCubes()
     {
         foreach (var cube in _cubes)
         {
             cube.ShowCube();
+            /*
             SetSkin(cube.gameObject);
+        */
         }
     }
     

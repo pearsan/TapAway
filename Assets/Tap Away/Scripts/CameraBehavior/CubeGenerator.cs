@@ -23,12 +23,12 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject cubePrefabs;
+    [SerializeField] protected GameObject cubePrefabs;
 
     public GameObject shapePrefab;
-    private List<TapCube> _cubes;
+    protected List<TapCube> _cubes;
 
-    [SerializeField] private TextAsset jsonFile;
+    [SerializeField] protected TextAsset jsonFile;
     [SerializeField] private string levelName;
     [SerializeField] private PurchaseSkinSO currentSkinSo;
     [SerializeField] private PurchaseSkinSO defaultSkinSo;
@@ -415,11 +415,9 @@ public class CubeGenerator : MonoBehaviour
     }
     
     #endregion
-    
-    
-    
-    
-    private void MoveChild(Transform cube)
+
+
+    protected void MoveChild(Transform cube)
     {
         float distance = 10.0f; // Define how far you want to move the child
         // Get the direction from the parent to the child
@@ -429,15 +427,15 @@ public class CubeGenerator : MonoBehaviour
         // Move the child a certain distance along this line
         cube.GetChild(0).position = cube.position + direction * distance;
     }
-    
-    private void MoveAnimChild(Transform cube)
+
+    protected void MoveAnimChild(Transform cube)
     {
         Transform cubeMesh = cube.GetChild(0);
         cube.gameObject.GetComponent<TapCube>().SetCanDoMove(false);
         cubeMesh.DOLocalMove(new Vector3(0, 0, 0), 1).SetEase(Ease.InOutSine).OnComplete((() => cube.gameObject.GetComponent<TapCube>().SetCanDoMove(true)));
     }
 
-    private Bounds CalculateTotalBounds()
+    protected Bounds CalculateTotalBounds()
     {
         Bounds bounds = new Bounds();
 
@@ -460,7 +458,7 @@ public class CubeGenerator : MonoBehaviour
         return bounds;
     }
 
-    void MoveChildrenToCenterPoint(Vector3 offset)
+    protected void MoveChildrenToCenterPoint(Vector3 offset)
     {
         foreach (Transform child in transform)
         {

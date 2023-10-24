@@ -21,7 +21,7 @@ public class GameplayManager : MonoBehaviour
     public const string LOSE_STATE = "LOSE";
     public const string PLAYING_STATE = "PLAYING";
     
-    [SerializeField] private int _moveAttemps = 10;
+    [SerializeField] private int moveAttemps = 10;
 
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
@@ -68,7 +68,7 @@ public class GameplayManager : MonoBehaviour
             _levelInProgress = new TextAsset(json);
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
-            _moveAttemps = loadedData.move;
+            moveAttemps = loadedData.move;
             string loadedState = loadedData.state;
             
 
@@ -80,7 +80,7 @@ public class GameplayManager : MonoBehaviour
                     if (_currentStage == 0)
                         tutorialCursor.SetActive(true);
 
-                    _currentPuzzle.GetComponent<CubeGenerator>().LoadCurrentLevel(_levelInProgress);
+                    _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
                     cameraBehaviour.SetTargert(_currentPuzzle);
 
                     if (Camera.main != null)
@@ -120,9 +120,9 @@ public class GameplayManager : MonoBehaviour
         level.transform.position = Vector3.zero;
         _currentPuzzle = level.transform;
 
-        _currentPuzzle.GetComponent<CubeGenerator>().SetLevel(jsonFile[_currentStage]);
+        _currentPuzzle.GetComponent<GameplayGenerater>().SetLevel(jsonFile[_currentStage]);
 
-        _currentPuzzle.GetComponent<CubeGenerator>().StartCoroutine(level.GetComponent<CubeGenerator>().SetupLevel(cubePrefabs));
+        _currentPuzzle.GetComponent<GameplayGenerater>().StartCoroutine(level.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
         cameraBehaviour.SetTargert(_currentPuzzle);
         if (Camera.main != null)
         {
@@ -169,7 +169,7 @@ public class GameplayManager : MonoBehaviour
         Dictionary<string, object> jsonData = new Dictionary<string, object>();
         jsonData["level"] = _currentStage;
         jsonData["state"] = _gameState;
-        jsonData["move"] = _moveAttemps;
+        jsonData["move"] = moveAttemps;
         jsonData["transforms"] = transformDataList;
 
         // Convert the list of transforms to JSON.
@@ -253,12 +253,12 @@ public class GameplayManager : MonoBehaviour
     
     public int GetMoveAttemps()
     {
-        return _moveAttemps;
+        return moveAttemps;
     }
 
     public void MinusMoveAttemps()
     {
-        _moveAttemps--;
+        moveAttemps--;
         tutorialCursor.SetActive(false);
     }
 
@@ -266,7 +266,7 @@ public class GameplayManager : MonoBehaviour
     {
         _gameState = PLAYING_STATE;
         var childCount = (float)JsonConvert.DeserializeObject<List<Vector3>>(jsonFile[_currentStage].text, new CubeGenerator.Vector3Converter()).Count;
-        _moveAttemps = Mathf.CeilToInt(childCount * 10 / 100);
+        moveAttemps = Mathf.CeilToInt(childCount * 10 / 100);
     }
     
     public int GetBonusMovesAttemps()
@@ -278,14 +278,14 @@ public class GameplayManager : MonoBehaviour
     private void SetDefaultMoveAttemps()
     {
         var childCount = (float)_currentPuzzle.childCount;
-        _moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
+        moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
     }
 
     #region GAME STATE
     
     public bool CheckIfLose()
     {
-        if (_moveAttemps == 0 && _currentPuzzle.childCount > 0)
+        if (moveAttemps == 0 && _currentPuzzle.childCount > 0)
         {
             _gameState = LOSE_STATE;
             ExportCurrentLevel();
@@ -297,7 +297,7 @@ public class GameplayManager : MonoBehaviour
     
     public bool CheckIfWin()
     {
-        if (_moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
+        if (moveAttemps >= 0 && _currentPuzzle.childCount == 0 && _currentPuzzle != null)
         {
             _gameState = WIN_STATE;
             ExportCurrentLevel();

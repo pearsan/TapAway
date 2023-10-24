@@ -251,9 +251,8 @@ public class CubeGenerator : MonoBehaviour
 
     public IEnumerator SetupLevel(GameObject tapCube)
     {
-        LoadJson(tapCube);
-        yield return new WaitForSeconds(1f);
-        Autoplay();
+        yield return StartCoroutine(LoadJson(tapCube, Autoplay));
+
 
         transform.position = new Vector3(0, 0, 0);
         
@@ -279,7 +278,7 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
-    public void LoadJson(GameObject tapCube)
+    public IEnumerator LoadJson(GameObject tapCube, Action callback)
     {
         if (tapCube == null)
             tapCube = cubePrefabs;
@@ -296,7 +295,9 @@ public class CubeGenerator : MonoBehaviour
             cube.transform.localRotation = RandomRotation();
             cube.transform.localPosition = position;
             i++;
-        }     
+        }
+        yield return new WaitForSeconds(0.1f);
+        callback?.Invoke();
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)
@@ -401,26 +402,6 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    public void SetSkin(GameObject cube)
-    {
-        cubePrefabs.GetComponentInChildren<MeshFilter>().sharedMesh =
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh;
-        cubePrefabs.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial;
-        
-        /*if (currentSkinSo == null)
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-        else
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }*/
-    }
 
     private void ShowCubes()
     {

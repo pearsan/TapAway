@@ -26,7 +26,6 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject playButton;
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
-    [SerializeField] private GameObject tutorialCursor; 
     [SerializeField] private GameObject cubePrefabs;
 
 
@@ -69,20 +68,28 @@ public class GameplayManager : MonoBehaviour
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
             moveAttemps = loadedData.move;
+
+            if (_currentStage > 2)
+            {
+                cameraBehaviour.SetEnable();
+            }
             string loadedState = loadedData.state;
             
 
             switch (loadedState)
             {
                 case PLAYING_STATE:
-                    tutorialCursor.SetActive(false);
+                    
+                    if (loadedData.transforms.Count < 0 || _currentStage < 3)
+                    {
+                        HandlePlayButton();
+                    }
+                    else
+                    {
+                        _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
 
-                    if (_currentStage == 0)
-                        tutorialCursor.SetActive(true);
-
-                    _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
-                    cameraBehaviour.SetTargert(_currentPuzzle);
-
+                        cameraBehaviour.SetTargert(_currentPuzzle);  
+                    }
                     if (Camera.main != null)
                     {
                         Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
@@ -106,23 +113,23 @@ public class GameplayManager : MonoBehaviour
         {
             Destroy(_currentPuzzle.gameObject);
         }
-        if (_currentStage == 0)
-        {
-            tutorialCursor.SetActive(true);
-        }
-        else
-        {
-            tutorialCursor.SetActive(false);
-        }
-
+        
         _gameState = PLAYING_STATE;
         GameObject level = GameObject.Instantiate(cubeGenerator);
         level.transform.position = Vector3.zero;
         _currentPuzzle = level.transform;
 
         _currentPuzzle.GetComponent<GameplayGenerater>().SetLevel(jsonFile[_currentStage]);
+        if (_currentStage < 3)
+        {
+            _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(jsonFile[_currentStage]);
+        }
+        else
+        {
+            _currentPuzzle.GetComponent<GameplayGenerater>().StartCoroutine(level.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
+        }
+        TutorialManager.Instance.SetTutorial(_currentStage);
 
-        _currentPuzzle.GetComponent<GameplayGenerater>().StartCoroutine(level.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
         cameraBehaviour.SetTargert(_currentPuzzle);
         if (Camera.main != null)
         {
@@ -259,7 +266,6 @@ public class GameplayManager : MonoBehaviour
     public void MinusMoveAttemps()
     {
         moveAttemps--;
-        tutorialCursor.SetActive(false);
     }
 
     public void SetBonusMovesAttemps()
@@ -285,7 +291,7 @@ public class GameplayManager : MonoBehaviour
     
     public bool CheckIfLose()
     {
-        if (moveAttemps == 0 && _currentPuzzle.childCount > 0)
+        if (moveAttemps == 0 && _currentPuzzle.childCount > 0 && _currentStage > 2)
         {
             _gameState = LOSE_STATE;
             ExportCurrentLevel();
@@ -310,6 +316,7 @@ public class GameplayManager : MonoBehaviour
     public void OnTriggerWin()
     {
         _gameState = WIN_STATE;
+        TutorialManager.Instance.DisableTutorial(_currentStage);
         StartCoroutine(GameUIManager.Instance.OnTriggerEnterWinPanel());
     }
 
@@ -347,34 +354,39 @@ public class GameplayManager : MonoBehaviour
 
     public void Pause()
     {
-        if (_currentStage == 0)
-            tutorialCursor.SetActive(false);
+        TutorialManager.Instance.SetTutorial(_currentStage);
         OnPauseEvent.Invoke();
         cameraBehaviour.SetDisable();
     }
 
     public void Resume()
     {
-        if (_currentStage == 0)
-            tutorialCursor.SetActive(true);
+        TutorialManager.Instance.DisableTutorial(_currentStage);
         OnResumeEvent.Invoke();
         cameraBehaviour.SetEnable();
     }
 
     public void EnableTarget()
     {
-        if (_currentStage == 0)
-            tutorialCursor.SetActive(true);
         _currentPuzzle.gameObject.SetActive(true);
     }
 
     public void DisableTarget()
     {
-        if (_currentStage == 0)
-            tutorialCursor.SetActive(false);
+        TutorialManager.Instance.DisableTutorial(_currentStage);
         _currentPuzzle.gameObject.SetActive(false);
     }
 
+    public int CubesLeft()
+    {
+        return _currentPuzzle.childCount;
+    }
+
+    public Transform CurrentPuzzle()
+    {
+        return _currentPuzzle.transform;
+    }
+    
     #endregion
 
     #region Ads behaviours

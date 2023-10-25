@@ -1,0 +1,19 @@
+{
+  "level": 0,
+  "state": "PLAYING",
+  "move": 2,
+  "transforms": [
+    {
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 270.0,
+        "y": 90.0,
+        "z": 0.0
+      }
+    }
+  ]
+}

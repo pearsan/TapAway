@@ -84,7 +84,7 @@ public class GameplayManager : MonoBehaviour
                     {
                         HandlePlayButton();
                     }
-                    else
+                    else if (_currentStage >= 3)
                     {
                         _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
 

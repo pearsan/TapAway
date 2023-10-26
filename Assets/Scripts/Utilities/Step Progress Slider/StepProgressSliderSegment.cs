@@ -23,6 +23,12 @@ public class StepProgressSliderSegment : MonoBehaviour
         Fill.GetComponent<Image>().DOFillAmount(0.44f, 0f);
     }
 
+    public void OnTriggerHalfFillSegmentTween()
+    {
+        Fill = transform.Find("Segment Fill").gameObject;
+        Fill.GetComponent<Image>().DOFillAmount(0.44f, 1.5f).From(0).SetId("Fill segment");
+    } 
+
     public void OnTriggerFillntSegment()
     {
         Fill = transform.Find("Segment Fill").gameObject;

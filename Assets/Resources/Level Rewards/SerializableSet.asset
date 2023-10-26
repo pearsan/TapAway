@@ -15,7 +15,7 @@ MonoBehaviour:
   LevelRewards:
   - Level: 1
     Reward: Key
-  - Level: 2
+  - Level: 3
     Reward: Egg
   - Level: 5
     Reward: Chest

@@ -144,7 +144,6 @@ public class TabGUIManager : MonoBehaviour
                 _itemSelectedFeedback.transform.SetParent(item.Item1.transform);
                 _itemSelectedFeedback.GetComponent<RectTransform>().offsetMin = Vector2.zero;
                 _itemSelectedFeedback.GetComponent<RectTransform>().offsetMax = Vector2.zero;
-                Debug.Log(item.Item2.ShopItemPrefab);
                 GameplayManager.Instance.ChangeCurrentSkin(item.Item2.ShopItemPrefab);
                 IsThisTabHasItemSelected = true;
             }

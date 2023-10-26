@@ -35,6 +35,7 @@ public class GameUIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject WinPanel;
     [SerializeField] private GameObject LosePanel;
+    [SerializeField] private GameObject LevelRewardProgressPanel;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnStartEvent;
@@ -94,7 +95,6 @@ public class GameUIManager : MonoBehaviour
 
     public void OnExitLevelRewardAnimation()
     {
-        Debug.Log("Set IsRewardClaim");
         LevelRewardManager.Instance.IsRewardClaim = true;
         GachaLayer.OnExitGachaAnimation();
         GameplayManager.Instance.EnableTarget();
@@ -104,15 +104,14 @@ public class GameUIManager : MonoBehaviour
     public void OnNextLevelWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
-            () => { OnAddGoldFeedbackAnimation(800); OnTriggerExitWinPanel(); StartCoroutine(WaitForNextLevel(0.3f)); }
+            () => { OnAddGoldFeedbackAnimation(800);}
             , () => { });
     }    
 
     public void OnNextLevelWithoutAdsButton()
     {
-        OnAddGoldFeedbackAnimation(400); 
-        OnTriggerExitWinPanel();
-        StartCoroutine(WaitForNextLevel(0.3f));
+        OnAddGoldFeedbackAnimation(400);
+        //StartCoroutine(WaitForNextLevel(0.3f));
     }
     
     public void OnTryAgainWithAdsButton()
@@ -178,25 +177,32 @@ public class GameUIManager : MonoBehaviour
 
     public IEnumerator OnTriggerEnterWinPanel()
     {
+        WinPanel.SetActive(true);
+        yield return new WaitUntil(() => !WinPanel.activeSelf);
+
+        LevelRewardManager.Instance.IsRewardClaim = false;
+
+        LevelRewardProgressPanel.SetActive(true);
+        StartCoroutine(LevelRewardUIManager.Instance.CreateNewRewardProgressTween(LevelRewardProgressPanel.transform.Find("Reward Progress Tween")));
+
+        yield return new WaitUntil(() => !LevelRewardProgressPanel.activeSelf);
+
         if (LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
         {
             OnLevelRewardFeedbackAnimation(ShopManager.Instance.SubcriberSO);
             yield return new WaitUntil(() => LevelRewardManager.Instance.IsRewardClaim);
-            Debug.Log("Run?");
+            LevelRewardManager.Instance.IsRewardClaim = false;
+            StartCoroutine(WaitForNextLevel(0.3f));
+            yield break;
         }
-
-        WinPanel.SetActive(true);
+        else
+            StartCoroutine(WaitForNextLevel(0.3f));
     }
     
     public void OnTriggerEnterLosePanel()
     {
         LosePanel.SetActive(true);
         BonusMoveWithAd.text = "+" + GameplayManager.Instance.GetBonusMovesAttemps() + " moves";
-    }
-
-    private void OnTriggerExitWinPanel()
-    {
-        WinPanel.SetActive(false);
     }
 
     private void OnTriggerExitLosePanel()

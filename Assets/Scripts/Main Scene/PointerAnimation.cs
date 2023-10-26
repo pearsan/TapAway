@@ -9,6 +9,8 @@ public class PointerAnimation : MonoBehaviour
 {
     public Image sprite1;
     public Image sprite2;
+
+    private Sequence _sequence;
     // Start is called before the first frame update
 
     private void OnEnable()
@@ -19,27 +21,37 @@ public class PointerAnimation : MonoBehaviour
     void StartAnimation()
     {
         // Create a new Sequence
-        Sequence sequence = DOTween.Sequence();
-        sequence.Append(sprite1.DOFade(0, 0f)); // Fade in over 1 second
-        sequence.Append(sprite2.DOFade(0, 0f)); // Fade in over 1 second
-        sequence.AppendInterval(0.5f); // Wait for 1 second
+        _sequence = DOTween.Sequence();
+        _sequence.Append(sprite1.DOFade(0, 0f)); // Fade in over 1 second
+        _sequence.Append(sprite2.DOFade(0, 0f)); // Fade in over 1 second
+        _sequence.AppendInterval(0.5f); // Wait for 1 second
 
         // Add the first sprite fade in and out to the sequence
-        sequence.Append(sprite1.DOFade(1, 0.5f)); // Fade in over 1 second
-        sequence.AppendInterval(0.35f); // Wait for 1 second
-        sequence.Append(sprite1.DOFade(0, 0f)); // Fade out immediately
+        _sequence.Append(sprite1.DOFade(1, 0.5f)); // Fade in over 1 second
+        _sequence.AppendInterval(0.35f); // Wait for 1 second
+        _sequence.Append(sprite1.DOFade(0, 0f)); // Fade out immediately
 
         // Add the second sprite fade in and out to the sequence
-        sequence.Append(sprite2.DOFade(1, 0f)); // Fade in over 1 second
-        sequence.AppendInterval(0.25f); // 
-        sequence.Append(sprite2.DOFade(0, 0f)); // Fade out over 1 second
+        _sequence.Append(sprite2.DOFade(1, 0f)); // Fade in over 1 second
+        _sequence.AppendInterval(0.25f); // 
+        _sequence.Append(sprite2.DOFade(0, 0f)); // Fade out over 1 second
 
         // Add the first sprite fade in and out again to the sequence
-        sequence.Append(sprite1.DOFade(1, 0f)); // Fade in over 1 second
-        sequence.AppendInterval(0.35f); // Wait for 1 second
-        sequence.Append(sprite1.DOFade(0, 0.5f)); // Fade out over 1 second
+        _sequence.Append(sprite1.DOFade(1, 0f)); // Fade in over 1 second
+        _sequence.AppendInterval(0.35f); // Wait for 1 second
+        _sequence.Append(sprite1.DOFade(0, 0.5f)); // Fade out over 1 second
 
         // Loop the sequence indefinitely
-        sequence.SetLoops(-1);
+        _sequence.SetLoops(-1);
+    }
+
+    private void OnDestroy()
+    {
+        _sequence.Kill();
+    }
+
+    private void OnDisable()
+    {
+        _sequence.Kill();
     }
 }

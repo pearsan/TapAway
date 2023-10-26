@@ -126,6 +126,8 @@ public class GameplayManager : MonoBehaviour
         }
         else
         {
+            if (!cameraBehaviour.CameraIsOn())
+                cameraBehaviour.SetEnable();
             _currentPuzzle.GetComponent<GameplayGenerater>().StartCoroutine(level.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
         }
         TutorialManager.Instance.SetTutorial(_currentStage);

@@ -34,7 +34,8 @@ public class CameraBehaviour : MonoBehaviour
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
-    private bool cameraEnable = true;
+    private bool _cameraEnable = true;
+    private bool _behaviorOn = false;
     /// <summary>
     /// EDITOR Cube
     /// </summary>
@@ -55,7 +56,7 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && cameraEnable)
+            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && _cameraEnable)
             {
                 ShootRay();
             }
@@ -67,13 +68,13 @@ public class CameraBehaviour : MonoBehaviour
         SetZoom();
         SetRotate();
         SetDrag();
-        cameraEnable = true;
+        _cameraEnable = true;
     }
 
     public void SetDisable()
     {
         DisableDrag();
-        cameraEnable = false;
+        _cameraEnable = false;
     }
 
     private void SetRotate()
@@ -106,7 +107,7 @@ public class CameraBehaviour : MonoBehaviour
     private IEnumerator Rotate()
     {
         _rotateAllowed = true;
-        while(_rotateAllowed && _targert != null && cameraEnable)
+        while(_rotateAllowed && _targert != null && _cameraEnable)
         {
 
             _rotation *= speedRotate;
@@ -170,7 +171,7 @@ public class CameraBehaviour : MonoBehaviour
             
             
             //drag
-            if (cameraEnable)
+            if (_cameraEnable)
             {
                 //zoom
                 if (touchCount  < 2)
@@ -345,6 +346,12 @@ public class CameraBehaviour : MonoBehaviour
     public void SetTargert(Transform targert)
     {
         _targert = targert;
+    }
+
+    public bool CameraIsOn()
+    {
+        return _behaviorOn;
+        
     }
 }
 

@@ -23,12 +23,12 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject cubePrefabs;
+    [SerializeField] protected GameObject cubePrefabs;
 
     public GameObject shapePrefab;
-    private List<TapCube> _cubes;
+    protected List<TapCube> _cubes;
 
-    [SerializeField] private TextAsset jsonFile;
+    [SerializeField] protected TextAsset jsonFile;
     [SerializeField] private string levelName;
     [SerializeField] private PurchaseSkinSO currentSkinSo;
     [SerializeField] private PurchaseSkinSO defaultSkinSo;
@@ -251,9 +251,8 @@ public class CubeGenerator : MonoBehaviour
 
     public IEnumerator SetupLevel(GameObject tapCube)
     {
-        LoadJson(tapCube);
-        yield return new WaitForSeconds(1f);
-        Autoplay();
+        yield return StartCoroutine(LoadJson(tapCube, Autoplay));
+
 
         transform.position = new Vector3(0, 0, 0);
         
@@ -279,7 +278,7 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
-    public void LoadJson(GameObject tapCube)
+    public IEnumerator LoadJson(GameObject tapCube, Action callback)
     {
         if (tapCube == null)
             tapCube = cubePrefabs;
@@ -296,7 +295,9 @@ public class CubeGenerator : MonoBehaviour
             cube.transform.localRotation = RandomRotation();
             cube.transform.localPosition = position;
             i++;
-        }     
+        }
+        yield return new WaitForSeconds(0.1f);
+        callback?.Invoke();
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)
@@ -401,26 +402,6 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    public void SetSkin(GameObject cube)
-    {
-        cubePrefabs.GetComponentInChildren<MeshFilter>().sharedMesh =
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh;
-        cubePrefabs.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial;
-        
-        /*if (currentSkinSo == null)
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-        else
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }*/
-    }
 
     private void ShowCubes()
     {
@@ -434,11 +415,9 @@ public class CubeGenerator : MonoBehaviour
     }
     
     #endregion
-    
-    
-    
-    
-    private void MoveChild(Transform cube)
+
+
+    protected void MoveChild(Transform cube)
     {
         float distance = 10.0f; // Define how far you want to move the child
         // Get the direction from the parent to the child
@@ -448,15 +427,15 @@ public class CubeGenerator : MonoBehaviour
         // Move the child a certain distance along this line
         cube.GetChild(0).position = cube.position + direction * distance;
     }
-    
-    private void MoveAnimChild(Transform cube)
+
+    protected void MoveAnimChild(Transform cube)
     {
         Transform cubeMesh = cube.GetChild(0);
         cube.gameObject.GetComponent<TapCube>().SetCanDoMove(false);
         cubeMesh.DOLocalMove(new Vector3(0, 0, 0), 1).SetEase(Ease.InOutSine).OnComplete((() => cube.gameObject.GetComponent<TapCube>().SetCanDoMove(true)));
     }
 
-    private Bounds CalculateTotalBounds()
+    protected Bounds CalculateTotalBounds()
     {
         Bounds bounds = new Bounds();
 
@@ -479,7 +458,7 @@ public class CubeGenerator : MonoBehaviour
         return bounds;
     }
 
-    void MoveChildrenToCenterPoint(Vector3 offset)
+    protected void MoveChildrenToCenterPoint(Vector3 offset)
     {
         foreach (Transform child in transform)
         {

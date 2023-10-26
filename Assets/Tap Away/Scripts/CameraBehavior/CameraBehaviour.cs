@@ -34,7 +34,8 @@ public class CameraBehaviour : MonoBehaviour
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
-    private bool cameraEnable = true;
+    private bool _cameraEnable = true;
+    private bool _behaviorOn = false;
     /// <summary>
     /// EDITOR Cube
     /// </summary>
@@ -45,9 +46,9 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        SetZoom();
+        /*SetZoom();
         SetRotate();
-        SetDrag();
+        SetDrag();*/
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -55,7 +56,7 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && cameraEnable)
+            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && _cameraEnable)
             {
                 ShootRay();
             }
@@ -64,14 +65,16 @@ public class CameraBehaviour : MonoBehaviour
 
     public void SetEnable()
     {
+        SetZoom();
+        SetRotate();
         SetDrag();
-        cameraEnable = true;
+        _cameraEnable = true;
     }
 
     public void SetDisable()
     {
         DisableDrag();
-        cameraEnable = false;
+        _cameraEnable = false;
     }
 
     private void SetRotate()
@@ -104,7 +107,7 @@ public class CameraBehaviour : MonoBehaviour
     private IEnumerator Rotate()
     {
         _rotateAllowed = true;
-        while(_rotateAllowed && _targert != null && cameraEnable)
+        while(_rotateAllowed && _targert != null && _cameraEnable)
         {
 
             _rotation *= speedRotate;
@@ -168,7 +171,7 @@ public class CameraBehaviour : MonoBehaviour
             
             
             //drag
-            if (cameraEnable)
+            if (_cameraEnable)
             {
                 //zoom
                 if (touchCount  < 2)
@@ -251,11 +254,38 @@ public class CameraBehaviour : MonoBehaviour
                 TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
                 if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
-                    GameplayManager.Instance.MinusMoveAttemps();
+                    if (GameplayManager.Instance.GetCurrentStage() > 2)
+                        GameplayManager.Instance.MinusMoveAttemps();
                     if (!tapCube.IsBlock())
                     {
                         SoundManager.Instance.TapCube();
-                        tapCube.SetMoving();
+                        if (GameplayManager.Instance.GetCurrentStage() == 2)
+                        {
+                            if (tapCube.transform.childCount > 1)
+                            {
+                                tapCube.SetMoving();
+
+                                if (tapCube.transform.GetChild(1).gameObject.activeInHierarchy)
+                                {
+                                    tapCube.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
+                                    TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                                }
+                                else
+                                {
+                                    TutorialManager.Instance._current.Remove(tapCube.transform.GetChild(1).gameObject);
+                                }
+                            }
+                        }
+                        else if (GameplayManager.Instance.GetCurrentStage() < 2)
+                        {
+                            tapCube.SetMoving();
+                            TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                        }
+                        else if (GameplayManager.Instance.GetCurrentStage() > 2)
+                        {
+                            tapCube.SetMoving();
+                        }
+
                     }
                     else
                     {
@@ -316,6 +346,12 @@ public class CameraBehaviour : MonoBehaviour
     public void SetTargert(Transform targert)
     {
         _targert = targert;
+    }
+
+    public bool CameraIsOn()
+    {
+        return _behaviorOn;
+        
     }
 }
 

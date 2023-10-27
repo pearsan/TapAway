@@ -94,12 +94,6 @@ public class GameplayGenerater : CubeGenerator
             MoveAnimChild(child);
         }
     }
-    
-    private IEnumerator SolveGame()
-    {
-        yield return new WaitForSeconds(0.05f);
-        Autoplay();
-    }
 
     // Test and make the puzzle solvable
     // ReSharper disable Unity.PerformanceAnalysis

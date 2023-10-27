@@ -16,7 +16,7 @@ public class GameplayGenerater : CubeGenerator
 
     public IEnumerator SetupLevel(GameObject tapCube)
     {
-        yield return StartCoroutine(LoadJson(tapCube, Autoplay));
+        yield return StartCoroutine(LoadJson(tapCube));
 
 
         transform.position = new Vector3(0, 0, 0);
@@ -43,7 +43,7 @@ public class GameplayGenerater : CubeGenerator
         }
     }
 
-    public IEnumerator LoadJson(GameObject tapCube, Action callback)
+    public IEnumerator LoadJson(GameObject tapCube)
     {
         if (tapCube == null)
             tapCube = cubePrefabs;
@@ -63,7 +63,8 @@ public class GameplayGenerater : CubeGenerator
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
         }
         yield return new WaitForSeconds(0.1f);
-        callback?.Invoke();
+        StartCoroutine(Autoplay());
+        yield return null;
     }
     
     public void LoadCurrentLevel(TextAsset _levelInProgress)
@@ -97,19 +98,23 @@ public class GameplayGenerater : CubeGenerator
 
     // Test and make the puzzle solvable
     // ReSharper disable Unity.PerformanceAnalysis
-    private void Autoplay()
+    private IEnumerator Autoplay()
     {
-        
-        bool playable = AutoCheck();
+        yield return null;
 
+        bool playable = AutoCheck();
         if (!playable)
         {
+            yield return null;
             Reshuffle();
-            Autoplay();
+            yield return null;
+            StartCoroutine(Autoplay());
         }
         else
         {
             ShowCubes();
+            yield return null;
+
         }
     }
 

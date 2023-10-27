@@ -78,16 +78,20 @@ public class LevelRewardUIManager : MonoBehaviour
         int total = LevelRewardManager.Instance.GetData().Item2;
 
         GameObject reward = Instantiate<GameObject>(RewardPrefab, RewardProgressTweenTransform);
-        for (int i = total - 1; i >= 1; i--)
+        for (int i = total - 1 ; i >= 1; i--)
         {
             GameObject segment = Instantiate<GameObject>(SegmentPrefab, RewardProgressTweenTransform);
-            if (i < completed)
+            if (i < completed || (i == completed && completed == total)) 
                 segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillSegment();
-            else if (i == completed)
+            else if (i == completed && completed < total)
                 segment.GetComponent<StepProgressSliderSegment>().OnTriggerHalfFillSegmentTween();
             else
                 segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
         }
+        if (completed < total)
+            reward.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
+        else
+            reward.GetComponent<StepProgressSliderSegment>().OnTriggerFullFillSegmentTween();
 
         yield return new WaitUntil(() => !DOTween.IsTweening("Fill segment"));
         LevelRewardUIManager.Instance.ExcuteButtonBehaviour();

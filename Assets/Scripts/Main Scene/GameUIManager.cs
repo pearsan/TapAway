@@ -38,7 +38,7 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject LevelRewardProgressPanel;
 
     [Header("Events")]
-    [SerializeField] private UnityEvent OnStartEvent;
+    [SerializeField] private UnityEvent OnStartEvent; 
 
     private void Awake()
     {
@@ -183,6 +183,10 @@ public class GameUIManager : MonoBehaviour
         LevelRewardManager.Instance.IsRewardClaim = false;
 
         LevelRewardProgressPanel.SetActive(true);
+
+        LevelRewardProgressPanel.GetComponent<CanvasGroup>().DOFade(1f, 0.3f).From(0);
+        LevelRewardProgressPanel.transform.DOScale(1, 0.3f).From(0).SetEase(Ease.OutSine);
+
         StartCoroutine(LevelRewardUIManager.Instance.CreateNewRewardProgressTween(LevelRewardProgressPanel.transform.Find("Reward Progress Tween")));
 
         yield return new WaitUntil(() => !LevelRewardProgressPanel.activeSelf);

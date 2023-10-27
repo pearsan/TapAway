@@ -105,6 +105,12 @@ public class ShopManager : MonoBehaviour
         GameUIManager.Instance.OnGachaFeedbackAnimation(SubcriberSO);
     }
 
+    public void MarkShopItemIsUnlock(ShopItemSO target)
+    {
+        target.IsUnlock = true;
+        SaveData();
+    }    
+
     public void SetSubcriberSOAdsUnlockProgressSuccess()
     {
         int adsWatched = SubcriberSO.AdsWatched;

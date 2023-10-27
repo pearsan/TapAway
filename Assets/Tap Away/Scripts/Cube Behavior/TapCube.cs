@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
@@ -42,9 +43,11 @@ public class TapCube : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public bool IsBlock()
     {
+        int layerMask = 1 << LayerMask.NameToLayer("Cube");
+
         float maxDistance = 100f;
         bool isHit = Physics.Raycast(transform.position, transform.forward,
-            out var hit, maxDistance);
+            out var hit, maxDistance, layerMask);
         return isHit;
     }
 

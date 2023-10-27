@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Tap Away/Prefabs/Tutorial Canvas.prefab.meta
 guid: f5fa3e7ee9ee0de4b8ffab5fae7443f0
 PrefabImporter:
+========
+guid: 930513bbfaa07a54eb6832b78838e65f
+TextScriptImporter:
+>>>>>>>> ff18313c65329fadee7b02d48d0aed130317decc:Assets/Tap Away/Resources/CurrentLevel/current.json.meta
   externalObjects: {}
   userData: 
   assetBundleName: 

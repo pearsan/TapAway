@@ -248,6 +248,22 @@ public class ShopGUIManager : MonoBehaviour
             tab.OnUpdateItemSelectedFeedback();
     }
 
+    public void ChooseNewRandomSkin()
+    {
+        foreach (var tab in tabGUIManagers)
+        {
+            if (tab.gameObject.name == "Random Skin Tab")
+            {
+                ShopItemButtonBehaviour randomSkin = OnRandomSkinToSubcribe(tab.GetComponent<RandomSkinContentGUIBehaviour>().TargetTransforms.GetComponentsInChildren<ShopItemButtonBehaviour>());
+
+                if (randomSkin != null)
+                    ShopManager.Instance.Subcribe(randomSkin.shopItemSO);
+                else
+                    BuyButton.SetActive(false);
+            }
+        }
+    }    
+
     private void FirstTabSelectedFromStart()
     {
         foreach (var tab in tabGUIManagers)

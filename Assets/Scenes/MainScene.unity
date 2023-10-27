@@ -258,6 +258,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1401960427}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &17875144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +327,7 @@ MonoBehaviour:
   hasOnUpdate: 0
   hasOnStepComplete: 0
   hasOnComplete: 0
-  hasOnTweenCreated: 0
+  hasOnTweenCreated: 1
   hasOnRewind: 0
   onStart:
     m_PersistentCalls:
@@ -334,7 +346,19 @@ MonoBehaviour:
       m_Calls: []
   onTweenCreated:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 17875146}
+        m_TargetAssemblyTypeName: DG.Tweening.DOTweenAnimation, Assembly-CSharp-firstpass
+        m_MethodName: DORewind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onRewind:
     m_PersistentCalls:
       m_Calls: []
@@ -417,7 +441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 1
+  onEnableBehaviour: 2
   onDisableBehaviour: 2
 --- !u!1 &26062090
 GameObject:
@@ -1559,6 +1583,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1401960427}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &402735782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1616,7 +1652,7 @@ MonoBehaviour:
   hasOnUpdate: 0
   hasOnStepComplete: 0
   hasOnComplete: 0
-  hasOnTweenCreated: 0
+  hasOnTweenCreated: 1
   hasOnRewind: 0
   onStart:
     m_PersistentCalls:
@@ -1635,7 +1671,19 @@ MonoBehaviour:
       m_Calls: []
   onTweenCreated:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 402735784}
+        m_TargetAssemblyTypeName: DG.Tweening.DOTweenAnimation, Assembly-CSharp-firstpass
+        m_MethodName: DORewind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onRewind:
     m_PersistentCalls:
       m_Calls: []
@@ -1718,7 +1766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 1
+  onEnableBehaviour: 3
   onDisableBehaviour: 2
 --- !u!1001 &403819850
 PrefabInstance:
@@ -3409,6 +3457,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1419474775}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &602294466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3466,7 +3526,7 @@ MonoBehaviour:
   hasOnUpdate: 0
   hasOnStepComplete: 0
   hasOnComplete: 0
-  hasOnTweenCreated: 0
+  hasOnTweenCreated: 1
   hasOnRewind: 0
   onStart:
     m_PersistentCalls:
@@ -3485,7 +3545,19 @@ MonoBehaviour:
       m_Calls: []
   onTweenCreated:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 602294468}
+        m_TargetAssemblyTypeName: DG.Tweening.DOTweenAnimation, Assembly-CSharp-firstpass
+        m_MethodName: DORewind
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onRewind:
     m_PersistentCalls:
       m_Calls: []
@@ -3568,7 +3640,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 1
+  onEnableBehaviour: 2
   onDisableBehaviour: 2
 --- !u!1 &602414738
 GameObject:
@@ -3847,7 +3919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &680405254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4720,7 +4792,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 115, y: -700}
+  m_AnchoredPosition: {x: 115, y: -300}
   m_SizeDelta: {x: 180, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &934200837
@@ -6939,7 +7011,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loopType: 0
   loops: 1
-  id: 
+  id: Reward_Claimed_Panel
   isRelative: 0
   isFrom: 1
   isIndependentUpdate: 0
@@ -6951,7 +7023,7 @@ MonoBehaviour:
   animationType: 5
   targetType: 11
   forcedTargetType: 0
-  autoPlay: 1
+  autoPlay: 0
   useTargetAsV3: 0
   endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
@@ -7024,7 +7096,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 1
+  onEnableBehaviour: 0
   onDisableBehaviour: 2
 --- !u!1 &1413290056
 GameObject:
@@ -7362,7 +7434,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loopType: 0
   loops: 1
-  id: 
+  id: Gold_Claimed_Panel
   isRelative: 0
   isFrom: 1
   isIndependentUpdate: 0
@@ -7374,7 +7446,7 @@ MonoBehaviour:
   animationType: 7
   targetType: 3
   forcedTargetType: 2
-  autoPlay: 1
+  autoPlay: 0
   useTargetAsV3: 0
   endValueFloat: 0
   endValueV3: {x: 0, y: 0, z: 0}
@@ -7409,7 +7481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   preset: 0
-  onEnableBehaviour: 1
+  onEnableBehaviour: 0
   onDisableBehaviour: 2
 --- !u!1 &1419831688
 GameObject:
@@ -7985,7 +8057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1544291475
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10078,7 +10150,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loopType: 0
   loops: 1
-  id: Down Fade
+  id: 
   isRelative: 0
   isFrom: 0
   isIndependentUpdate: 0
@@ -10186,7 +10258,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   loopType: 0
   loops: 1
-  id: Down Scale
+  id: 
   isRelative: 0
   isFrom: 0
   isIndependentUpdate: 0

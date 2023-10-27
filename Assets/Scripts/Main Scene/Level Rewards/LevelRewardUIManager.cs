@@ -38,9 +38,15 @@ public class LevelRewardUIManager : MonoBehaviour
     public void ExcuteButtonBehaviour()
     {
         if (LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
+        {
             LevelRewardEvent.Invoke();
+            DOTween.Restart("Reward_Claimed_Panel");
+        }
         else
+        {
             GoldRewardEvent.Invoke();
+            DOTween.Restart("Gold_Claimed_Panel");
+        }
     }     
 
     public void CreateNewRewardProgress()

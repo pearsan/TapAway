@@ -42,6 +42,12 @@ public class LevelRewardManager : MonoBehaviour
     public bool OnValidateTriggerClaimRewardEvent()
     {
         return _totalLevelCompleted + 1 == _totalLevelToClaim;
+    }
+
+    public void OnChooseRewardDependExcel()
+    {
+        ShopGUIManager.Instance.ChooseNewRandomSkin();
+
     }    
 
     /// <summary>

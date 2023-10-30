@@ -7,21 +7,34 @@ using Random = UnityEngine.Random;
 
 public class GameplayGenerater : CubeGenerator
 {
- 
-    public delegate void PuzzleGeneratedHandler();
-    public event PuzzleGeneratedHandler OnPuzzleGenerated;
-
+    
     #region Setup Level
 
+    
+    // ReSharper disable Unity.PerformanceAnalysis
 
-    public IEnumerator SetupLevel(GameObject tapCube)
+    public void BeginLevel(GameObject tapCube)
     {
-        yield return StartCoroutine(LoadJson(tapCube));
+        StartCoroutine(SetupLevel(tapCube));
+    }
 
-
-        transform.position = new Vector3(0, 0, 0);
+    private IEnumerator SetupLevel(GameObject tapCube)
+    {
+        yield return null;
+        yield return LoadJson(tapCube);
+        yield return new WaitForSeconds(0.5f);
         
-        // Get the total bounds of all the children objects
+        yield return StartCoroutine(Autoplay());
+        
+        IntroAnimation();
+        
+        GameplayManager.Instance.SetDefaultMoveAttemps();
+    }
+
+    private void IntroAnimation()
+    {
+        transform.position = new Vector3(0, 0, 0);
+
         Bounds bounds = CalculateTotalBounds();
 
         // Calculate the center point
@@ -32,14 +45,16 @@ public class GameplayGenerater : CubeGenerator
 
         // Move children objects to have the parent in the center
         MoveChildrenToCenterPoint(offset);
-        foreach (Transform child in transform)
+        ShowCubes();
+
+        foreach (Transform cube in transform)
         {
-            MoveChild(child);
+            MoveChild(cube);
         }
 
-        foreach (Transform child in transform)
+        foreach (Transform cube in transform)
         {
-            MoveAnimChild(child);
+            MoveAnimChild(cube);
         }
     }
 
@@ -62,12 +77,11 @@ public class GameplayGenerater : CubeGenerator
             
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
         }
-        yield return new WaitForSeconds(0.1f);
-        StartCoroutine(Autoplay());
+
         yield return null;
     }
-    
-    public void LoadCurrentLevel(TextAsset _levelInProgress)
+
+    public override void LoadCurrentLevel(TextAsset _levelInProgress)
     {
         _cubes = new List<TapCube>();
         ClearCube();
@@ -96,30 +110,21 @@ public class GameplayGenerater : CubeGenerator
         }
     }
 
-    // Test and make the puzzle solvable
-    // ReSharper disable Unity.PerformanceAnalysis
+
     private IEnumerator Autoplay()
     {
-        yield return null;
-
         bool playable = AutoCheck();
-        if (!playable)
+        while (!playable)
         {
-            yield return null;
-            Reshuffle();
-            yield return null;
-            StartCoroutine(Autoplay());
+            yield return StartCoroutine(Reshuffle());
+            playable = AutoCheck();
         }
-        else
-        {
-            ShowCubes();
-            yield return null;
 
-        }
     }
 
     private bool AutoCheck()
     {
+
         bool rePlay = true;
         bool playable = true;
         while (rePlay)
@@ -142,8 +147,10 @@ public class GameplayGenerater : CubeGenerator
         return playable;
     }
 
-    public void Reshuffle()
+    public IEnumerator Reshuffle()
     {
+        yield return null;
+
         for (int i = _cubes.Count - 1; i >= 0; i--)
         {
             var cube = _cubes[i];
@@ -151,13 +158,16 @@ public class GameplayGenerater : CubeGenerator
             if (cube.IsBlock())
             {
                 cube.transform.localRotation = RandomRotation();
-                if (!cube.IsBlock())
-                {
-                    _cubes.RemoveAt(i);
-                    cube.HiddenCube();
-                }
+            }
+            yield return null;
+            
+            if (!cube.IsBlock())
+            {
+                _cubes.RemoveAt(i);
+                cube.HiddenCube();
             }
         }
+
     }
         
     private Quaternion RandomRotation()
@@ -176,9 +186,7 @@ public class GameplayGenerater : CubeGenerator
         foreach (Transform cube in transform)
         {
             cube.GetComponent<TapCube>().ShowCube();
-            /*
-            SetSkin(cube.gameObject);
-        */
+
         }
     }
     

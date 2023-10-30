@@ -30,8 +30,7 @@ public class CubeGenerator : MonoBehaviour
 
     [SerializeField] protected TextAsset jsonFile;
     [SerializeField] private string levelName;
-    [SerializeField] private PurchaseSkinSO currentSkinSo;
-    [SerializeField] private PurchaseSkinSO defaultSkinSo;
+
     [SerializeField] private bool isHollow;
     // ReSharper disable Unity.PerformanceAnalysis
 
@@ -299,8 +298,8 @@ public class CubeGenerator : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         callback?.Invoke();
     }
-    
-    public void LoadCurrentLevel(TextAsset _levelInProgress)
+
+    public virtual void LoadCurrentLevel(TextAsset _levelInProgress)
     {
         _cubes = new List<TapCube>();
         ClearCube();

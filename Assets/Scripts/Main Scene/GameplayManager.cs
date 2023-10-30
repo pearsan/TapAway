@@ -128,7 +128,7 @@ public class GameplayManager : MonoBehaviour
         {
             if (!cameraBehaviour.CameraIsOn())
                 cameraBehaviour.SetEnable();
-            _currentPuzzle.GetComponent<GameplayGenerater>().StartCoroutine(level.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
+            _currentPuzzle.GetComponent<GameplayGenerater>().BeginLevel(cubePrefabs);
         }
         TutorialManager.Instance.SetTutorial(_currentStage);
 
@@ -138,8 +138,7 @@ public class GameplayManager : MonoBehaviour
             Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
             Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
         }
-
-        SetDefaultMoveAttemps();
+        
     }
 
     #region DataHandle
@@ -283,8 +282,9 @@ public class GameplayManager : MonoBehaviour
         return Mathf.CeilToInt(childCount * 10 / 100);;
     }
     
-    private void SetDefaultMoveAttemps()
+    public void SetDefaultMoveAttemps()
     {
+        Debug.Log("setted");
         var childCount = (float)_currentPuzzle.childCount;
         moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
     }

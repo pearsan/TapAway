@@ -46,9 +46,7 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        /*SetZoom();
         SetRotate();
-        SetDrag();*/
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -66,14 +64,15 @@ public class CameraBehaviour : MonoBehaviour
     public void SetEnable()
     {
         SetZoom();
-        SetRotate();
         SetDrag();
+        _rotateAllowed = true;
         _cameraEnable = true;
     }
 
     public void SetDisable()
     {
         DisableDrag();
+        _rotateAllowed = false;
         _cameraEnable = false;
     }
 
@@ -106,6 +105,7 @@ public class CameraBehaviour : MonoBehaviour
 
     private IEnumerator Rotate()
     {
+        Debug.Log(pressed.bindings);
         _rotateAllowed = true;
         while(_rotateAllowed && _targert != null && _cameraEnable)
         {

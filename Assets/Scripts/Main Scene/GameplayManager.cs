@@ -356,16 +356,20 @@ public class GameplayManager : MonoBehaviour
 
     public void Pause()
     {
-        TutorialManager.Instance.SetTutorial(_currentStage);
+        TutorialManager.Instance.DisableTutorial(_currentStage);
         OnPauseEvent.Invoke();
+        /*
         cameraBehaviour.SetDisable();
+    */
     }
 
     public void Resume()
     {
-        TutorialManager.Instance.DisableTutorial(_currentStage);
+        TutorialManager.Instance.SetTutorial(_currentStage);
         OnResumeEvent.Invoke();
+        /*
         cameraBehaviour.SetEnable();
+    */
     }
 
     public void EnableTarget()

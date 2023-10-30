@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Dino 1
   IsUnlock: 0
-  Price: 60
+  Price: 1000
   Type: Skin
   ShopItemPrefab: {fileID: 8534513466609731956, guid: 2ff030e98745ef34ab0fed10b4622de5, type: 3}
   CanUnlockByGold: 1

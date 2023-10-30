@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Ball 2
   IsUnlock: 0
-  Price: 60
+  Price: 1000
   Type: Skin
   ShopItemPrefab: {fileID: 919132149155446097, guid: bac8dfba8f967a94f9190c48822f3b3a, type: 3}
-  CanUnlockByGold: 0
+  CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0
   AdsToUnlock: 1

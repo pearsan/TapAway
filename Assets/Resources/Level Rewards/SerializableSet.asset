@@ -13,19 +13,43 @@ MonoBehaviour:
   m_Name: SerializableSet
   m_EditorClassIdentifier: 
   LevelRewards:
-  - Level: 1
-    Reward: Key
   - Level: 3
-    Reward: Egg
-  - Level: 5
-    Reward: Chest
-  - Level: 8
-    Reward: Mystery Chest
-  - Level: 10
     Reward: Key
-  - Level: 12
+  - Level: 6
     Reward: Egg
-  - Level: 14
-    Reward: Chest
-  - Level: 16
-    Reward: Chest
+  - Level: 9
+    Reward: 
+  - Level: 12
+    Reward: 
+  - Level: 15
+    Reward: 
+  - Level: 18
+    Reward: 
+  - Level: 21
+    Reward: 
+  - Level: 24
+    Reward: 
+  - Level: 27
+    Reward: 
+  - Level: 30
+    Reward: 
+  - Level: 33
+    Reward: 
+  - Level: 36
+    Reward: 
+  - Level: 39
+    Reward: 
+  - Level: 42
+    Reward: 
+  - Level: 45
+    Reward: 
+  - Level: 48
+    Reward: 
+  - Level: 51
+    Reward: 
+  - Level: 54
+    Reward: 
+  - Level: 57
+    Reward: 
+  - Level: 60
+    Reward: 

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Bunny 3
   IsUnlock: 0
-  Price: 60
+  Price: 1000
   Type: Skin
   ShopItemPrefab: {fileID: 919132149155446097, guid: beae588188c0e0141a73aafac4764de7, type: 3}
-  CanUnlockByGold: 0
+  CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0
   AdsToUnlock: 1

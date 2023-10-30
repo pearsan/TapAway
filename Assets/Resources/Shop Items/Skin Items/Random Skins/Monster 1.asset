@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Skin Monster 1
   IsUnlock: 0
-  Price: 120
+  Price: 1000
   Type: Skin
   ShopItemPrefab: {fileID: 5294016913506922835, guid: 1be6dabd606e856498486384cdf9204c, type: 3}
   CanUnlockByGold: 1

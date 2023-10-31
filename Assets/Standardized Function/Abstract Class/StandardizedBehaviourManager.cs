@@ -25,6 +25,6 @@ public abstract class StandardizedBehaviourManager : MonoBehaviour
     {
         Subcriber = subcriber;
     }
-    public abstract void SetData();
+    public abstract void SetData(string key, object value);
     public abstract object GetData(string key);
 }

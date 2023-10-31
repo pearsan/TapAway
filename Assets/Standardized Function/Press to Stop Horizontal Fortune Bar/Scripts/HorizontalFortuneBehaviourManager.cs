@@ -10,15 +10,16 @@ public class HorizontalFortuneBehaviourManager : StandardizedBehaviourManager
     [HideInInspector] public List<GameObject> FortuneSlots; //This list save all slot in fortune (UI in game but in hierachy)
 
     [Tooltip("Time between select new slot in fortune")]
-    [SerializeField] private int timeInterval;
+    [SerializeField] private float timeInterval;
 
-    private bool CanSelectNewSlot = true;
     private int _selectingSlotIndex = 0;
     private float timer = 0;
 
     protected override void Initialize()
     {
         DataDictionary.Add("InstantiateRules", InstantiateRules);
+        DataDictionary.Add("SelectingSlotIndex", _selectingSlotIndex);
+        DataDictionary.Add("CanSelectNewSlot", true);
         FortuneSlots = new List<GameObject>();
 
         base.Initialize();
@@ -29,9 +30,9 @@ public class HorizontalFortuneBehaviourManager : StandardizedBehaviourManager
         SelectNewSlot();
     }
 
-    public override void SetData()
+    public override void SetData(string key, object value)
     {
-        
+        DataDictionary[key] = value;
     }
 
     public override object GetData(string key)
@@ -43,7 +44,7 @@ public class HorizontalFortuneBehaviourManager : StandardizedBehaviourManager
 
     private void SelectNewSlot()
     {
-        if (!CanSelectNewSlot) return;
+        if (! (bool)DataDictionary["CanSelectNewSlot"] ) return;
 
         timer += Time.deltaTime;
 
@@ -56,6 +57,8 @@ public class HorizontalFortuneBehaviourManager : StandardizedBehaviourManager
             {
                 _selectingSlotIndex = 0;
             }
+
+            DataDictionary["SelectingSlotIndex"] = _selectingSlotIndex;
         }
     }    
 }

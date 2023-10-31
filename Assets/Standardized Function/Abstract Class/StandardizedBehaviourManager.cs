@@ -9,11 +9,17 @@ public abstract class StandardizedBehaviourManager : MonoBehaviour
 
     [HideInInspector] public StandardizedUIManager Subcriber; //Use "Observer pattern" idea
 
-    protected virtual void Start()
+    [HideInInspector] public bool IsInit = false;
+
+    protected virtual void Awake()
     {
+        DataDictionary = new Dictionary<string, object>();
         Initialize();
     }
-    protected abstract void Initialize();
+    protected virtual void Initialize()
+    {
+        IsInit = true;
+    }    
 
     public void Subcribe(StandardizedUIManager subcriber)
     {

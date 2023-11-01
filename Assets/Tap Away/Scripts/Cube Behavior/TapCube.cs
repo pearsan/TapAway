@@ -160,7 +160,10 @@ public class TapCube : MonoBehaviour, ITappable
     public void Tap()
     {
         if (!IsBlock())
+        {
             SetMoving();
+            GameplayManager.Instance.SpawnRewardCube();           
+        }
         else
         {
             TryMove();

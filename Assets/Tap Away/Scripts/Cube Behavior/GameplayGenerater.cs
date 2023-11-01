@@ -31,6 +31,8 @@ public class GameplayGenerater : CubeGenerator
 
     private void IntroAnimation()
     {
+        ShowCubes();
+        
         transform.position = new Vector3(0, 0, 0);
 
         Bounds bounds = CalculateTotalBounds();
@@ -43,7 +45,7 @@ public class GameplayGenerater : CubeGenerator
 
         // Move children objects to have the parent in the center
         MoveChildrenToCenterPoint(offset);
-        ShowCubes();
+        
 
         foreach (Transform cube in transform)
         {

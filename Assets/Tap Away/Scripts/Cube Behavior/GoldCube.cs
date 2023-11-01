@@ -6,6 +6,7 @@ public class GoldCube : MonoBehaviour, ITappable
 {
     public void Tap()
     {
+        transform.parent = null;
         Destroy(gameObject);
     }
 }

@@ -30,7 +30,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject cubePrefabs;
     [SerializeField] private GameObject goldCube;
 
-    [Range(0, 100)] [SerializeField] private float initialReward;
+    [Range(0, 100)] [SerializeField] private float initialRewardRate;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -90,7 +90,7 @@ public class GameplayManager : MonoBehaviour
                     else if (_currentStage >= 3)
                     {
                         _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
-
+                        InitiateRewardCube();
                         cameraBehaviour.SetTargert(_currentPuzzle);  
                     }
                     if (Camera.main != null)
@@ -152,20 +152,16 @@ public class GameplayManager : MonoBehaviour
 
     private void InitiateRewardCube()
     {
-        Debug.Log("reward");
         Transform parent = _currentPuzzle; // Assuming this script is attached to the parent
         int childCount = parent.childCount;
-        int convertedChildCount = Mathf.CeilToInt(childCount * initialReward * 0.01f); // Calculate 2%
-
-
+        int convertedChildCount = Mathf.CeilToInt(childCount * initialRewardRate * 0.01f); // Calculate 2%
+        
         List<int> childIndices = new List<int>(); // List to store child indices
         for (int i = 0; i < childCount; i++)
         {
             childIndices.Add(i); // Populate the list with indices
         }
         Debug.Log(childCount);
-
-
 
         for (int i = 0; i < convertedChildCount; i++)
         {
@@ -175,6 +171,19 @@ public class GameplayManager : MonoBehaviour
             Destroy(child.gameObject); // Destroy original child
             childIndices.RemoveAt(randomIndex); // Remove selected index from list
         }
+    }
+
+    public void SpawnRewardCube()
+    {
+        int chance = Random.Range(0, 99);
+        if (_currentPuzzle.childCount > 0)
+            if (chance < initialRewardRate)
+            {
+                int randomIndex = Random.Range(0, _currentPuzzle.childCount);
+                Transform child = _currentPuzzle.GetChild(randomIndex);
+                GameObject newObject = Instantiate(goldCube, child.position, child.rotation, _currentPuzzle); // Create new GameObject1
+                Destroy(child.gameObject); // Destroy original child
+            }
     }
 
     #region DataHandle

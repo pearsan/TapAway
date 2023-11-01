@@ -1,0 +1,76 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+using TMPro;
+
+public class InGameRewardUIManager : MonoBehaviour
+{
+    public static InGameRewardUIManager Instance;
+
+    [Header("Panels")]
+    [SerializeField] private GameObject InGameRewardPanel;
+
+    [Header("Texts")]
+    [SerializeField] private TMP_Text _goldEarnText;
+    [SerializeField] private TMP_Text _goldEarnByAdsText;
+
+    private int goldEarned;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void Update()
+    {
+        UpdateGoldText();
+
+        if (Input.GetMouseButtonDown(1))
+            OnEnterInGameRewardPanel();
+    }
+
+    #region Button behaviours
+    public void ClaimGoldWithoutADsButton()
+    {
+        GameUIManager.Instance.OnAddGoldFeedbackAnimation(InGameRewardManager.Instance.GoldReward);
+    }
+
+    public void ClaimGoldWithADSButton()
+    {
+        ISHandler.Instance.ShowRewardedVideo("In-game ads to multiply gold cube"
+            , () => 
+            { 
+                goldEarned = InGameRewardManager.Instance.GoldReward * InGameRewardManager.Instance.GetMultiplyEfficient();
+                Debug.LogWarning(goldEarned);
+                DOTween.Restart("Scale_Down_In-game_Reward_Panel");
+            }
+            , () => { });
+    }    
+    #endregion
+
+    public void OnAddGold()
+    {
+        Debug.LogWarning("(b)" + goldEarned);
+        GameUIManager.Instance.OnAddGoldFeedbackAnimation(goldEarned);
+    }
+
+    #region Text behaviours
+    private void UpdateGoldText()
+    {
+        _goldEarnText.text = "+" + InGameRewardManager.Instance.GoldReward;
+        _goldEarnByAdsText.text = "Claim " + InGameRewardManager.Instance.GoldReward * InGameRewardManager.Instance.GetMultiplyEfficient();
+    }
+    #endregion
+
+    #region Panel behaviours
+    public void OnEnterInGameRewardPanel()
+    {
+        InGameRewardManager.Instance.GenerateNewGoldReward();
+        InGameRewardManager.Instance.EnableFortune();
+
+        InGameRewardPanel.SetActive(true);
+        DOTween.Restart("Scale_Up_In-game_Reward_Panel");
+    }
+    #endregion
+}

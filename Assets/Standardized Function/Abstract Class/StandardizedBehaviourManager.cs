@@ -9,7 +9,6 @@ public abstract class StandardizedBehaviourManager : MonoBehaviour
 
     [HideInInspector] public StandardizedUIManager Subcriber; //Use "Observer pattern" idea
 
-    [HideInInspector] public bool IsInit = false;
 
     protected virtual void Awake()
     {
@@ -18,7 +17,7 @@ public abstract class StandardizedBehaviourManager : MonoBehaviour
     }
     protected virtual void Initialize()
     {
-        IsInit = true;
+        
     }    
 
     public void Subcribe(StandardizedUIManager subcriber)

@@ -130,7 +130,7 @@ public class GameUIManager : MonoBehaviour
         OnTriggerExitLosePanel();
         GameplayManager.Instance.HandlePlayButton();
         Debug.Log("Restart level");
-    }    
+    }
     #endregion
 
     #region Script behaviours

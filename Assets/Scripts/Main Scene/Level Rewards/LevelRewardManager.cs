@@ -11,6 +11,8 @@ public class LevelRewardManager : MonoBehaviour
     private int _totalLevelToClaim;
     private int _totalLevelCompleted;
 
+    private int _currentReward;
+
     [HideInInspector] public bool IsRewardClaim = false;
 
     private void Awake()
@@ -41,6 +43,7 @@ public class LevelRewardManager : MonoBehaviour
 
     public bool OnValidateTriggerClaimRewardEvent()
     {
+        Debug.Log(LevelRewardDataSO[_currentReward].Reward);
         return _totalLevelCompleted + 1 == _totalLevelToClaim;
     }
 
@@ -62,6 +65,7 @@ public class LevelRewardManager : MonoBehaviour
             {
                 _totalLevelCompleted = GameplayManager.Instance.GetCurrentStage() - LevelRewardDataSO[i].Level;
                 _totalLevelToClaim = LevelRewardDataSO[i + 1].Level - LevelRewardDataSO[i].Level;
+                _currentReward = i + 1;
                 return;
             }
         }

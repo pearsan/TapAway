@@ -34,7 +34,11 @@ public class ShopItemButtonBehaviour : MonoBehaviour
     }
 
     public void OnClickButton()
-    {
+    { 
         ShopManager.Instance.Subcribe(shopItemSO);
+        if (shopItemSO is RandomSkinSO)
+        {
+            ShopGUIManager.Instance.ChooseNewRandomSkin();
+        }
     }    
 }

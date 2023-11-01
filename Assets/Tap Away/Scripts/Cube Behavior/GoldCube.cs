@@ -8,5 +8,6 @@ public class GoldCube : MonoBehaviour, ITappable
     {
         transform.parent = null;
         Destroy(gameObject);
+        InGameRewardUIManager.Instance.OnEnterInGameRewardPanel();
     }
 }

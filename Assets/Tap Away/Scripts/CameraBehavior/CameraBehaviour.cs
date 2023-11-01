@@ -36,9 +36,11 @@ public class CameraBehaviour : MonoBehaviour
     private bool firstDrag = true;
     private bool _cameraEnable = true;
     private bool _behaviorOn = false;
+    
     /// <summary>
     /// EDITOR Cube
     /// </summary>
+    /// 
     [SerializeField] private GameObject parent;
     [SerializeField] private GameObject child;
     [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
@@ -46,7 +48,6 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        SetRotate();
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -66,6 +67,15 @@ public class CameraBehaviour : MonoBehaviour
         SetZoom();
         SetDrag();
         _rotateAllowed = true;
+        _cameraEnable = true;
+    }
+
+    public void OnPause()
+    {
+        _cameraEnable = false;
+    }
+    public void OnPlay()
+    {
         _cameraEnable = true;
     }
 
@@ -105,7 +115,6 @@ public class CameraBehaviour : MonoBehaviour
 
     private IEnumerator Rotate()
     {
-        Debug.Log(pressed.bindings);
         _rotateAllowed = true;
         while(_rotateAllowed && _targert != null && _cameraEnable)
         {

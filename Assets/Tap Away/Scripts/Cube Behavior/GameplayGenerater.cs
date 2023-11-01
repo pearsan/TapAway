@@ -22,6 +22,7 @@ public class GameplayGenerater : CubeGenerator
     {
         yield return null;
         yield return LoadJson(tapCube);
+        
         yield return new WaitForSeconds(0.5f);
         
         yield return StartCoroutine(Autoplay());
@@ -149,7 +150,6 @@ public class GameplayGenerater : CubeGenerator
 
     public IEnumerator Reshuffle()
     {
-        yield return null;
 
         for (int i = _cubes.Count - 1; i >= 0; i--)
         {
@@ -159,14 +159,15 @@ public class GameplayGenerater : CubeGenerator
             {
                 cube.transform.localRotation = RandomRotation();
             }
-            yield return null;
+            /*yield return null;
             
             if (!cube.IsBlock())
             {
                 _cubes.RemoveAt(i);
                 cube.HiddenCube();
-            }
+            }*/
         }
+        yield return null;
 
     }
         

@@ -62,11 +62,13 @@ public class CameraBehaviour : MonoBehaviour
         };
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void SetEnable()
     {
+        SetRotate();
         SetZoom();
         SetDrag();
-        _rotateAllowed = true;
+        _behaviorOn = true;
         _cameraEnable = true;
     }
 
@@ -260,47 +262,39 @@ public class CameraBehaviour : MonoBehaviour
             
             if (hit.collider != null)
             {
-                TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                ITappable tapCube = hit.collider.gameObject.GetComponent<ITappable>();
                 if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
                     if (GameplayManager.Instance.GetCurrentStage() > 2)
                         GameplayManager.Instance.MinusMoveAttemps();
-                    if (!tapCube.IsBlock())
-                    {
-                        SoundManager.Instance.TapCube();
-                        if (GameplayManager.Instance.GetCurrentStage() == 2)
-                        {
-                            if (tapCube.transform.childCount > 1)
-                            {
-                                tapCube.SetMoving();
 
-                                if (tapCube.transform.GetChild(1).gameObject.activeInHierarchy)
-                                {
-                                    tapCube.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
-                                    TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
-                                }
-                                else
-                                {
-                                    TutorialManager.Instance._current.Remove(tapCube.transform.GetChild(1).gameObject);
-                                }
+                    SoundManager.Instance.TapCube();
+                    tapCube.Tap();
+
+                    #region tutorial
+                    if (GameplayManager.Instance.GetCurrentStage() == 2)
+                    {
+                        Transform hitObject = hit.collider.transform;
+                        if (hitObject.childCount > 1)
+                        {
+
+                            if (hitObject.GetChild(1).gameObject.activeInHierarchy)
+                            { 
+                                hitObject.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
+                                TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                            }
+                            else
+                            {
+                                TutorialManager.Instance._current.Remove(hitObject.GetChild(1).gameObject);
                             }
                         }
-                        else if (GameplayManager.Instance.GetCurrentStage() < 2)
-                        {
-                            tapCube.SetMoving();
-                            TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
-                        }
-                        else if (GameplayManager.Instance.GetCurrentStage() > 2)
-                        {
-                            tapCube.SetMoving();
-                        }
-
                     }
-                    else
+                    else if (GameplayManager.Instance.GetCurrentStage() < 2)
                     {
-                        tapCube.TryMove();
+                        TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
                     }
-
+                    #endregion
+                    
                     if (GameplayManager.Instance.CheckIfLose())
                     {
                         GameplayManager.Instance.OnTriggerLose();

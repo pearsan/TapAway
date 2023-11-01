@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [SelectionBase]
-public class TapCube : MonoBehaviour
+public class TapCube : MonoBehaviour, ITappable
 {
 
     [SerializeField] private bool isHidden = false;
@@ -26,7 +26,7 @@ public class TapCube : MonoBehaviour
         }
     }
 
-    public void SetMoving()
+    private void SetMoving()
     {
         transform.parent = null;
         gameObject.GetComponent<Collider>().enabled = false;
@@ -155,5 +155,15 @@ public class TapCube : MonoBehaviour
     public void SetCanDoMove(bool canMove)
     {
         _canDoMove = canMove;
+    }
+
+    public void Tap()
+    {
+        if (!IsBlock())
+            SetMoving();
+        else
+        {
+            TryMove();
+        }
     }
 }

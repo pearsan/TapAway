@@ -12,13 +12,9 @@ public class GameplayGenerater : CubeGenerator
 
     
     // ReSharper disable Unity.PerformanceAnalysis
+    
 
-    public void BeginLevel(GameObject tapCube)
-    {
-        StartCoroutine(SetupLevel(tapCube));
-    }
-
-    private IEnumerator SetupLevel(GameObject tapCube)
+    public IEnumerator SetupLevel(GameObject tapCube)
     {
         yield return null;
         yield return LoadJson(tapCube);
@@ -30,6 +26,7 @@ public class GameplayGenerater : CubeGenerator
         IntroAnimation();
         
         GameplayManager.Instance.SetDefaultMoveAttemps();
+        yield return new WaitForSeconds(1f);
     }
 
     private void IntroAnimation()
@@ -59,7 +56,7 @@ public class GameplayGenerater : CubeGenerator
         }
     }
 
-    public IEnumerator LoadJson(GameObject tapCube)
+    private IEnumerator LoadJson(GameObject tapCube)
     {
         if (tapCube == null)
             tapCube = cubePrefabs;

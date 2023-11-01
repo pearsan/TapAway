@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -27,7 +28,9 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
     [SerializeField] private GameObject cubePrefabs;
+    [SerializeField] private GameObject goldCube;
 
+    [Range(0, 100)] [SerializeField] private float initialReward;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -109,6 +112,11 @@ public class GameplayManager : MonoBehaviour
 
     public void HandlePlayButton()
     {
+        StartCoroutine(GenerateLevel());
+    }
+
+    private IEnumerator GenerateLevel()
+    {
         if (_currentPuzzle != null)
         {
             Destroy(_currentPuzzle.gameObject);
@@ -128,7 +136,7 @@ public class GameplayManager : MonoBehaviour
         {
             if (!cameraBehaviour.CameraIsOn())
                 cameraBehaviour.SetEnable();
-            _currentPuzzle.GetComponent<GameplayGenerater>().BeginLevel(cubePrefabs);
+            yield return StartCoroutine(_currentPuzzle.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
         }
         TutorialManager.Instance.SetTutorial(_currentStage);
 
@@ -139,6 +147,34 @@ public class GameplayManager : MonoBehaviour
             Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
         }
         
+        InitiateRewardCube();
+    }
+
+    private void InitiateRewardCube()
+    {
+        Debug.Log("reward");
+        Transform parent = _currentPuzzle; // Assuming this script is attached to the parent
+        int childCount = parent.childCount;
+        int convertedChildCount = Mathf.CeilToInt(childCount * initialReward * 0.01f); // Calculate 2%
+
+
+        List<int> childIndices = new List<int>(); // List to store child indices
+        for (int i = 0; i < childCount; i++)
+        {
+            childIndices.Add(i); // Populate the list with indices
+        }
+        Debug.Log(childCount);
+
+
+
+        for (int i = 0; i < convertedChildCount; i++)
+        {
+            int randomIndex = Random.Range(0, childIndices.Count); // Get random index
+            Transform child = parent.GetChild(childIndices[randomIndex]);
+            GameObject newObject = Instantiate(goldCube, child.position, child.rotation, parent); // Create new GameObject1
+            Destroy(child.gameObject); // Destroy original child
+            childIndices.RemoveAt(randomIndex); // Remove selected index from list
+        }
     }
 
     #region DataHandle
@@ -148,10 +184,14 @@ public class GameplayManager : MonoBehaviour
         if (_currentPuzzle != null)
             foreach (Transform cube in _currentPuzzle.transform)
             {
-                cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
-                    skin.GetComponentInChildren<MeshFilter>().sharedMesh;
-                cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                    skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+                if (cube.GetComponent(typeof(TapCube)) != null)
+                {
+                    cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+                        skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+                    cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                        skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;                    
+                }
+
             }
         cubePrefabs.transform.GetChild(0).gameObject.SetActive(true);
         cubePrefabs.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =

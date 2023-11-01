@@ -95,8 +95,8 @@ public class GameplayManager : MonoBehaviour
                     }
                     if (Camera.main != null)
                     {
-                        Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+                        /*Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));*/
                     }
                     break;
                 case LOSE_STATE:
@@ -143,8 +143,8 @@ public class GameplayManager : MonoBehaviour
         cameraBehaviour.SetTargert(_currentPuzzle);
         if (Camera.main != null)
         {
-            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+            /*Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));*/
         }
         
         InitiateRewardCube();

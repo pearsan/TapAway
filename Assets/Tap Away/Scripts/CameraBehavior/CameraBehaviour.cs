@@ -30,6 +30,7 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private float dragSpeed = 0.1f;
     private bool _isDragging = false;
     private Vector2 _lastDragPosition;
+    public float minCameraX, maxCameraX, minCameraY, maxCameraY;
     
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
@@ -207,8 +208,10 @@ public class CameraBehaviour : MonoBehaviour
                     firstDrag = false;
                 }
                 Vector2 differenceDrag = currentPos - prevPos;
-
-                Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
+                Vector3 newPosition = Camera.main.transform.position + new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime;
+                newPosition.x = Mathf.Clamp(newPosition.x, minCameraX, maxCameraX);
+                newPosition.y = Mathf.Clamp(newPosition.y, minCameraY, maxCameraY);
+                Camera.main.transform.position = newPosition;
 
                 touch0StartPos = touch0CurrentPos;
                 touch1StartPos = touch1CurrentPos;
@@ -241,8 +244,21 @@ public class CameraBehaviour : MonoBehaviour
             if (_lastDragPosition == Vector2.zero)
                 _lastDragPosition = currentDragPosition;
             Vector2 difference = currentDragPosition - _lastDragPosition;
-            Camera.main.transform.Translate(new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0) * Time.deltaTime, Space.Self);
+            Vector3 localNewPosition = new Vector3(-difference.x * dragSpeed / 10, -difference.y * dragSpeed / 10, 0) * Time.deltaTime;
 
+            // Apply the new position in local space
+            Camera.main.transform.Translate(localNewPosition, Space.Self);
+
+            // Get local position
+            Vector3 localPos = Camera.main.transform.localPosition;
+
+            // Clamp local X and Y position
+            localPos.x = Mathf.Clamp(localPos.x, minCameraX, maxCameraX);
+            localPos.y = Mathf.Clamp(localPos.y, minCameraY, maxCameraY);
+            localPos.z = -15;
+            // Set local position
+            Camera.main.transform.localPosition = localPos;
+            
             _lastDragPosition = currentDragPosition;
         }
         else

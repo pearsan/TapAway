@@ -22,7 +22,7 @@ public class GameplayGenerater : CubeGenerator
         yield return new WaitForSeconds(0.5f);
         
         yield return StartCoroutine(Autoplay());
-        
+
         IntroAnimation();
         
         GameplayManager.Instance.SetDefaultMoveAttemps();

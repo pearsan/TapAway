@@ -176,7 +176,7 @@ public class GameplayManager : MonoBehaviour
     public void SpawnRewardCube()
     {
         int chance = Random.Range(0, 99);
-        if (_currentPuzzle.childCount > 0)
+        if (_currentPuzzle.childCount > 0 && _currentStage > 2)
             if (chance < initialRewardRate)
             {
                 int randomIndex = Random.Range(0, _currentPuzzle.childCount);

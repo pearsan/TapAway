@@ -31,13 +31,6 @@ public class TapCube : MonoBehaviour, ITappable
         transform.parent = null;
         gameObject.GetComponent<Collider>().enabled = false;
         _moving = true;
-        StartCoroutine(DestroyByTime());
-    }
-
-    private IEnumerator DestroyByTime()
-    {
-        yield return new WaitForSeconds(5f);
-        Destroy(gameObject);
     }
 
     // ReSharper disable Unity.PerformanceAnalysis
@@ -178,7 +171,7 @@ public class TapCube : MonoBehaviour, ITappable
         _material.shader = Shader.Find("Standard");
         ToFadeMode(_material);
         gameObject.GetComponentInChildren<Renderer>().sharedMaterial = _material;
-        _material.DOFade(0f, 1f);
+        _material.DOFade(0f, 1f).OnComplete((() => Destroy(gameObject)));
     }
     
     private void ToFadeMode(Material material)

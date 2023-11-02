@@ -13,7 +13,7 @@ public class TapCube : MonoBehaviour, ITappable
     [SerializeField] private float speed;
     private const float TweenDuration = 0.25f;
     private bool _moving = false;
-
+    private Material _material;
     private bool _canDoMove = true;
     public bool drawRay;
     
@@ -161,6 +161,7 @@ public class TapCube : MonoBehaviour, ITappable
     {
         if (!IsBlock())
         {
+            StartCoroutine(FadeOut());
             SetMoving();
             GameplayManager.Instance.SpawnRewardCube();           
         }
@@ -168,5 +169,32 @@ public class TapCube : MonoBehaviour, ITappable
         {
             TryMove();
         }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        yield return new WaitForSeconds(0.3f);
+        _material = new Material(gameObject.GetComponentInChildren<Renderer>().sharedMaterial);
+        _material.shader = Shader.Find("Standard");
+        ToFadeMode(_material);
+        gameObject.GetComponentInChildren<Renderer>().sharedMaterial = _material;
+        _material.DOFade(0f, 1f);
+    }
+    
+    private void ToFadeMode(Material material)
+    {
+        material.SetOverrideTag("RenderType", "Transparent");
+        material.SetInt("_SrcBlend", (int) UnityEngine.Rendering.BlendMode.SrcAlpha);
+        material.SetInt("_DstBlend", (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        material.SetInt("_ZWrite", 0);
+        material.DisableKeyword("_ALPHATEST_ON");
+        material.EnableKeyword("_ALPHABLEND_ON");
+        material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.Transparent;
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(_material);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using DG.Tweening;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -410,7 +411,8 @@ public class GameplayManager : MonoBehaviour
         camera.clearFlags = CameraClearFlags.SolidColor;
 
         float hue = Random.Range(0f, 1f);
-        camera.backgroundColor = Color.HSVToRGB(hue, saturation, value);
+        Color newColor = Color.HSVToRGB(hue, saturation, value);
+        camera.DOColor(newColor, 1f);
     }
     
     public void Pause()

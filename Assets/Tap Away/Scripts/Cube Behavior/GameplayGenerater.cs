@@ -12,27 +12,27 @@ public class GameplayGenerater : CubeGenerator
 
     
     // ReSharper disable Unity.PerformanceAnalysis
+    
 
-    public void BeginLevel(GameObject tapCube)
-    {
-        StartCoroutine(SetupLevel(tapCube));
-    }
-
-    private IEnumerator SetupLevel(GameObject tapCube)
+    public IEnumerator SetupLevel(GameObject tapCube)
     {
         yield return null;
         yield return LoadJson(tapCube);
+        
         yield return new WaitForSeconds(0.5f);
         
         yield return StartCoroutine(Autoplay());
-        
+
         IntroAnimation();
         
         GameplayManager.Instance.SetDefaultMoveAttemps();
+        yield return new WaitForSeconds(1f);
     }
 
     private void IntroAnimation()
     {
+        ShowCubes();
+        
         transform.position = new Vector3(0, 0, 0);
 
         Bounds bounds = CalculateTotalBounds();
@@ -45,7 +45,7 @@ public class GameplayGenerater : CubeGenerator
 
         // Move children objects to have the parent in the center
         MoveChildrenToCenterPoint(offset);
-        ShowCubes();
+        
 
         foreach (Transform cube in transform)
         {
@@ -58,7 +58,7 @@ public class GameplayGenerater : CubeGenerator
         }
     }
 
-    public IEnumerator LoadJson(GameObject tapCube)
+    private IEnumerator LoadJson(GameObject tapCube)
     {
         if (tapCube == null)
             tapCube = cubePrefabs;
@@ -149,7 +149,6 @@ public class GameplayGenerater : CubeGenerator
 
     public IEnumerator Reshuffle()
     {
-        yield return null;
 
         for (int i = _cubes.Count - 1; i >= 0; i--)
         {
@@ -159,14 +158,15 @@ public class GameplayGenerater : CubeGenerator
             {
                 cube.transform.localRotation = RandomRotation();
             }
-            yield return null;
+            /*yield return null;
             
             if (!cube.IsBlock())
             {
                 _cubes.RemoveAt(i);
                 cube.HiddenCube();
-            }
+            }*/
         }
+        yield return null;
 
     }
         

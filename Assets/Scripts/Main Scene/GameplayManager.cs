@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class GameplayManager : MonoBehaviour
 {
@@ -27,7 +28,9 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private GameObject cubeGenerator;
     [SerializeField] private TextAsset[] jsonFile;
     [SerializeField] private GameObject cubePrefabs;
+    [SerializeField] private GameObject goldCube;
 
+    [Range(0, 100)] [SerializeField] private float initialRewardRate;
 
     [Header("Events")]
     [SerializeField] private UnityEvent OnResumeEvent;
@@ -87,13 +90,13 @@ public class GameplayManager : MonoBehaviour
                     else if (_currentStage >= 3)
                     {
                         _currentPuzzle.GetComponent<GameplayGenerater>().LoadCurrentLevel(_levelInProgress);
-
+                        InitiateRewardCube();
                         cameraBehaviour.SetTargert(_currentPuzzle);  
                     }
                     if (Camera.main != null)
                     {
-                        Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+                        /*Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+                        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));*/
                     }
                     break;
                 case LOSE_STATE:
@@ -108,6 +111,11 @@ public class GameplayManager : MonoBehaviour
     }
 
     public void HandlePlayButton()
+    {
+        StartCoroutine(GenerateLevel());
+    }
+
+    private IEnumerator GenerateLevel()
     {
         if (_currentPuzzle != null)
         {
@@ -128,17 +136,54 @@ public class GameplayManager : MonoBehaviour
         {
             if (!cameraBehaviour.CameraIsOn())
                 cameraBehaviour.SetEnable();
-            _currentPuzzle.GetComponent<GameplayGenerater>().BeginLevel(cubePrefabs);
+            yield return StartCoroutine(_currentPuzzle.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
         }
         TutorialManager.Instance.SetTutorial(_currentStage);
 
         cameraBehaviour.SetTargert(_currentPuzzle);
         if (Camera.main != null)
         {
-            Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
-            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));
+            /*Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
+            Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));*/
         }
         
+        InitiateRewardCube();
+    }
+
+    private void InitiateRewardCube()
+    {
+        Transform parent = _currentPuzzle; // Assuming this script is attached to the parent
+        int childCount = parent.childCount;
+        int convertedChildCount = Mathf.CeilToInt(childCount * initialRewardRate * 0.01f); // Calculate 2%
+        
+        List<int> childIndices = new List<int>(); // List to store child indices
+        for (int i = 0; i < childCount; i++)
+        {
+            childIndices.Add(i); // Populate the list with indices
+        }
+        Debug.Log(childCount);
+
+        for (int i = 0; i < convertedChildCount; i++)
+        {
+            int randomIndex = Random.Range(0, childIndices.Count); // Get random index
+            Transform child = parent.GetChild(childIndices[randomIndex]);
+            GameObject newObject = Instantiate(goldCube, child.position, child.rotation, parent); // Create new GameObject1
+            Destroy(child.gameObject); // Destroy original child
+            childIndices.RemoveAt(randomIndex); // Remove selected index from list
+        }
+    }
+
+    public void SpawnRewardCube()
+    {
+        int chance = Random.Range(0, 99);
+        if (_currentPuzzle.childCount > 0)
+            if (chance < initialRewardRate)
+            {
+                int randomIndex = Random.Range(0, _currentPuzzle.childCount);
+                Transform child = _currentPuzzle.GetChild(randomIndex);
+                GameObject newObject = Instantiate(goldCube, child.position, child.rotation, _currentPuzzle); // Create new GameObject1
+                Destroy(child.gameObject); // Destroy original child
+            }
     }
 
     #region DataHandle
@@ -148,10 +193,14 @@ public class GameplayManager : MonoBehaviour
         if (_currentPuzzle != null)
             foreach (Transform cube in _currentPuzzle.transform)
             {
-                cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
-                    skin.GetComponentInChildren<MeshFilter>().sharedMesh;
-                cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                    skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+                if (cube.GetComponent(typeof(TapCube)) != null)
+                {
+                    cube.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
+                        skin.GetComponentInChildren<MeshFilter>().sharedMesh;
+                    cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
+                        skin.GetComponentInChildren<MeshRenderer>().sharedMaterial;                    
+                }
+
             }
         cubePrefabs.transform.GetChild(0).gameObject.SetActive(true);
         cubePrefabs.gameObject.GetComponentInChildren<MeshFilter>().sharedMesh =
@@ -356,16 +405,20 @@ public class GameplayManager : MonoBehaviour
 
     public void Pause()
     {
-        TutorialManager.Instance.SetTutorial(_currentStage);
+        TutorialManager.Instance.DisableTutorial(_currentStage);
+        cameraBehaviour.OnPause();
         OnPauseEvent.Invoke();
+        /*
         cameraBehaviour.SetDisable();
+    */
     }
 
     public void Resume()
     {
-        TutorialManager.Instance.DisableTutorial(_currentStage);
+        TutorialManager.Instance.SetTutorial(_currentStage);
+        cameraBehaviour.OnPlay();
+
         OnResumeEvent.Invoke();
-        cameraBehaviour.SetEnable();
     }
 
     public void EnableTarget()

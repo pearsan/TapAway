@@ -50,6 +50,7 @@ public class InGameRewardUIManager : MonoBehaviour
 
     public void OnAddGold()
     {
+
         GameUIManager.Instance.OnAddGoldFeedbackAnimation(goldEarned);
     }
 

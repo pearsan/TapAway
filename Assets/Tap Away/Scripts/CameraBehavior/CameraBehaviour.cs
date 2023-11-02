@@ -30,15 +30,18 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private float dragSpeed = 0.1f;
     private bool _isDragging = false;
     private Vector2 _lastDragPosition;
+    public float minCameraX, maxCameraX, minCameraY, maxCameraY;
     
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
     private bool _cameraEnable = true;
     private bool _behaviorOn = false;
+    
     /// <summary>
     /// EDITOR Cube
     /// </summary>
+    /// 
     [SerializeField] private GameObject parent;
     [SerializeField] private GameObject child;
     [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
@@ -46,9 +49,6 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        /*SetZoom();
-        SetRotate();
-        SetDrag();*/
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -63,17 +63,29 @@ public class CameraBehaviour : MonoBehaviour
         };
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void SetEnable()
     {
-        SetZoom();
         SetRotate();
+        SetZoom();
         SetDrag();
+        _behaviorOn = true;
+        _cameraEnable = true;
+    }
+
+    public void OnPause()
+    {
+        _cameraEnable = false;
+    }
+    public void OnPlay()
+    {
         _cameraEnable = true;
     }
 
     public void SetDisable()
     {
         DisableDrag();
+        _rotateAllowed = false;
         _cameraEnable = false;
     }
 
@@ -196,8 +208,10 @@ public class CameraBehaviour : MonoBehaviour
                     firstDrag = false;
                 }
                 Vector2 differenceDrag = currentPos - prevPos;
-
-                Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
+                Vector3 newPosition = Camera.main.transform.position + new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime;
+                newPosition.x = Mathf.Clamp(newPosition.x, minCameraX, maxCameraX);
+                newPosition.y = Mathf.Clamp(newPosition.y, minCameraY, maxCameraY);
+                Camera.main.transform.position = newPosition;
 
                 touch0StartPos = touch0CurrentPos;
                 touch1StartPos = touch1CurrentPos;
@@ -230,8 +244,21 @@ public class CameraBehaviour : MonoBehaviour
             if (_lastDragPosition == Vector2.zero)
                 _lastDragPosition = currentDragPosition;
             Vector2 difference = currentDragPosition - _lastDragPosition;
-            Camera.main.transform.Translate(new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0) * Time.deltaTime, Space.Self);
+            Vector3 localNewPosition = new Vector3(-difference.x * dragSpeed / 10, -difference.y * dragSpeed / 10, 0) * Time.deltaTime;
 
+            // Apply the new position in local space
+            Camera.main.transform.Translate(localNewPosition, Space.Self);
+
+            // Get local position
+            Vector3 localPos = Camera.main.transform.localPosition;
+
+            // Clamp local X and Y position
+            localPos.x = Mathf.Clamp(localPos.x, minCameraX, maxCameraX);
+            localPos.y = Mathf.Clamp(localPos.y, minCameraY, maxCameraY);
+            localPos.z = -15;
+            // Set local position
+            Camera.main.transform.localPosition = localPos;
+            
             _lastDragPosition = currentDragPosition;
         }
         else
@@ -251,47 +278,39 @@ public class CameraBehaviour : MonoBehaviour
             
             if (hit.collider != null)
             {
-                TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                ITappable tapCube = hit.collider.gameObject.GetComponent<ITappable>();
                 if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
                     if (GameplayManager.Instance.GetCurrentStage() > 2)
                         GameplayManager.Instance.MinusMoveAttemps();
-                    if (!tapCube.IsBlock())
-                    {
-                        SoundManager.Instance.TapCube();
-                        if (GameplayManager.Instance.GetCurrentStage() == 2)
-                        {
-                            if (tapCube.transform.childCount > 1)
-                            {
-                                tapCube.SetMoving();
 
-                                if (tapCube.transform.GetChild(1).gameObject.activeInHierarchy)
-                                {
-                                    tapCube.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
-                                    TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
-                                }
-                                else
-                                {
-                                    TutorialManager.Instance._current.Remove(tapCube.transform.GetChild(1).gameObject);
-                                }
+                    SoundManager.Instance.TapCube();
+                    tapCube.Tap();
+
+                    #region tutorial
+                    if (GameplayManager.Instance.GetCurrentStage() == 2)
+                    {
+                        Transform hitObject = hit.collider.transform;
+                        if (hitObject.childCount > 1)
+                        {
+
+                            if (hitObject.GetChild(1).gameObject.activeInHierarchy)
+                            { 
+                                hitObject.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
+                                TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                            }
+                            else
+                            {
+                                TutorialManager.Instance._current.Remove(hitObject.GetChild(1).gameObject);
                             }
                         }
-                        else if (GameplayManager.Instance.GetCurrentStage() < 2)
-                        {
-                            tapCube.SetMoving();
-                            TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
-                        }
-                        else if (GameplayManager.Instance.GetCurrentStage() > 2)
-                        {
-                            tapCube.SetMoving();
-                        }
-
                     }
-                    else
+                    else if (GameplayManager.Instance.GetCurrentStage() < 2)
                     {
-                        tapCube.TryMove();
+                        TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
                     }
-
+                    #endregion
+                    
                     if (GameplayManager.Instance.CheckIfLose())
                     {
                         GameplayManager.Instance.OnTriggerLose();

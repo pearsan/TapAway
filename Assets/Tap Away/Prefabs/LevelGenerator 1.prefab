@@ -26,13 +26,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8051748942213060918}
-  m_LocalRotation: {x: -0.12940958, y: -0.017037101, z: -0.12940958, w: 0.98296297}
+  m_LocalRotation: {x: -0.16908176, y: 0.36042342, z: -0.07003596, w: 0.9146592}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -15, y: 0, z: -15}
+  m_LocalEulerAnglesHint: {x: -15, y: 45, z: -15}
 --- !u!54 &8051748942213060921
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -82,6 +82,4 @@ MonoBehaviour:
   shapePrefab: {fileID: 0}
   jsonFile: {fileID: 0}
   levelName: 
-  currentSkinSo: {fileID: 0}
-  defaultSkinSo: {fileID: 0}
   isHollow: 0

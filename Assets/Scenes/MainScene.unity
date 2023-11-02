@@ -6513,6 +6513,7 @@ MonoBehaviour:
   - {fileID: 4900000, guid: cf87728e8a3f1ba43b8df6e288c40f7e, type: 3}
   cubePrefabs: {fileID: 5966293222690816701, guid: bdd087f1255806c44926e3e788b98053, type: 3}
   goldCube: {fileID: 5966293222690816701, guid: 7454e68d296f57e4e83b134b8a6c049c, type: 3}
+  camera: {fileID: 963194227}
   initialRewardRate: 2
   OnResumeEvent:
     m_PersistentCalls:

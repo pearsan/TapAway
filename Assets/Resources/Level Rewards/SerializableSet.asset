@@ -13,43 +13,45 @@ MonoBehaviour:
   m_Name: SerializableSet
   m_EditorClassIdentifier: 
   LevelRewards:
-  - Level: 3
+  - Level: 5
     Reward: Key
-  - Level: 6
+  - Level: 8
     Reward: Egg
-  - Level: 9
-    Reward: 
+  - Level: 10
+    Reward: KeySkin
   - Level: 12
-    Reward: 
+    Reward: Effect Touch
   - Level: 15
-    Reward: 
+    Reward: Key
   - Level: 18
-    Reward: 
+    Reward: Egg
   - Level: 21
-    Reward: 
+    Reward: Effect Victory
   - Level: 24
-    Reward: 
+    Reward: KeySkin
   - Level: 27
-    Reward: 
+    Reward: Egg
   - Level: 30
-    Reward: 
+    Reward: Key
   - Level: 33
-    Reward: 
+    Reward: Effect Touch
   - Level: 36
-    Reward: 
+    Reward: KeySkin
   - Level: 39
-    Reward: 
+    Reward: Egg
   - Level: 42
-    Reward: 
+    Reward: Key
   - Level: 45
-    Reward: 
+    Reward: Egg
   - Level: 48
-    Reward: 
+    Reward: Effect Touch
   - Level: 51
-    Reward: 
+    Reward: KeySkin
   - Level: 54
-    Reward: 
+    Reward: Effect Touch
   - Level: 57
-    Reward: 
+    Reward: Key
   - Level: 60
-    Reward: 
+    Reward: Egg
+  - Level: 65
+    Reward: KeySkin

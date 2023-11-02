@@ -34,7 +34,7 @@ public class CameraBehaviour : MonoBehaviour
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
-    private bool cameraEnable = true;
+    
     /// <summary>
     /// EDITOR Cube
     /// </summary>
@@ -44,6 +44,11 @@ public class CameraBehaviour : MonoBehaviour
 
     
     private void Awake()
+    {
+        SetEnable();
+    }
+
+    public void SetEnable()
     {
         SetZoom();
         SetRotate();
@@ -55,23 +60,19 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && cameraEnable)
+            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE)
             {
                 ShootRay();
             }
         };
     }
 
-    public void SetEnable()
-    {
-        SetDrag();
-        cameraEnable = true;
-    }
-
     public void SetDisable()
     {
         DisableDrag();
-        cameraEnable = false;
+        DisableZoom();
+        DisableRotate();
+        clicked.Disable();
     }
 
     private void SetRotate()
@@ -87,8 +88,7 @@ public class CameraBehaviour : MonoBehaviour
                 return;
             }
             _rotation = Vector2.zero;
-            if (cameraEnable)
-                StartCoroutine(Rotate());
+            StartCoroutine(Rotate());
         };
         pressed.canceled += _ => { _rotateAllowed = false; };
         axis.performed += context =>
@@ -100,6 +100,12 @@ public class CameraBehaviour : MonoBehaviour
             }
             _rotation = context.ReadValue<Vector2>();
         };	        
+    }
+
+    private void DisableRotate()
+    {
+        pressed.Disable();
+        axis.Disable();
     }
 
     private IEnumerator Rotate()
@@ -166,46 +172,65 @@ public class CameraBehaviour : MonoBehaviour
         
         touch1pos.performed += _ =>
         {
-            
+            //zoom
+            if (touchCount  < 2)
+                return;
+            var magnitude = (touch0pos.ReadValue<Vector2>() - touch1pos.ReadValue<Vector2>()).magnitude;
+            if (previousMagnitude == 0)
+            {
+                previousMagnitude = magnitude;
+            }
+            var difference = magnitude - previousMagnitude;
+            previousMagnitude = magnitude;
+            CameraZoom(-difference * speedZoom);
             
             //drag
-            if (cameraEnable)
+            Vector2 touch0CurrentPos = touch0pos.ReadValue<Vector2>();
+            Vector2 touch1CurrentPos = touch1pos.ReadValue<Vector2>();
+
+            Vector2 prevPos = (touch0StartPos + touch1StartPos) / 2;
+            Vector2 currentPos = (touch0CurrentPos + touch1CurrentPos) / 2;
+            if (firstDrag)
             {
-                //zoom
-                if (touchCount  < 2)
-                    return;
-                var magnitude = (touch0pos.ReadValue<Vector2>() - touch1pos.ReadValue<Vector2>()).magnitude;
-                if (previousMagnitude == 0)
-                {
-                    previousMagnitude = magnitude;
-                }
-                var difference = magnitude - previousMagnitude;
-                previousMagnitude = magnitude;
-                CameraZoom(-difference * speedZoom);
-                
-                Vector2 touch0CurrentPos = touch0pos.ReadValue<Vector2>();
-                Vector2 touch1CurrentPos = touch1pos.ReadValue<Vector2>();
-
-                Vector2 prevPos = (touch0StartPos + touch1StartPos) / 2;
-                Vector2 currentPos = (touch0CurrentPos + touch1CurrentPos) / 2;
-                if (firstDrag)
-                {
-                    prevPos = currentPos;
-                    firstDrag = false;
-                }
-                Vector2 differenceDrag = currentPos - prevPos;
-
-                Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
-
-                touch0StartPos = touch0CurrentPos;
-                touch1StartPos = touch1CurrentPos;
+                prevPos = currentPos;
+                firstDrag = false;
             }
+            Vector2 differenceDrag = currentPos - prevPos;
+
+            Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
+
+            touch0StartPos = touch0CurrentPos;
+            touch1StartPos = touch1CurrentPos;
+            
         };
     }
 
+    private void DisableZoom()
+    {
+        var scrollAction = new InputAction(binding: "<Mouse>/scroll");
+        scrollAction.Disable();
+        var touch0contact = new InputAction( type: InputActionType.Button,
+            binding: "<Touchscreen>/touch0/press"
+        );
+        touch0contact.Disable();
+        
+        var touch1contact = new InputAction( type: InputActionType.Button,
+            binding: "<Touchscreen>/touch1/press"
+        );
+        touch1contact.Disable();
+
+        var touch0pos = new InputAction (type: InputActionType.Value,
+            binding: "<TouchScreen>/touch0/position");
+        touch0pos.Disable();
+        
+        var touch1pos = new InputAction (type: InputActionType.Value,
+            binding: "<TouchScreen>/touch1/position");
+        touch1pos.Disable();
+    }
+    
     private void CameraZoom(float increment) =>
         Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView + increment, minZoom, maxZoom);
-
+    
     private void SetDrag()
     {
         // For mouse
@@ -220,7 +245,7 @@ public class CameraBehaviour : MonoBehaviour
         dragAction.Disable();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (_isDragging)
         {

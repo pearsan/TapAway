@@ -176,14 +176,21 @@ public class TapCube : MonoBehaviour, ITappable
         yield return new WaitForSeconds(0.3f);
         _material = new Material(gameObject.GetComponentInChildren<Renderer>().sharedMaterial);
         _material.shader = Shader.Find("Standard");
-        _material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        _material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        _material.SetInt("_ZWrite", 0);
-        _material.DisableKeyword("_ALPHATEST_ON");
-        _material.EnableKeyword("_ALPHABLEND_ON");
-        _material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        ToFadeMode(_material);
         gameObject.GetComponentInChildren<Renderer>().sharedMaterial = _material;
         _material.DOFade(0f, 1f);
+    }
+    
+    private void ToFadeMode(Material material)
+    {
+        material.SetOverrideTag("RenderType", "Transparent");
+        material.SetInt("_SrcBlend", (int) UnityEngine.Rendering.BlendMode.SrcAlpha);
+        material.SetInt("_DstBlend", (int) UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        material.SetInt("_ZWrite", 0);
+        material.DisableKeyword("_ALPHATEST_ON");
+        material.EnableKeyword("_ALPHABLEND_ON");
+        material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+        material.renderQueue = (int) UnityEngine.Rendering.RenderQueue.Transparent;
     }
 
     private void OnDestroy()

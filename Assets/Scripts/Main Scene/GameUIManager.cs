@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.Events;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class GameUIManager : MonoBehaviour
     [SerializeField] private GameObject MainLayer;
     [SerializeField] private GameObject ShopLayer;
     [SerializeField] private GachaEffect GachaLayer;
+
+    [Header("Buttons")]
+    [SerializeField] private Button GachaClaimButton;
 
     [Header("Gold feedbacks")]
     [SerializeField] private GameObject GoldFeedbackPrefab;
@@ -31,6 +35,10 @@ public class GameUIManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject WinPanel;
     [SerializeField] private GameObject LosePanel;
+    [SerializeField] private GameObject LevelRewardProgressPanel;
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent OnStartEvent; 
 
     private void Awake()
     {
@@ -38,6 +46,7 @@ public class GameUIManager : MonoBehaviour
     }
     private void Start()
     {
+        OnStartEvent.Invoke();
         Initialize();
     }
 
@@ -62,7 +71,7 @@ public class GameUIManager : MonoBehaviour
         SetCanvasGroupValue(0, 1, 0);
         
         ShopLayer.transform.DOLocalMoveX(1080, 0f);
-        ShopLayer.transform.DOLocalMoveX(0, 0.1f);
+        ShopLayer.transform.DOLocalMoveX(0, 0.2f);
         
         GameplayManager.Instance.Pause();
     }    
@@ -84,18 +93,25 @@ public class GameUIManager : MonoBehaviour
         GameplayManager.Instance.EnableTarget();
     }
 
+    public void OnExitLevelRewardAnimation()
+    {
+        LevelRewardManager.Instance.IsRewardClaim = true;
+        GachaLayer.OnExitGachaAnimation();
+        GameplayManager.Instance.EnableTarget();
+        SetCanvasGroupValue(1, 0, 0);
+    }    
+
     public void OnNextLevelWithAdsButton()
     {
         ISHandler.Instance.ShowRewardedVideo("x4 reward button after pass level", 
-            () => { OnAddGoldFeedbackAnimation(800); OnTriggerExitWinPanel(); StartCoroutine(WaitForNextLevel(0.3f)); }
+            () => { OnAddGoldFeedbackAnimation(800);}
             , () => { });
     }    
 
     public void OnNextLevelWithoutAdsButton()
     {
-        OnAddGoldFeedbackAnimation(400); 
-        OnTriggerExitWinPanel();
-        StartCoroutine(WaitForNextLevel(0.3f));
+        OnAddGoldFeedbackAnimation(400);
+        //StartCoroutine(WaitForNextLevel(0.3f));
     }
     
     public void OnTryAgainWithAdsButton()
@@ -114,7 +130,7 @@ public class GameUIManager : MonoBehaviour
         OnTriggerExitLosePanel();
         GameplayManager.Instance.HandlePlayButton();
         Debug.Log("Restart level");
-    }    
+    }
     #endregion
 
     #region Script behaviours
@@ -134,9 +150,14 @@ public class GameUIManager : MonoBehaviour
         if(GameplayManager.Instance.OnValidateTriggerIntersitialAdsEvent())
         {
             ISHandler.Instance.ShowInterstitial("After complete level");
-        }    
+        }
+
+        GameplayManager.Instance.OnLoadNextStage(); 
+
         yield return new WaitForSeconds(timer);
-        GameplayManager.Instance.OnTriggerNextStage();
+        GameplayManager.Instance.OnShowNextStage();
+        yield return new WaitForSeconds(0.4f);
+        LevelRewardUIManager.Instance.CreateNewRewardProgress();
     }    
     #endregion
 
@@ -154,20 +175,39 @@ public class GameUIManager : MonoBehaviour
         MoveAttemptText.text = "Move:  " + (GameplayManager.Instance.GetMoveAttemps());
     }
 
-    public void OnTriggerEnterWinPanel()
+    public IEnumerator OnTriggerEnterWinPanel()
     {
         WinPanel.SetActive(true);
+        yield return new WaitUntil(() => !WinPanel.activeSelf);
+
+        LevelRewardManager.Instance.IsRewardClaim = false;
+
+        LevelRewardProgressPanel.SetActive(true);
+
+        LevelRewardProgressPanel.GetComponent<CanvasGroup>().DOFade(1f, 0.3f).From(0);
+        LevelRewardProgressPanel.transform.DOScale(1, 0.3f).From(0).SetEase(Ease.OutSine);
+
+        StartCoroutine(LevelRewardUIManager.Instance.CreateNewRewardProgressTween(LevelRewardProgressPanel.transform.Find("Reward Progress Tween")));
+
+        yield return new WaitUntil(() => !LevelRewardProgressPanel.activeSelf);
+
+        if (LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
+        {
+            LevelRewardManager.Instance.OnChooseRewardDependExcel();
+            OnLevelRewardFeedbackAnimation(ShopManager.Instance.SubcriberSO);
+            yield return new WaitUntil(() => LevelRewardManager.Instance.IsRewardClaim);
+            LevelRewardManager.Instance.IsRewardClaim = false;
+            StartCoroutine(WaitForNextLevel(0.3f));
+            yield break;
+        }
+        else
+            StartCoroutine(WaitForNextLevel(0.3f));
     }
     
     public void OnTriggerEnterLosePanel()
     {
         LosePanel.SetActive(true);
         BonusMoveWithAd.text = "+" + GameplayManager.Instance.GetBonusMovesAttemps() + " moves";
-    }
-
-    private void OnTriggerExitWinPanel()
-    {
-        WinPanel.SetActive(false);
     }
 
     private void OnTriggerExitLosePanel()
@@ -205,9 +245,20 @@ public class GameUIManager : MonoBehaviour
 
     public void OnGachaFeedbackAnimation(ShopItemSO target)
     {
+        GachaClaimButton.onClick.RemoveAllListeners();
+        GachaClaimButton.onClick.AddListener(OnExitGachaAnimation);
         GameplayManager.Instance.DisableTarget();
         SetCanvasGroupValue(0, 0, 1);
         StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
-    }    
+    }
+
+    public void OnLevelRewardFeedbackAnimation(ShopItemSO target)
+    {
+        GachaClaimButton.onClick.RemoveAllListeners();
+        GachaClaimButton.onClick.AddListener(OnExitLevelRewardAnimation);
+        GameplayManager.Instance.DisableTarget();
+        SetCanvasGroupValue(0, 0, 1);
+        StartCoroutine(GachaLayer.OnTriggerGachaAnimation(target));
+    }
     #endregion
 }

@@ -251,6 +251,7 @@ public class ISHandler : MonoBehaviour
     //Invoked when the initialization process has failed.
     private void InterstitialOnAdLoadFailed(IronSourceError ironSourceError)
     {
+        Debug.Log("Trying to load intersitial ads again");
         LoadInterstitial();
         interCall?.Invoke();
     }
@@ -270,6 +271,9 @@ public class ISHandler : MonoBehaviour
     //Invoked when the ad failed to show.
     private void InterstitialOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo)
     {
+        Debug.Log("Failed to show intersitial ads, show again");
+        LoadInterstitial();
+        ShowInterstitial("");
         interCall?.Invoke();
     }
 
@@ -297,6 +301,7 @@ public class ISHandler : MonoBehaviour
         IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
         IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
         IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
+        IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedVideoOnAdFailedLoad;
         IronSourceRewardedVideoEvents.onAdUnavailableEvent += RewardedVideoOnAdUnavailable;
         IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
         IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
@@ -353,11 +358,18 @@ public class ISHandler : MonoBehaviour
 
     }
 
+    private void RewardedVideoOnAdFailedLoad(IronSourceError errorInfo)
+    {
+        Debug.Log("Failed to load rewarded video but trying to load again");
+        IronSource.Agent.loadRewardedVideo();
+    }
+
     //Indicates that no ads are available to be displayed
     //This replaces the RewardedVideoAvailabilityChangedEvent(false) event
     private void RewardedVideoOnAdUnavailable()
     {
-
+        Debug.Log("No available ads to show but trying to load again");
+        LoadRewardedVideo();
     }
 
     //The Rewarded Video ad view has opened. Your activity will loose focus.
@@ -399,6 +411,8 @@ public class ISHandler : MonoBehaviour
     //The rewarded video ad was failed to show.
     private void RewardedVideoOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo adInfo)
     {
+        Debug.Log("Show failed, but trying to show again");
+        ShowInterstitial("");
         _onRewardedFail?.Invoke();
         _onRewardedFail = null;
     }

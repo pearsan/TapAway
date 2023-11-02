@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class CameraBehaviour : MonoBehaviour 
+public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] private InputAction pressed, axis;
     [SerializeField] private Transform _targert;
@@ -30,14 +30,18 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private float dragSpeed = 0.1f;
     private bool _isDragging = false;
     private Vector2 _lastDragPosition;
+    public float minCameraX, maxCameraX, minCameraY, maxCameraY;
     
     private Vector2 touch0StartPos = Vector2.zero;
     private Vector2 touch1StartPos = Vector2.zero;
     private bool firstDrag = true;
+    private bool _cameraEnable = true;
+    private bool _behaviorOn = false;
     
     /// <summary>
     /// EDITOR Cube
     /// </summary>
+    /// 
     [SerializeField] private GameObject parent;
     [SerializeField] private GameObject child;
     [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
@@ -45,14 +49,6 @@ public class CameraBehaviour : MonoBehaviour
     
     private void Awake()
     {
-        SetEnable();
-    }
-
-    public void SetEnable()
-    {
-        SetZoom();
-        SetRotate();
-        SetDrag();
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -60,19 +56,37 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE)
+            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && _cameraEnable)
             {
                 ShootRay();
             }
         };
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
+    public void SetEnable()
+    {
+        SetRotate();
+        SetZoom();
+        SetDrag();
+        _behaviorOn = true;
+        _cameraEnable = true;
+    }
+
+    public void OnPause()
+    {
+        _cameraEnable = false;
+    }
+    public void OnPlay()
+    {
+        _cameraEnable = true;
+    }
+
     public void SetDisable()
     {
         DisableDrag();
-        DisableZoom();
-        DisableRotate();
-        clicked.Disable();
+        _rotateAllowed = false;
+        _cameraEnable = false;
     }
 
     private void SetRotate()
@@ -102,16 +116,10 @@ public class CameraBehaviour : MonoBehaviour
         };	        
     }
 
-    private void DisableRotate()
-    {
-        pressed.Disable();
-        axis.Disable();
-    }
-
     private IEnumerator Rotate()
     {
         _rotateAllowed = true;
-        while(_rotateAllowed && _targert != null)
+        while(_rotateAllowed && _targert != null && _cameraEnable)
         {
 
             _rotation *= speedRotate;
@@ -172,65 +180,48 @@ public class CameraBehaviour : MonoBehaviour
         
         touch1pos.performed += _ =>
         {
-            //zoom
-            if (touchCount  < 2)
-                return;
-            var magnitude = (touch0pos.ReadValue<Vector2>() - touch1pos.ReadValue<Vector2>()).magnitude;
-            if (previousMagnitude == 0)
-            {
-                previousMagnitude = magnitude;
-            }
-            var difference = magnitude - previousMagnitude;
-            previousMagnitude = magnitude;
-            CameraZoom(-difference * speedZoom);
+            
             
             //drag
-            Vector2 touch0CurrentPos = touch0pos.ReadValue<Vector2>();
-            Vector2 touch1CurrentPos = touch1pos.ReadValue<Vector2>();
-
-            Vector2 prevPos = (touch0StartPos + touch1StartPos) / 2;
-            Vector2 currentPos = (touch0CurrentPos + touch1CurrentPos) / 2;
-            if (firstDrag)
+            if (_cameraEnable)
             {
-                prevPos = currentPos;
-                firstDrag = false;
+                //zoom
+                if (touchCount  < 2)
+                    return;
+                var magnitude = (touch0pos.ReadValue<Vector2>() - touch1pos.ReadValue<Vector2>()).magnitude;
+                if (previousMagnitude == 0)
+                {
+                    previousMagnitude = magnitude;
+                }
+                var difference = magnitude - previousMagnitude;
+                previousMagnitude = magnitude;
+                CameraZoom(-difference * speedZoom);
+                
+                Vector2 touch0CurrentPos = touch0pos.ReadValue<Vector2>();
+                Vector2 touch1CurrentPos = touch1pos.ReadValue<Vector2>();
+
+                Vector2 prevPos = (touch0StartPos + touch1StartPos) / 2;
+                Vector2 currentPos = (touch0CurrentPos + touch1CurrentPos) / 2;
+                if (firstDrag)
+                {
+                    prevPos = currentPos;
+                    firstDrag = false;
+                }
+                Vector2 differenceDrag = currentPos - prevPos;
+                Vector3 newPosition = Camera.main.transform.position + new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime;
+                newPosition.x = Mathf.Clamp(newPosition.x, minCameraX, maxCameraX);
+                newPosition.y = Mathf.Clamp(newPosition.y, minCameraY, maxCameraY);
+                Camera.main.transform.position = newPosition;
+
+                touch0StartPos = touch0CurrentPos;
+                touch1StartPos = touch1CurrentPos;
             }
-            Vector2 differenceDrag = currentPos - prevPos;
-
-            Camera.main.transform.Translate(new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime, Space.Self);
-
-            touch0StartPos = touch0CurrentPos;
-            touch1StartPos = touch1CurrentPos;
-            
         };
     }
 
-    private void DisableZoom()
-    {
-        var scrollAction = new InputAction(binding: "<Mouse>/scroll");
-        scrollAction.Disable();
-        var touch0contact = new InputAction( type: InputActionType.Button,
-            binding: "<Touchscreen>/touch0/press"
-        );
-        touch0contact.Disable();
-        
-        var touch1contact = new InputAction( type: InputActionType.Button,
-            binding: "<Touchscreen>/touch1/press"
-        );
-        touch1contact.Disable();
-
-        var touch0pos = new InputAction (type: InputActionType.Value,
-            binding: "<TouchScreen>/touch0/position");
-        touch0pos.Disable();
-        
-        var touch1pos = new InputAction (type: InputActionType.Value,
-            binding: "<TouchScreen>/touch1/position");
-        touch1pos.Disable();
-    }
-    
     private void CameraZoom(float increment) =>
         Camera.main.fieldOfView = Mathf.Clamp(Camera.main.fieldOfView + increment, minZoom, maxZoom);
-    
+
     private void SetDrag()
     {
         // For mouse
@@ -245,7 +236,7 @@ public class CameraBehaviour : MonoBehaviour
         dragAction.Disable();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_isDragging)
         {
@@ -253,8 +244,21 @@ public class CameraBehaviour : MonoBehaviour
             if (_lastDragPosition == Vector2.zero)
                 _lastDragPosition = currentDragPosition;
             Vector2 difference = currentDragPosition - _lastDragPosition;
-            Camera.main.transform.Translate(new Vector3(-difference.x * dragSpeed, -difference.y * dragSpeed, 0) * Time.deltaTime, Space.Self);
+            Vector3 localNewPosition = new Vector3(-difference.x * dragSpeed / 10, -difference.y * dragSpeed / 10, 0) * Time.deltaTime;
 
+            // Apply the new position in local space
+            Camera.main.transform.Translate(localNewPosition, Space.Self);
+
+            // Get local position
+            Vector3 localPos = Camera.main.transform.localPosition;
+
+            // Clamp local X and Y position
+            localPos.x = Mathf.Clamp(localPos.x, minCameraX, maxCameraX);
+            localPos.y = Mathf.Clamp(localPos.y, minCameraY, maxCameraY);
+            localPos.z = -15;
+            // Set local position
+            Camera.main.transform.localPosition = localPos;
+            
             _lastDragPosition = currentDragPosition;
         }
         else
@@ -274,20 +278,39 @@ public class CameraBehaviour : MonoBehaviour
             
             if (hit.collider != null)
             {
-                TapCube tapCube = hit.collider.gameObject.GetComponent<TapCube>();
+                ITappable tapCube = hit.collider.gameObject.GetComponent<ITappable>();
                 if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
-                    GameplayManager.Instance.MinusMoveAttemps();
-                    if (!tapCube.IsBlock())
-                    {
-                        SoundManager.Instance.TapCube();
-                        tapCube.SetMoving();
-                    }
-                    else
-                    {
-                        tapCube.TryMove();
-                    }
+                    if (GameplayManager.Instance.GetCurrentStage() > 2)
+                        GameplayManager.Instance.MinusMoveAttemps();
 
+                    SoundManager.Instance.TapCube();
+                    tapCube.Tap();
+
+                    #region tutorial
+                    if (GameplayManager.Instance.GetCurrentStage() == 2)
+                    {
+                        Transform hitObject = hit.collider.transform;
+                        if (hitObject.childCount > 1)
+                        {
+
+                            if (hitObject.GetChild(1).gameObject.activeInHierarchy)
+                            { 
+                                hitObject.GetComponentInChildren<PointerAnimation>().gameObject.SetActive(false);
+                                TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                            }
+                            else
+                            {
+                                TutorialManager.Instance._current.Remove(hitObject.GetChild(1).gameObject);
+                            }
+                        }
+                    }
+                    else if (GameplayManager.Instance.GetCurrentStage() < 2)
+                    {
+                        TutorialManager.Instance.ChangeStep(GameplayManager.Instance.GetCurrentStage());
+                    }
+                    #endregion
+                    
                     if (GameplayManager.Instance.CheckIfLose())
                     {
                         GameplayManager.Instance.OnTriggerLose();
@@ -342,6 +365,12 @@ public class CameraBehaviour : MonoBehaviour
     public void SetTargert(Transform targert)
     {
         _targert = targert;
+    }
+
+    public bool CameraIsOn()
+    {
+        return _behaviorOn;
+        
     }
 }
 

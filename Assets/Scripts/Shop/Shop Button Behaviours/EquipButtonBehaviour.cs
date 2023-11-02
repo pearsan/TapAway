@@ -6,6 +6,13 @@ using TMPro;
 
 public class EquipButtonBehaviour : MonoBehaviour
 {
+    public static EquipButtonBehaviour Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     [Header("Sprites Transition")]
     [SerializeField] private Sprite EquippedSprite;
     [SerializeField] private Sprite EquipSprite;
@@ -24,6 +31,7 @@ public class EquipButtonBehaviour : MonoBehaviour
         {
             GetComponent<Image>().sprite = EquippedSprite;
             GetComponent<Button>().interactable = false;
+            GameplayManager.Instance.ChangeCurrentSkin(itemPlayerSelected.ShopItemPrefab);
             EquipButtonText.text = "Equipped";
         }
         else
@@ -40,5 +48,6 @@ public class EquipButtonBehaviour : MonoBehaviour
         ShopReadWriteData.Instance.SetEquippedEquipment();
         OnStartFeedbackToPlayer(ShopManager.Instance.SubcriberSO);
         ShopGUIManager.Instance.OnUpdateAllSelectedItemFeedbacks();
+        GameplayManager.Instance.ChangeCurrentSkin(ShopManager.Instance.SubcriberSO.ShopItemPrefab);
     }    
 }

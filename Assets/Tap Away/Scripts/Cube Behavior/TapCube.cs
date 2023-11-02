@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 [SelectionBase]
-public class TapCube : MonoBehaviour
+public class TapCube : MonoBehaviour, ITappable
 {
 
     [SerializeField] private bool isHidden = false;
@@ -25,7 +26,7 @@ public class TapCube : MonoBehaviour
         }
     }
 
-    public void SetMoving()
+    private void SetMoving()
     {
         transform.parent = null;
         gameObject.GetComponent<Collider>().enabled = false;
@@ -42,9 +43,11 @@ public class TapCube : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     public bool IsBlock()
     {
+        int layerMask = 1 << LayerMask.NameToLayer("Cube");
+
         float maxDistance = 100f;
         bool isHit = Physics.Raycast(transform.position, transform.forward,
-            out var hit, maxDistance);
+            out var hit, maxDistance, layerMask);
         return isHit;
     }
 
@@ -152,5 +155,18 @@ public class TapCube : MonoBehaviour
     public void SetCanDoMove(bool canMove)
     {
         _canDoMove = canMove;
+    }
+
+    public void Tap()
+    {
+        if (!IsBlock())
+        {
+            SetMoving();
+            GameplayManager.Instance.SpawnRewardCube();           
+        }
+        else
+        {
+            TryMove();
+        }
     }
 }

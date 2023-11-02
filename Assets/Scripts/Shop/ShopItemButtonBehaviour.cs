@@ -27,11 +27,18 @@ public class ShopItemButtonBehaviour : MonoBehaviour
     
     private void UpdateInteractableState()
     {
-        //button.interactable = (randomSkinSO.IsUnlock ? true : false);
+        if(shopItemSO is RandomSkinSO)
+        {
+            button.interactable = shopItemSO.IsUnlock ? true : false;
+        }    
     }
 
     public void OnClickButton()
-    {
+    { 
         ShopManager.Instance.Subcribe(shopItemSO);
+        if (shopItemSO is RandomSkinSO)
+        {
+            ShopGUIManager.Instance.ChooseNewRandomSkin();
+        }
     }    
 }

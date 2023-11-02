@@ -23,15 +23,14 @@ public class CubeGenerator : MonoBehaviour
     
     public float spacing = 0.1f;
 
-    [SerializeField] private GameObject cubePrefabs;
+    [SerializeField] protected GameObject cubePrefabs;
 
     public GameObject shapePrefab;
-    private List<TapCube> _cubes;
+    protected List<TapCube> _cubes;
 
-    [SerializeField] private TextAsset jsonFile;
+    [SerializeField] protected TextAsset jsonFile;
     [SerializeField] private string levelName;
-    [SerializeField] private PurchaseSkinSO currentSkinSo;
-    [SerializeField] private PurchaseSkinSO defaultSkinSo;
+
     [SerializeField] private bool isHollow;
     // ReSharper disable Unity.PerformanceAnalysis
 
@@ -50,7 +49,6 @@ public class CubeGenerator : MonoBehaviour
         // ReSharper disable Unity.PerformanceAnalysis
     private void GenerateGridLevel()
     {
-        SetSkin(cubePrefabs);
         _cubes = new List<TapCube>();
         ClearCube();
         float centerOffsetX = (width - 1) * (1 + spacing) / 2f;
@@ -86,7 +84,9 @@ public class CubeGenerator : MonoBehaviour
     
     public void Generate3DShapeLevel()
     {
+        /*
         SetSkin(cubePrefabs);
+        */
         _cubes = new List<TapCube>();
         ClearCube();
         shapePrefab.SetActive(true);
@@ -146,7 +146,7 @@ public class CubeGenerator : MonoBehaviour
     
     public void ResetGame()
     {
-        StartCoroutine(SetupLevel());
+        StartCoroutine(SetupLevel(null));
     }
     
     bool IsInsideMeshCollider(MeshCollider col, Vector3 point)
@@ -248,11 +248,10 @@ public class CubeGenerator : MonoBehaviour
 
     #region Setup Level
 
-    public IEnumerator SetupLevel()
+    public IEnumerator SetupLevel(GameObject tapCube)
     {
-        LoadJson();
-        yield return new WaitForSeconds(1f);
-        Autoplay();
+        yield return StartCoroutine(LoadJson(tapCube, Autoplay));
+
 
         transform.position = new Vector3(0, 0, 0);
         
@@ -278,15 +277,17 @@ public class CubeGenerator : MonoBehaviour
         }
     }
 
-    public void LoadJson()
+    public IEnumerator LoadJson(GameObject tapCube, Action callback)
     {
+        if (tapCube == null)
+            tapCube = cubePrefabs;
         _cubes = new List<TapCube>();
         ClearCube();
         List<Vector3> positions = JsonConvert.DeserializeObject<List<Vector3>>(jsonFile.text, new Vector3Converter());
         int i = 0;
         foreach (Vector3 position in positions)
         {
-            GameObject cube = Instantiate(this.cubePrefabs);
+            GameObject cube = Instantiate(tapCube);
             cube.name = "" + i;
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
             cube.transform.SetParent(transform);
@@ -294,11 +295,11 @@ public class CubeGenerator : MonoBehaviour
             cube.transform.localPosition = position;
             i++;
         }
-        Debug.Log("current cubes: " + i);
-        
+        yield return new WaitForSeconds(0.1f);
+        callback?.Invoke();
     }
-    
-    public void LoadCurrentLevel(TextAsset _levelInProgress)
+
+    public virtual void LoadCurrentLevel(TextAsset _levelInProgress)
     {
         _cubes = new List<TapCube>();
         ClearCube();
@@ -400,37 +401,22 @@ public class CubeGenerator : MonoBehaviour
         return randomRotation;
     }
     
-    private void SetSkin(GameObject cube)
-    {
-        if (currentSkinSo == null)
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = defaultSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                defaultSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-        else
-        {
-            cube.GetComponentInChildren<MeshFilter>().sharedMesh = currentSkinSo.ShopItemPrefab.GetComponent<MeshFilter>().sharedMesh;
-            cube.GetComponentInChildren<MeshRenderer>().sharedMaterial =
-                currentSkinSo.ShopItemPrefab.GetComponent<MeshRenderer>().sharedMaterial;
-        }
-    }
-    
+
     private void ShowCubes()
     {
         foreach (var cube in _cubes)
         {
             cube.ShowCube();
+            /*
             SetSkin(cube.gameObject);
+        */
         }
     }
     
     #endregion
-    
-    
-    
-    
-    private void MoveChild(Transform cube)
+
+
+    protected void MoveChild(Transform cube)
     {
         float distance = 10.0f; // Define how far you want to move the child
         // Get the direction from the parent to the child
@@ -440,15 +426,15 @@ public class CubeGenerator : MonoBehaviour
         // Move the child a certain distance along this line
         cube.GetChild(0).position = cube.position + direction * distance;
     }
-    
-    private void MoveAnimChild(Transform cube)
+
+    protected void MoveAnimChild(Transform cube)
     {
         Transform cubeMesh = cube.GetChild(0);
         cube.gameObject.GetComponent<TapCube>().SetCanDoMove(false);
         cubeMesh.DOLocalMove(new Vector3(0, 0, 0), 1).SetEase(Ease.InOutSine).OnComplete((() => cube.gameObject.GetComponent<TapCube>().SetCanDoMove(true)));
     }
 
-    private Bounds CalculateTotalBounds()
+    protected Bounds CalculateTotalBounds()
     {
         Bounds bounds = new Bounds();
 
@@ -471,7 +457,7 @@ public class CubeGenerator : MonoBehaviour
         return bounds;
     }
 
-    void MoveChildrenToCenterPoint(Vector3 offset)
+    protected void MoveChildrenToCenterPoint(Vector3 offset)
     {
         foreach (Transform child in transform)
         {

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b24db3d1eda69a4d921550a984897a1, type: 3}
+  m_Name: Pig3
+  m_EditorClassIdentifier: 
+  Name: Pig 3
+  IsUnlock: 0
+  Price: 60
+  Type: Skin
+  ShopItemPrefab: {fileID: 919132149155446097, guid: fc6efb7d04d23b643933c43b79d71f44, type: 3}
+  CanUnlockByGold: 0
+  CanUnlockByAds: 1
+  AdsWatched: 0
+  AdsToUnlock: 8
+  SkinIcon: {fileID: 21300000, guid: f2f59168632ddc0438da4ec2b89407a4, type: 3}

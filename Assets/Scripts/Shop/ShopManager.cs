@@ -39,12 +39,7 @@ public class ShopManager : MonoBehaviour
         //SaveData();
         LoadData();
 
-        _randomSkinsData[5].IsUnlock = true;
-        _randomSkinsData[3].IsUnlock = true;
         _purchaseSkinsData[0].IsUnlock = true;
-        _tapEffectsData[0].IsUnlock = true;
-        _tapEffectsData[2].IsUnlock = true;
-        _winEffectsData[0].IsUnlock = true;
     }
 
     private void SaveData()
@@ -105,6 +100,12 @@ public class ShopManager : MonoBehaviour
         GameUIManager.Instance.OnGachaFeedbackAnimation(SubcriberSO);
     }
 
+    public void MarkShopItemIsUnlock(ShopItemSO target)
+    {
+        target.IsUnlock = true;
+        SaveData();
+    }    
+
     public void SetSubcriberSOAdsUnlockProgressSuccess()
     {
         int adsWatched = SubcriberSO.AdsWatched;
@@ -120,12 +121,18 @@ public class ShopManager : MonoBehaviour
     #endregion
 
 
-
-    public void Subcribe(ShopItemSO subcriber)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="subcriber"></param>
+    /// <param name="FeedbackToPlayer">If this bool set to false, player don't know feedback of their choice</param>
+    public void Subcribe(ShopItemSO subcriber, bool FeedbackToPlayer = true)
     {
         SubcriberSO = subcriber;
         ShopGUIManager.Instance.OnShopItemButtonClick(subcriber);
-        ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
+
+        if(FeedbackToPlayer)
+            ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(subcriber);
     }
 
     public void Subcribe()

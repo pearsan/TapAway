@@ -162,7 +162,6 @@ public class GameplayManager : MonoBehaviour
         {
             childIndices.Add(i); // Populate the list with indices
         }
-        Debug.Log(childCount);
 
         for (int i = 0; i < convertedChildCount; i++)
         {
@@ -334,7 +333,6 @@ public class GameplayManager : MonoBehaviour
     
     public void SetDefaultMoveAttemps()
     {
-        Debug.Log("setted");
         var childCount = (float)_currentPuzzle.childCount;
         moveAttemps = Mathf.CeilToInt(childCount + childCount * 10 / 100);
     }
@@ -462,10 +460,17 @@ public class GameplayManager : MonoBehaviour
     public bool OnValidateTriggerIntersitialAdsEvent()
     {
         LevelPassedEachPlaySection++;
-        if (LevelPassedEachPlaySection % 2 == 0)
-            return true;
+        if (_currentStage <= 5) return false;
+
+        if (5 < _currentStage && _currentStage <= 6)
+        {
+            if (LevelPassedEachPlaySection % 2 == 0)
+                return true;
+            else
+                return false;
+        }
         else
-            return false;
+            return true;
     }    
     #endregion
 }

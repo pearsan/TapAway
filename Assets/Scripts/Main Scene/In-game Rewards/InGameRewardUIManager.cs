@@ -42,7 +42,6 @@ public class InGameRewardUIManager : MonoBehaviour
             , () => 
             { 
                 goldEarned = InGameRewardManager.Instance.GoldReward * InGameRewardManager.Instance.GetMultiplyEfficient();
-                Debug.LogWarning(goldEarned);
                 DOTween.Restart("Scale_Down_In-game_Reward_Panel");
             }
             , () => { });
@@ -51,7 +50,7 @@ public class InGameRewardUIManager : MonoBehaviour
 
     public void OnAddGold()
     {
-        Debug.LogWarning("(b)" + goldEarned);
+
         GameUIManager.Instance.OnAddGoldFeedbackAnimation(goldEarned);
     }
 

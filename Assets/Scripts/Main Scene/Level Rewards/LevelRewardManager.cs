@@ -49,8 +49,13 @@ public class LevelRewardManager : MonoBehaviour
 
     public void OnChooseRewardDependExcel()
     {
-        ShopGUIManager.Instance.ChooseNewRandomSkin();
-        ShopManager.Instance.MarkShopItemIsUnlock();
+        switch (LevelRewardDataSO[_currentReward].Reward)
+        {
+            case "KeySkin":
+            ShopGUIManager.Instance.ChooseNewRandomSkin();
+            ShopManager.Instance.MarkShopItemIsUnlock();
+                break;
+        }
     }    
 
     /// <summary>

@@ -218,7 +218,6 @@ public class ISHandler : MonoBehaviour
 
     public void ShowInterstitial(string adsWhere)
     {
-        Debug.Log("Show Interstitial");
         if (!IsInterstitialReady()) return;
         IronSource.Agent.showInterstitial();
     }

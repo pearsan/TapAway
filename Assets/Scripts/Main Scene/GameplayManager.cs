@@ -29,7 +29,8 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] private TextAsset[] jsonFile;
     [SerializeField] private GameObject cubePrefabs;
     [SerializeField] private GameObject goldCube;
-
+    [SerializeField] private Camera camera;
+    
     [Range(0, 100)] [SerializeField] private float initialRewardRate;
 
     [Header("Events")]
@@ -137,6 +138,7 @@ public class GameplayManager : MonoBehaviour
             if (!cameraBehaviour.CameraIsOn())
                 cameraBehaviour.SetEnable();
             yield return StartCoroutine(_currentPuzzle.GetComponent<GameplayGenerater>().SetupLevel(cubePrefabs));
+            InitiateRewardCube();
         }
         TutorialManager.Instance.SetTutorial(_currentStage);
 
@@ -146,8 +148,6 @@ public class GameplayManager : MonoBehaviour
             /*Camera.main.transform.position = new Vector3(12.35f, 1, -12.33f);
             Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, -45, 0));*/
         }
-        
-        InitiateRewardCube();
     }
 
     private void InitiateRewardCube()
@@ -366,12 +366,14 @@ public class GameplayManager : MonoBehaviour
     {
         _gameState = WIN_STATE;
         TutorialManager.Instance.DisableTutorial(_currentStage);
+        ChangeBackGroundColor();
         StartCoroutine(GameUIManager.Instance.OnTriggerEnterWinPanel());
     }
 
     public void OnTriggerLose()
     {
         _gameState = LOSE_STATE;
+        ChangeBackGroundColor();
         GameUIManager.Instance.OnTriggerEnterLosePanel();
     }
 
@@ -401,6 +403,16 @@ public class GameplayManager : MonoBehaviour
 
     #region Camera
 
+    private void ChangeBackGroundColor()
+    {
+        float saturation = 0.53f;
+        float value = 0.80f;
+        camera.clearFlags = CameraClearFlags.SolidColor;
+
+        float hue = Random.Range(0f, 1f);
+        camera.backgroundColor = Color.HSVToRGB(hue, saturation, value);
+    }
+    
     public void Pause()
     {
         TutorialManager.Instance.DisableTutorial(_currentStage);

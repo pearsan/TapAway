@@ -52,7 +52,6 @@ public class GameplayManager : MonoBehaviour
         }
         
         cameraBehaviour = gameObject.GetComponent<CameraBehaviour>();
-        ChangeBackGroundColor();
     }
     
     private void Start()

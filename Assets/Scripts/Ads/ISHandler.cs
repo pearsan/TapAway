@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using AppsFlyerSDK;
+using Falcon.FalconAnalytics.Scripts.Enum;
+// using FalconSDK;
 using UnityEngine;
 
 public class ISHandler : MonoBehaviour
@@ -87,6 +90,8 @@ public class ISHandler : MonoBehaviour
 
     private void SdkInitializationCompletedEvent()
     {
+        MLogger.LogError("IronSource === SdkInitializationCompletedEvent");
+
         _isInitSuccessful = true;
         RegisterEvents();
 
@@ -122,6 +127,7 @@ public class ISHandler : MonoBehaviour
 
     private void LoadBanner()
     {
+        MLogger.LogError("IronSourceService.cs === LoadBanner");
         IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
         IronSource.Agent.hideBanner();
     }
@@ -143,6 +149,7 @@ public class ISHandler : MonoBehaviour
     //Invoked once the banner has loaded
     private void BannerOnAdLoadedEvent(IronSourceAdInfo adInfo)
     {
+        MLogger.LogError("IronSourceService.cs === BannerOnAdLoadedEvent", adInfo.ToString());
 #if! UA_BUILD
         ISHandler.Instance.ShowBanner();
 #endif
@@ -151,32 +158,32 @@ public class ISHandler : MonoBehaviour
     //Invoked when the banner loading process has failed.
     private void BannerOnAdLoadFailedEvent(IronSourceError ironSourceError)
     {
+        MLogger.LogError("IronSourceService.cs === BannerOnAdLoadFailedEvent", ironSourceError.ToString());
         LoadBanner();
-        ISHandler.Instance.ShowBanner();
     }
 
     // Invoked when end user clicks on the banner ad
     private void BannerOnAdClickedEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === BannerOnAdClickedEvent", adInfo.ToString());
     }
 
     //Notifies the presentation of a full screen content following user click
     private void BannerOnAdScreenPresentedEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === BannerOnAdScreenPresentedEvent", adInfo.ToString());
     }
 
     //Notifies the presented screen has been dismissed
     private void BannerOnAdScreenDismissedEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === BannerOnAdScreenDismissedEvent", adInfo.ToString());
     }
 
     //Invoked when the user leaves the app
     private void BannerOnAdLeftApplicationEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === BannerOnAdLeftApplicationEvent", adInfo.ToString());
     }
 
     #endregion
@@ -207,7 +214,7 @@ public class ISHandler : MonoBehaviour
 
     private void LoadInterstitial()
     {
-
+        MLogger.LogError("IronSourceService.cs === LoadInterstitial");
         IronSource.Agent.loadInterstitial();
     }
 
@@ -218,8 +225,23 @@ public class ISHandler : MonoBehaviour
 
     public void ShowInterstitial(string adsWhere)
     {
+        Debug.Log("Show Interstitial");
         if (!IsInterstitialReady()) return;
         IronSource.Agent.showInterstitial();
+        
+        var eventValues = new Dictionary<string, string>
+        {
+            { "af_inters_show", "af_inters_show" },
+        };
+        AppsFlyer.sendEvent("af_ad_events", eventValues);
+        var mode = GameDataManager.gameMode;
+        int maxLevelPassed = (mode switch
+        {
+            GameMode.Adventure => UIAdventureLevel.MaxLevel,
+            GameMode.Challenge => UIChallengeLevel.MaxLevel,
+            _ => 0
+        });
+        Data4Game.AdsLog(maxLevelPassed, AdType.Interstitial, mode, adsWhere);
     }
 
     private Action interCall;
@@ -244,13 +266,13 @@ public class ISHandler : MonoBehaviour
     //Invoked when the interstitial ad was loaded successfully.
     private void InterstitialOnAdReadyEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdReadyEvent", adInfo.ToString());
     }
 
     //Invoked when the initialization process has failed.
     private void InterstitialOnAdLoadFailed(IronSourceError ironSourceError)
     {
-        Debug.Log("Trying to load intersitial ads again");
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdLoadFailed", ironSourceError.ToString());
         LoadInterstitial();
         interCall?.Invoke();
     }
@@ -258,27 +280,31 @@ public class ISHandler : MonoBehaviour
     //Invoked when the Interstitial Ad Unit has opened. This is the impression indication. 
     private void InterstitialOnAdOpenedEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdOpenedEvent", adInfo.ToString());
+        var eventValues = new Dictionary<string, string>
+        {
+            { "af_inters_displayed", "af_inters_displayed" },
+        };
+        AppsFlyer.sendEvent("af_ad_events", eventValues);
     }
 
     //Invoked when end user clicked on the interstitial ad
     private void InterstitialOnAdClickedEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdClickedEvent", adInfo.ToString());
     }
 
     //Invoked when the ad failed to show.
     private void InterstitialOnAdShowFailedEvent(IronSourceError ironSourceError, IronSourceAdInfo adInfo)
     {
-        Debug.Log("Failed to show intersitial ads, show again");
-        LoadInterstitial();
-        ShowInterstitial("");
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdShowFailedEvent", adInfo.ToString());
         interCall?.Invoke();
     }
 
     //Invoked when the interstitial ad closed and the user went back to the application screen.
     private void InterstitialOnAdClosedEvent(IronSourceAdInfo adInfo)
     {
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdClosedEvent", adInfo.ToString());
         LoadInterstitial();
         interCall?.Invoke();
     }
@@ -288,7 +314,7 @@ public class ISHandler : MonoBehaviour
     //it's supported by all networks you included in your build. 
     private void InterstitialOnAdShowSucceededEvent(IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === InterstitialOnAdShowSucceededEvent", adInfo.ToString());
     }
 
     #endregion
@@ -300,7 +326,6 @@ public class ISHandler : MonoBehaviour
         IronSourceRewardedVideoEvents.onAdOpenedEvent += RewardedVideoOnAdOpenedEvent;
         IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedVideoOnAdClosedEvent;
         IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideoOnAdAvailable;
-        IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedVideoOnAdFailedLoad;
         IronSourceRewardedVideoEvents.onAdUnavailableEvent += RewardedVideoOnAdUnavailable;
         IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedVideoOnAdShowFailedEvent;
         IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedVideoOnAdRewardedEvent;
@@ -345,6 +370,21 @@ public class ISHandler : MonoBehaviour
         _rewardedHasClosed = false;
         _rewardedHasRewarded = false;
         IronSource.Agent.showRewardedVideo();
+        
+        var eventValues = new Dictionary<string, string>
+        {
+            { "af_rewarded_show", "af_rewarded_show" },
+        };
+        AppsFlyer.sendEvent("af_ad_events", eventValues);
+
+        var mode = GameDataManager.gameMode;
+        int maxLevelPassed = (mode switch
+        {
+            GameMode.Adventure => UIAdventureLevel.MaxLevel,
+            GameMode.Challenge => UIChallengeLevel.MaxLevel,
+            _ => 0
+        });
+        Data4Game.AdsLog(maxLevelPassed, AdType.Interstitial, mode, adsWhere);
     }
 
 
@@ -354,31 +394,25 @@ public class ISHandler : MonoBehaviour
     //This replaces the RewardedVideoAvailabilityChangedEvent(true) event
     private void RewardedVideoOnAdAvailable(IronSourceAdInfo adInfo)
     {
-
-    }
-
-    private void RewardedVideoOnAdFailedLoad(IronSourceError errorInfo)
-    {
-        Debug.Log("Failed to load rewarded video but trying to load again");
-        IronSource.Agent.loadRewardedVideo();
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdAvailable", adInfo.ToString());
     }
 
     //Indicates that no ads are available to be displayed
     //This replaces the RewardedVideoAvailabilityChangedEvent(false) event
     private void RewardedVideoOnAdUnavailable()
     {
-        Debug.Log("No available ads to show but trying to load again");
-        LoadRewardedVideo();
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdUnavailable");
     }
 
     //The Rewarded Video ad view has opened. Your activity will loose focus.
     private void RewardedVideoOnAdOpenedEvent(IronSourceAdInfo adInfo)
     {
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdOpenedEvent", adInfo.ToString());
         var eventValues = new Dictionary<string, string>
         {
             { "af_rewarded_displayed", "af_rewarded_displayed" },
         };
-
+        AppsFlyer.sendEvent("af_ad_events", eventValues);
     }
 
     //The Rewarded Video ad view is about to be closed. Your activity will regain its focus.
@@ -388,7 +422,7 @@ public class ISHandler : MonoBehaviour
     {
         _rewardedHasClosed = true;
         CheckFireRewardedEvent();
-
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdClosedEvent", adInfo.ToString());
     }
 
     //The user completed to watch the video, and should be rewarded.
@@ -398,6 +432,7 @@ public class ISHandler : MonoBehaviour
     {
         _rewardedHasRewarded = true;
         CheckFireRewardedEvent();
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdRewardedEvent", adInfo.ToString());
     }
 
     private void CheckFireRewardedEvent()
@@ -410,10 +445,9 @@ public class ISHandler : MonoBehaviour
     //The rewarded video ad was failed to show.
     private void RewardedVideoOnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo adInfo)
     {
-        Debug.Log("Show failed, but trying to show again");
-        ShowInterstitial("");
         _onRewardedFail?.Invoke();
         _onRewardedFail = null;
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdShowFailedEvent", adInfo.ToString());
     }
 
     //Invoked when the video ad was clicked.
@@ -421,13 +455,31 @@ public class ISHandler : MonoBehaviour
     //it’s supported by all networks you included in your build.
     private void RewardedVideoOnAdClickedEvent(IronSourcePlacement placement, IronSourceAdInfo adInfo)
     {
-
+        MLogger.LogError("IronSourceService.cs === RewardedVideoOnAdClickedEvent", adInfo.ToString());
     }
 
     #endregion
 
     private void ImpressionDataReadyEvent(IronSourceImpressionData impressionData)
     {
+        if (impressionData?.revenue == null || !FireBaseRemote.IsInitialized) return;
+        Firebase.Analytics.Parameter[] adParameters =
+        {
+            new("ad_platform", "ironSource"),
+            new("ad_source", impressionData.adNetwork),
+            new("ad_unit_name", impressionData.instanceName),
+            new("ad_format", impressionData.adUnit),
+            new("currency", "USD"),
+            new("value", impressionData.revenue.Value)
+        };
+        Firebase.Analytics.FirebaseAnalytics.LogEvent("ad_impression", adParameters);
         
+        var dic = new Dictionary<string, string>
+        {
+            { "ad_unit_name", impressionData.instanceName },
+            { "ad_format", impressionData.adUnit }
+        };
+        AppsFlyerAdRevenue.logAdRevenue(impressionData.adNetwork, AppsFlyerAdRevenueMediationNetworkType.AppsFlyerAdRevenueMediationNetworkTypeIronSource, 
+            impressionData.revenue.Value, "USD", dic);
     }
 }

@@ -20,6 +20,8 @@ public class InGameRewardUIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        InGameRewardPanel.SetActive(true);
+        InGameRewardPanel.SetActive(false);
     }
 
     private void Update()
@@ -57,8 +59,11 @@ public class InGameRewardUIManager : MonoBehaviour
     #region Text behaviours
     private void UpdateGoldText()
     {
-        _goldEarnText.text = "+" + InGameRewardManager.Instance.GoldReward;
-        _goldEarnByAdsText.text = "Claim " + InGameRewardManager.Instance.GoldReward * InGameRewardManager.Instance.GetMultiplyEfficient();
+        if (InGameRewardPanel.activeSelf)
+        {
+            _goldEarnText.text = "+" + InGameRewardManager.Instance.GoldReward;
+            _goldEarnByAdsText.text = "Claim " + InGameRewardManager.Instance.GoldReward * InGameRewardManager.Instance.GetMultiplyEfficient();
+        }
     }
     #endregion
 

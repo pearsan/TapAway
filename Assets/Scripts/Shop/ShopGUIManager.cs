@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using DG.Tweening;
 public class ShopGUIManager : MonoBehaviour
 {
     public static ShopGUIManager Instance;
@@ -26,6 +27,9 @@ public class ShopGUIManager : MonoBehaviour
 
     [Header("Currency Behaviours")]
     [SerializeField] private TMP_Text GoldText;
+
+    [Header("Panels")]
+    [SerializeField] private GameObject GoldEnoughntPanel;
 
     private List<TabGUIManager> tabGUIManagers;
 
@@ -163,7 +167,8 @@ public class ShopGUIManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Ban co the xem quang cao");
+            GoldEnoughntPanel.SetActive(true);
+            DOTween.Restart("Scale_Up_GoldEnoughnt");
         }
     }
 

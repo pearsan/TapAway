@@ -7,7 +7,7 @@ using Random = UnityEngine.Random;
 
 public class GameplayGenerater : CubeGenerator
 {
-    
+
     #region Setup Level
 
     
@@ -113,43 +113,47 @@ public class GameplayGenerater : CubeGenerator
 
     private IEnumerator Autoplay()
     {
-        bool playable = AutoCheck();
+        bool playable = false; 
         while (!playable)
         {
             yield return StartCoroutine(Reshuffle());
-            playable = AutoCheck();
+            yield return StartCoroutine(AutoCheck(result =>
+            {
+                playable = result;
+            }));
         }
-
+        yield return null;
     }
 
-    private bool AutoCheck()
+    private IEnumerator AutoCheck(Action<bool> result)
     {
-
         bool rePlay = true;
         bool playable = true;
+        
         while (rePlay)
         {
+            yield return null;
             rePlay = false;
 
             for (int i = _cubes.Count - 1; i >= 0; i--)
             {
-                var cube = _cubes[i];
-                if (!cube.IsHidden() && !cube.IsBlock())
+                if (!_cubes[i].IsBlock())
                 {
                     playable = false;
-                    rePlay = true;
+                    rePlay = true;  
+                    _cubes[i].HiddenCube();
                     _cubes.RemoveAt(i);
-                    cube.HiddenCube();
                 }
             }
         }
 
-        return playable;
+        yield return null;
+        result(playable);
     }
 
     public IEnumerator Reshuffle()
     {
-
+        yield return null;
         for (int i = _cubes.Count - 1; i >= 0; i--)
         {
             var cube = _cubes[i];
@@ -186,7 +190,7 @@ public class GameplayGenerater : CubeGenerator
         foreach (Transform cube in transform)
         {
             cube.GetComponent<TapCube>().ShowCube();
-
+            _cubes.Add(cube.GetComponent<TapCube>());
         }
     }
     

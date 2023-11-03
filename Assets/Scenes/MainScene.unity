@@ -6693,7 +6693,7 @@ MonoBehaviour:
   inverted: 0
   speedZoom: 0.03
   minZoom: 20
-  maxZoom: 200
+  maxZoom: 120
   dragAction:
     m_Name: Drag
     m_Type: 0

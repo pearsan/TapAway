@@ -120,15 +120,15 @@ public class GameplayManager : MonoBehaviour
 
     private IEnumerator GenerateLevel()
     {
-        if (_currentPuzzle != null)
-        {
-            Destroy(_currentPuzzle.gameObject);
+        if (_currentPuzzle == null)
+        { 
+            GameObject level = Instantiate(cubeGenerator); 
+            level.transform.position = Vector3.zero; 
+            _currentPuzzle = level.transform;            
         }
         
         _gameState = PLAYING_STATE;
-        GameObject level = GameObject.Instantiate(cubeGenerator);
-        level.transform.position = Vector3.zero;
-        _currentPuzzle = level.transform;
+
 
         _currentPuzzle.GetComponent<GameplayGenerater>().SetLevel(jsonFile[_currentStage]);
         if (_currentStage < 3)

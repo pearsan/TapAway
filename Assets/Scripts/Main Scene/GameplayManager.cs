@@ -116,6 +116,8 @@ public class GameplayManager : MonoBehaviour
     public void HandlePlayButton()
     {
         StartCoroutine(GenerateLevel());
+
+        ChangeBackGroundColor();
     }
 
     private IEnumerator GenerateLevel()
@@ -368,14 +370,12 @@ public class GameplayManager : MonoBehaviour
     {
         _gameState = WIN_STATE;
         TutorialManager.Instance.DisableTutorial(_currentStage);
-        ChangeBackGroundColor();
         StartCoroutine(GameUIManager.Instance.OnTriggerEnterWinPanel());
     }
 
     public void OnTriggerLose()
     {
         _gameState = LOSE_STATE;
-        ChangeBackGroundColor();
         GameUIManager.Instance.OnTriggerEnterLosePanel();
     }
 

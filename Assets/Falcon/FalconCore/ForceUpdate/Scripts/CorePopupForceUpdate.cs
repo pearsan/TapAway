@@ -43,11 +43,11 @@ public class CorePopupForceUpdate : MonoBehaviour
         else if (rs2 >= 0)
         {
             //show ok cancel
-            ResourceRequest resourceRequest = Resources.LoadAsync<FalconPopupForceUpdate>("FalconPopupForceUpdate");
+            /*ResourceRequest resourceRequest = Resources.LoadAsync<FalconPopupForceUpdate>("FalconPopupForceUpdate");
             yield return resourceRequest;
             FalconPopupForceUpdate instance = Instantiate(resourceRequest.asset) as FalconPopupForceUpdate;
             instance.ShowOkCancel();
-            instance.UpdateUI(config);
+            instance.UpdateUI(config);*/
         }
     }
 

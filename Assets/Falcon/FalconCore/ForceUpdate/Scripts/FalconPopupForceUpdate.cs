@@ -13,6 +13,12 @@ public class FalconPopupForceUpdate : MonoBehaviour
     public Text textUpdate;
     public Text textUpdate1;
     public Text textCancel;
+
+    private void OnEnable()
+    {
+        Debug.LogWarning("lmao");
+    }
+
     public void ShowOkCancel()
     {
         groupOkCancel.SetActive(true);

@@ -7,24 +7,24 @@ using Random = UnityEngine.Random;
 
 public class GameplayGenerater : CubeGenerator
 {
-    
+
     #region Setup Level
 
-    
+
     // ReSharper disable Unity.PerformanceAnalysis
-    
+
 
     public IEnumerator SetupLevel(GameObject tapCube)
     {
         yield return null;
         yield return LoadJson(tapCube);
-        
+
         yield return new WaitForSeconds(0.5f);
-        
+
         yield return StartCoroutine(Autoplay());
 
         IntroAnimation();
-        
+
         GameplayManager.Instance.SetDefaultMoveAttemps();
         yield return new WaitForSeconds(1f);
     }
@@ -32,7 +32,7 @@ public class GameplayGenerater : CubeGenerator
     private void IntroAnimation()
     {
         ShowCubes();
-        
+
         transform.position = new Vector3(0, 0, 0);
 
         Bounds bounds = CalculateTotalBounds();
@@ -45,7 +45,7 @@ public class GameplayGenerater : CubeGenerator
 
         // Move children objects to have the parent in the center
         MoveChildrenToCenterPoint(offset);
-        
+
 
         foreach (Transform cube in transform)
         {
@@ -74,7 +74,7 @@ public class GameplayGenerater : CubeGenerator
             cube.transform.localRotation = RandomRotation();
             cube.transform.localPosition = position;
             i++;
-            
+
             _cubes.Add(cube.gameObject.GetComponent<TapCube>());
         }
 
@@ -85,7 +85,7 @@ public class GameplayGenerater : CubeGenerator
     {
         _cubes = new List<TapCube>();
         ClearCube();
-        
+
         GameplayManager.LoadedData loadedData = JsonConvert.DeserializeObject<GameplayManager.LoadedData>(_levelInProgress.text);
 
         // Apply the transform for each object.
@@ -113,43 +113,48 @@ public class GameplayGenerater : CubeGenerator
 
     private IEnumerator Autoplay()
     {
-        bool playable = AutoCheck();
+        bool playable = false;
         while (!playable)
         {
             yield return StartCoroutine(Reshuffle());
-            playable = AutoCheck();
+            yield return StartCoroutine(AutoCheck(result =>
+            {
+                playable = result;
+            }));
         }
-
+        yield return null;
     }
 
-    private bool AutoCheck()
+    private IEnumerator AutoCheck(Action<bool> result)
     {
         yield return null;
         bool rePlay = true;
         bool playable = true;
+
         while (rePlay)
         {
+            yield return null;
             rePlay = false;
 
             for (int i = _cubes.Count - 1; i >= 0; i--)
             {
-                var cube = _cubes[i];
-                if (!cube.IsHidden() && !cube.IsBlock())
+                if (!_cubes[i].IsBlock())
                 {
                     playable = false;
                     rePlay = true;
+                    _cubes[i].HiddenCube();
                     _cubes.RemoveAt(i);
-                    cube.HiddenCube();
                 }
             }
         }
 
-        return playable;
+        yield return null;
+        result(playable);
     }
 
     public IEnumerator Reshuffle()
     {
-
+        yield return null;
         for (int i = _cubes.Count - 1; i >= 0; i--)
         {
             var cube = _cubes[i];
@@ -169,7 +174,7 @@ public class GameplayGenerater : CubeGenerator
         yield return null;
 
     }
-        
+
     private Quaternion RandomRotation()
     {
         Quaternion randomRotation = Quaternion.Euler(
@@ -179,16 +184,16 @@ public class GameplayGenerater : CubeGenerator
         );
         return randomRotation;
     }
-    
+
 
     private void ShowCubes()
     {
         foreach (Transform cube in transform)
         {
             cube.GetComponent<TapCube>().ShowCube();
-
+            _cubes.Add(cube.GetComponent<TapCube>());
         }
     }
-    
+
     #endregion
 }

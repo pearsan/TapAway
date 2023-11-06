@@ -124,7 +124,7 @@ public class GameplayGenerater : CubeGenerator
 
     private bool AutoCheck()
     {
-
+        yield return null;
         bool rePlay = true;
         bool playable = true;
         while (rePlay)

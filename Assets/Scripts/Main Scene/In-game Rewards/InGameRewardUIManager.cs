@@ -27,9 +27,6 @@ public class InGameRewardUIManager : MonoBehaviour
     private void Update()
     {
         UpdateGoldText();
-
-        if (Input.GetMouseButtonDown(1))
-            OnEnterInGameRewardPanel();
     }
 
     #region Button behaviours

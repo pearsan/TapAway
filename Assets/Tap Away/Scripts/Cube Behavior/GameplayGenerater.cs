@@ -127,6 +127,7 @@ public class GameplayGenerater : CubeGenerator
 
     private IEnumerator AutoCheck(Action<bool> result)
     {
+        yield return null;
         bool rePlay = true;
         bool playable = true;
         

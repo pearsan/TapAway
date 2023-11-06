@@ -57,11 +57,11 @@ public class GameplayManager : MonoBehaviour
     
     private void Start()
     {
-        string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
+        /*string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
 #if  UNITY_EDITOR
         path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
-#endif
-        if (File.Exists(path))
+#endif*/
+        if (PlayerPrefs.HasKey("SceneState"))
         {
             _gameState = PLAYING_STATE;
             playButton.SetActive(false);
@@ -69,7 +69,10 @@ public class GameplayManager : MonoBehaviour
             GameObject level = GameObject.Instantiate(cubeGenerator);
             level.transform.position = Vector3.zero;
             _currentPuzzle = level.transform;
+            /*
             string json = System.IO.File.ReadAllText(path);
+            */
+            string json = PlayerPrefs.GetString("SceneState");
             _levelInProgress = new TextAsset(json);
             LoadedData loadedData = JsonConvert.DeserializeObject<LoadedData>(_levelInProgress.text);
             _currentStage = loadedData.level;
@@ -234,8 +237,11 @@ public class GameplayManager : MonoBehaviour
 
         // Convert the list of transforms to JSON.
         string jsonString = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-
-        string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
+        
+        PlayerPrefs.SetString("SceneState", jsonString);
+        PlayerPrefs.Save();
+        
+        /*string path = Path.Combine(Application.persistentDataPath, "Tap Away", "Resources", "CurrentLevel", "current.json");
 #if  UNITY_EDITOR
         path = Path.Combine("Assets", "Tap Away", "Resources", "CurrentLevel","current" + ".json");
 #endif
@@ -255,7 +261,7 @@ public class GameplayManager : MonoBehaviour
         File.WriteAllText(path, jsonString);
 #if UNITY_EDITOR
         AssetDatabase.Refresh();
-#endif
+#endif*/
     }
     
     void OnApplicationQuit()

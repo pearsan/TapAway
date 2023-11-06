@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using AppsFlyerSDK;
 using Falcon.FalconAnalytics.Scripts.Enum;
-// using FalconSDK;
+//using FalconSDK;
 using UnityEngine;
 
 public class ISHandler : MonoBehaviour
@@ -234,14 +234,7 @@ public class ISHandler : MonoBehaviour
             { "af_inters_show", "af_inters_show" },
         };
         AppsFlyer.sendEvent("af_ad_events", eventValues);
-        var mode = GameDataManager.gameMode;
-        int maxLevelPassed = (mode switch
-        {
-            GameMode.Adventure => UIAdventureLevel.MaxLevel,
-            GameMode.Challenge => UIChallengeLevel.MaxLevel,
-            _ => 0
-        });
-        Data4Game.AdsLog(maxLevelPassed, AdType.Interstitial, mode, adsWhere);
+        Data4Game.AdsLog(GameplayManager.Instance.GetCurrentStage(), AdType.Interstitial, adsWhere);
     }
 
     private Action interCall;
@@ -376,15 +369,7 @@ public class ISHandler : MonoBehaviour
             { "af_rewarded_show", "af_rewarded_show" },
         };
         AppsFlyer.sendEvent("af_ad_events", eventValues);
-
-        var mode = GameDataManager.gameMode;
-        int maxLevelPassed = (mode switch
-        {
-            GameMode.Adventure => UIAdventureLevel.MaxLevel,
-            GameMode.Challenge => UIChallengeLevel.MaxLevel,
-            _ => 0
-        });
-        Data4Game.AdsLog(maxLevelPassed, AdType.Interstitial, mode, adsWhere);
+        Data4Game.AdsLog(GameplayManager.Instance.GetCurrentStage(), AdType.Interstitial, adsWhere);
     }
 
 
@@ -465,12 +450,12 @@ public class ISHandler : MonoBehaviour
         if (impressionData?.revenue == null || !FireBaseRemote.IsInitialized) return;
         Firebase.Analytics.Parameter[] adParameters =
         {
-            new("ad_platform", "ironSource"),
-            new("ad_source", impressionData.adNetwork),
-            new("ad_unit_name", impressionData.instanceName),
-            new("ad_format", impressionData.adUnit),
-            new("currency", "USD"),
-            new("value", impressionData.revenue.Value)
+        new Firebase.Analytics.Parameter("ad_platform", "ironSource"),
+        new Firebase.Analytics.Parameter("ad_source", impressionData.adNetwork),
+        new Firebase.Analytics.Parameter("ad_unit_name", impressionData.instanceName),
+        new Firebase.Analytics.Parameter("ad_format", impressionData.adUnit),
+        new Firebase.Analytics.Parameter("currency", "USD"),
+        new Firebase.Analytics.Parameter("value", impressionData.revenue.Value)
         };
         Firebase.Analytics.FirebaseAnalytics.LogEvent("ad_impression", adParameters);
         

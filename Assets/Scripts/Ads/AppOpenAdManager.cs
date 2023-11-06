@@ -29,12 +29,12 @@ public class AppOpenAdManager
         var request = new AdRequest.Builder().Build();
 
         // Load an app open ad for portrait orientation
-        AppOpenAd.LoadAd(AD_UNIT_ID, ScreenOrientation.Portrait, request, ((appOpenAd, error) =>
+        AppOpenAd.Load(AD_UNIT_ID, request, ((appOpenAd, error) =>
         {
             if (error != null)
             {
                 // Handle the error.
-                Debug.LogFormat("Failed to load the ad. (reason: {0})", error.LoadAdError.GetMessage());
+                Debug.LogFormat("Failed to load the ad. (reason: {0})", error.GetMessage());
                 return;
             }
 
@@ -52,16 +52,16 @@ public class AppOpenAdManager
             return;
         }
 
-        _ad.OnAdDidDismissFullScreenContent += OnAdFullScreenContentClosed;
-        _ad.OnAdFailedToPresentFullScreenContent += OnAdFullScreenContentFailed;
-        _ad.OnAdDidPresentFullScreenContent += OnAdFullScreenContentOpened;
-        _ad.OnAdDidRecordImpression += OnAdImpressionRecorded;
-        _ad.OnPaidEvent += OnAdPaid;
+        _ad.OnAdFullScreenContentClosed += OnAdFullScreenContentClosed;
+        _ad.OnAdFullScreenContentFailed += OnAdFullScreenContentFailed;
+        _ad.OnAdFullScreenContentOpened += OnAdFullScreenContentOpened;
+        _ad.OnAdImpressionRecorded += OnAdImpressionRecorded;
+        _ad.OnAdPaid += OnAdPaid;
 
         _ad.Show();
     }
 
-    private void OnAdFullScreenContentClosed(object sender, EventArgs args)
+    private void OnAdFullScreenContentClosed()
     {
         Debug.LogError("Closed app open ad");
         // Set the ad to null to indicate that AppOpenAdManager no longer has another ad to show.
@@ -70,41 +70,35 @@ public class AppOpenAdManager
         LoadAd();
     }
 
-    private void OnAdFullScreenContentFailed(object sender, AdErrorEventArgs args)
+    private void OnAdFullScreenContentFailed(AdError adError)
     {
-        Debug.LogFormat("Failed to present the ad (reason: {0})", args.AdError.GetMessage());
         // Set the ad to null to indicate that AppOpenAdManager no longer has another ad to show.
         _ad = null;
         LoadAd();
     }
 
-    private void OnAdFullScreenContentOpened(object sender, EventArgs args)
+    private void OnAdFullScreenContentOpened()
     {
         Debug.LogError("Displayed app open ad");
         _isShowingAd = true;
     }
 
-    private void OnAdImpressionRecorded(object sender, EventArgs args)
+    private void OnAdImpressionRecorded()
     {
         Debug.LogError("Recorded ad impression");
     }
 
-    private void OnAdPaid(object sender, AdValueEventArgs args)
+    private void OnAdPaid(AdValue adValue)
     {
-        Debug.LogFormat("Received paid event. (currency: {0}, value: {1}",
-            args.AdValue.CurrencyCode, args.AdValue.Value);
-
         if (!FireBaseRemote.IsInitialized) return;
-        
+
         Firebase.Analytics.Parameter[] adParameters =
         {
-            new("ad_platform", "google_mobile_ad"),
-            new("ad_source", "n/a"),
-            new("ad_unit_name", "n/a"),
-            new("ad_format", "app_open"),
-            new("currency", args.AdValue.CurrencyCode),
-            new("value", args.AdValue.Value)
-        };
+        new Firebase.Analytics.Parameter("ad_platform", "google_mobile_ad"),
+        new Firebase.Analytics.Parameter("ad_source", "n/a"),
+        new Firebase.Analytics.Parameter("ad_unit_name", "n/a"),
+        new Firebase.Analytics.Parameter("ad_format", "app_open"),
+    };
         Firebase.Analytics.FirebaseAnalytics.LogEvent("ad_impression", adParameters);
     }
 }

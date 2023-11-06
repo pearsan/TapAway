@@ -24,7 +24,6 @@ public class PopupConsent : MonoBehaviour
     public void OnClickBtnYes()
     {
         panelConsent.SetActive(false);
-        AudioManager.Instance.ClickButton();
         PlayerPrefs.SetInt(AlreadyConfirmPopupConsent, 1);
         ISHandler.Instance.Init(true);
     }
@@ -33,7 +32,6 @@ public class PopupConsent : MonoBehaviour
     public void OnClickBtnNo()
     {
         panelConsent.SetActive(false);
-        AudioManager.Instance.ClickButton();
         PlayerPrefs.SetInt(AlreadyConfirmPopupConsent, 2);
         ISHandler.Instance.Init(false);
     }

@@ -1,10 +1,15 @@
-using Puzzle.UI;
 using System;
 using System.Collections;
 using UnityEngine;
 
-public class AdsManager : SingletonMonoBehavior<AdsManager>
+public class AdsManager : MonoBehaviour
 {
+    public static AdsManager Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     [SerializeField] private GameObject adsBreakCanvas;
     [SerializeField] private float delayShowAdsBreak;
     [SerializeField] private float timer;
@@ -50,11 +55,9 @@ public class AdsManager : SingletonMonoBehavior<AdsManager>
     private IEnumerator IEShowAdsBreak()
     {
         OnShowInter?.Invoke();
-        Hub.Show(adsBreakCanvas);
         yield return new WaitForSeconds(2);
         ShowInter("AdsBreak");
         OnHideInter?.Invoke();
-        Hub.Hide(adsBreakCanvas);
         Debug.Log("Ads break");
     }
 

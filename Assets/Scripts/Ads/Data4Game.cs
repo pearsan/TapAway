@@ -17,10 +17,10 @@ public class Data4Game : MonoBehaviour
         DWHLog.Log.LevelLog(level, duration, wave, difficulty, status);
     }
 
-    public static void AdsLog(int maxPassedLevel, AdType type, GameMode mode, string adWhere)
+    public static void AdsLog(int maxPassedLevel, AdType type, string adWhere)
     {
         if(!FalconMain.InitComplete) return;
-        DWHLog.Log.AdsLog(maxPassedLevel, type, mode + "_" + adWhere);
+        DWHLog.Log.AdsLog(maxPassedLevel, type, adWhere);
     }
 
     public static void ResourceLog(int level, FlowType flowType, string itemType, string itemId, string currency, int amount)

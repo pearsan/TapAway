@@ -1,9 +1,14 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
-using Falcon.FalconCore.Scripts.Exception;
+using Falcon.FalconCore.Scripts.Exceptions;
+using Falcon.FalconCore.Scripts.Interfaces;
 using Falcon.FalconCore.Scripts.Utils;
+using Falcon.FalconCore.Scripts.Utils.Logs;
+using Falcon.FalconCore.Scripts.Utils.Sequences.Core;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditorInternal;
@@ -11,138 +16,273 @@ using UnityEditorInternal;
 
 namespace Falcon.FalconCore.Scripts
 {
-    public static class FalconMain
+    public class FalconMain : MonoBehaviour
     {
-        private static readonly SortedDictionary<int, List<IFalconInit>> PriorityToInstances = new SortedDictionary<int, List<IFalconInit>>();
+        #region Singleton
 
-        private static bool InitStarted { get; set; }
+        private static FalconMain _instance;
 
-        public static bool InitComplete { get; private set; }
-
-        public static int? MainThreadId { get; private set; }
-
-        public static void Init()
+        public static FalconMain Instance
         {
-            if (!InitStarted)
+            get
             {
-#if UNITY_EDITOR
-                if (!InternalEditorUtility.CurrentThreadIsMainThread())
-                    throw new System.Exception("FalconMain.Init() can only be called from the main thread");
-#endif
-                try
+                if (_instance == null)
                 {
-                    FalconLogUtils.Info("Sdk Initialize Started", "#ecbd77");
-                    MainThreadId = Thread.CurrentThread.ManagedThreadId;
-                    InitComplete = false;
-                    
-                    var init = FalconGameObjectUtils.Instance;
+                    var gObject = GameObject.Find("Falcon");
+                    if (gObject == null) gObject = new GameObject("Falcon");
 
-                    
-                    GetFalconInitInstances();
+                    _instance = gObject.GetComponent<FalconMain>() == null
+                        ? gObject.AddComponent<FalconMain>()
+                        : gObject.GetComponent<FalconMain>();
 
-                    CallInit();
-                    InitStarted = true;
+                    _instance.enabled = true;
+                    if (Application.isPlaying) DontDestroyOnLoad(_instance.gameObject);
                 }
-                catch (System.Exception e)
-                {
-                    FalconLogUtils.Error(e, "#ecbd77");
-                }
+
+                return _instance;
             }
         }
 
-        private static void GetFalconInitInstances()
+        #endregion
+
+        #region Init
+
+        private static readonly List<IFEssential> Essentials = new List<IFEssential>();
+
+        public static ExecState InitState { get; private set; } = ExecState.NotStarted;
+
+        public static bool InitComplete => InitState == ExecState.Succeed;
+
+        public static int? MainThreadId { get; private set; }
+
+        public static event EventHandler OnInitComplete;
+
+        /// <summary>
+        /// Initialize the SDk
+        /// </summary>
+        /// <remarks>
+        /// From SDK version 2.2.0, this function is no longer needed to be called manually by the user
+        /// </remarks>
+        /// <exception cref="FSdkException">If function not called from the main thread, only be thrown if running in editor</exception>
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Init()
         {
-            PriorityToInstances.Clear();
+            if (ExecStates.CanStart(InitState))
+            {
+#if UNITY_EDITOR
+                if (!InternalEditorUtility.CurrentThreadIsMainThread())
+                    throw new FSdkException("FalconMain.Init() can only be called from the main thread");
+#endif
+                Instance.StartCoroutine(new SequenceWrap(InitIEnumerator(), e =>
+                {
+                    CoreLogger.Instance.Error(e);
+                    InitState = ExecState.Failed;
+                }));
+            }
+        }
+
+        private static IEnumerator InitIEnumerator()
+        {
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+            InitState = ExecState.Processing;
+
+            CoreLogger.Instance.Info("Sdk Initialize Started");
+
+            yield return CallEssentials();
+
+            yield return CallInit();
+
+            CoreLogger.Instance.Info("Initialize complete");
+
+            InitState = ExecState.Succeed;
+            OnInitComplete?.Invoke(null, EventArgs.Empty);
+        }
+
+        private static IEnumerator CallEssentials()
+        {
+            Essentials.Clear();
             var types = from t in AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(s => s.GetTypes())
-                where t.GetInterfaces().Contains(typeof(IFalconInit))
-                      && t.GetConstructor(Type.EmptyTypes) != null
-                select t;
+                        where t.GetInterfaces().Contains(typeof(IFEssential))
+                              && t.GetConstructor(Type.EmptyTypes) != null
+                        select t;
 
             foreach (var type in types)
-                try
-                {
-                    IFalconInit instance = GetFalconInitInstance(type);
-
-                    if (instance != null)
-                    {
-                        if (!PriorityToInstances.ContainsKey(instance.GetPriority()))
-                        {
-                            PriorityToInstances.Add(instance.GetPriority(), new List<IFalconInit>());
-                        }
-                        PriorityToInstances[instance.GetPriority()].Add(instance);
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    FalconLogUtils.Error(e, "#ecbd77");
-                }
+            {
+                Essentials.Add(GetInstance<IFEssential>(type));
+                CoreLogger.Instance.Info(type + " init complete");
+                yield return null;
+            }
         }
 
-        private static IFalconInit GetFalconInitInstance(Type falconInitType)
+        private static IEnumerator CallInit()
         {
-            IFalconInit instance;
-            if (falconInitType.IsSubclassOf(typeof(MonoBehaviour)))
-                if (FalconGameObjectUtils.GameObject.GetComponent(falconInitType) != null)
-                    instance = (IFalconInit)FalconGameObjectUtils.GameObject.GetComponent(falconInitType);
-                else
-                    instance = FalconGameObjectUtils.GameObject.AddComponent(falconInitType) as IFalconInit;
+            var types = from t in AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s => s.GetTypes())
+                        where t.GetInterfaces().Contains(typeof(IFInit))
+                              && t.GetConstructor(Type.EmptyTypes) != null
+                        select t;
+
+            foreach (var type in types)
+            {
+                var instance = GetInstance<IFInit>(type);
+
+                if (instance == null) throw new FSdkException("Failed to created instance of type: " + type);
+
+                yield return instance.Init();
+                CoreLogger.Instance.Info(instance.GetType() + " init complete");
+            }
+        }
+
+        [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
+        private static T GetInstance<T>(Type type) where T : class, IFMainInit
+        {
+            T instance;
+            if (type.IsSubclassOf(typeof(MonoBehaviour)))
+            {
+                instance = Instance.AddIfNotExist(type) as T;
+            }
 
             else
-                instance = Activator.CreateInstance(falconInitType) as IFalconInit;
+            {
+                instance = Activator.CreateInstance(type) as T;
+            }
 
-            return instance;
+            if (instance != null) return instance;
+
+            throw new FSdkException("Failed to created instance of type: " + type);
         }
 
-        private static void CallInit()
-        {
-            FalconLogUtils.Info("Falcon Main start initializing", "#ecbd77");
+        #endregion
 
-            FalconThreadUtils.Execute(() =>
+        #region Expand Methods
+
+        public static bool ApplicationRunning { get; private set; }
+
+        public T AddIfNotExist<T>() where T : MonoBehaviour
+        {
+            var val = gameObject.GetComponent<T>();
+            if (val == null) val = gameObject.AddComponent<T>();
+            return val;
+        }
+
+        public Component AddIfNotExist(Type type)
+        {
+            var val = gameObject.GetComponent(type);
+            if (val == null) val = gameObject.AddComponent(type);
+            return val;
+        }
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler OnGameStop;
+        public event EventHandler OnGameContinue;
+        public event EventHandler OnUpdate;
+
+        private bool gameStop;
+
+        private void Awake()
+        {
+            ApplicationRunning = true;
+        }
+
+        public void Update()
+        {
+            try
             {
+                OnUpdate?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                CoreLogger.Instance.Error(e);
+            }
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+
+            if (Application.isPlaying && !hasFocus)
+                CheckGameStop();
+            else if (Application.isPlaying) CheckGameContinue();
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+
+            if (Application.isPlaying && pauseStatus)
+                CheckGameStop();
+            else if (Application.isPlaying) CheckGameContinue();
+        }
+
+        private void OnApplicationQuit()
+        {
+            MainThreadId = Thread.CurrentThread.ManagedThreadId;
+            ApplicationRunning = false;
+
+            CheckGameStop();
+        }
+
+        private void CheckGameStop()
+        {
+            if (!gameStop)
+                gameStop = true;
+            else
+                return;
+
+            CoreLogger.Instance.Info("On Game Stop");
+
+            try
+            {
+                OnGameStop?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                CoreLogger.Instance.Error(e);
+            }
+
+            foreach (var essential in Essentials)
                 try
                 {
-                    foreach (var keyValuePair in PriorityToInstances)
-                    foreach (var instance in keyValuePair.Value)
-                        try
-                        {
-                            while (true)
-                            {
-                                if (instance.InitInMainThread())
-                                {
-                                
-                                    FalconThreadUtils.OneTimeAction action = FalconThreadUtils.MainThread(() =>
-                                    {
-                                        instance.Init();
-                                        FalconLogUtils.Info(instance.GetType() + " init complete", "#ecbd77");
-                                    });
-                                    
-                                    while(!action.IsDone) Thread.Sleep(100);
-                                }
-                                else
-                                {
-                                    instance.Init();
-                                    FalconLogUtils.Info(instance.GetType() + " init complete", "#ecbd77");
-                                }
-                                break;
-                            }
-                            
-                        }
-                        catch (System.Exception e)
-                        {
-                            FalconLogUtils.Error(e, "#ecbd77");
-                        }
-
-                    FalconLogUtils.Info("Initialize complete", "#ecbd77");
-                    InitComplete = true;
+                    essential.OnPostStop();
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
-                    FalconLogUtils.Error(e, "#ecbd77");
-                    InitStarted = false;
+                    CoreLogger.Instance.Error(e);
+                }
+        }
+
+        private void CheckGameContinue()
+        {
+            if (gameStop)
+                gameStop = false;
+            else
+                return;
+            CoreLogger.Instance.Info("On Game Continue");
+
+            foreach (var essential in Essentials)
+                try
+                {
+                    essential.OnPreContinue();
+                }
+                catch (Exception e)
+                {
+                    CoreLogger.Instance.Error(e);
                 }
 
-            });
+            try
+            {
+                OnGameContinue?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception e)
+            {
+                CoreLogger.Instance.Error(e);
+            }
         }
+
+        #endregion
     }
 }

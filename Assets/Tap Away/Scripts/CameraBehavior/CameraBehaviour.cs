@@ -306,7 +306,7 @@ public class CameraBehaviour : MonoBehaviour
                             IExplodable cube = hitCollider.GetComponent<IExplodable>();
                             if (cube != null) // If the object has a TapCube component
                             {
-                                cube.Explode(hit.point, explodeForce, explodeRadius);
+                                cube.Explode(hit.collider.transform.position, explodeForce, explodeRadius);
 
                             }
                         }

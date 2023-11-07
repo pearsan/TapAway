@@ -194,7 +194,7 @@ public class GameUIManager : MonoBehaviour
         if (LevelRewardManager.Instance.OnValidateTriggerClaimRewardEvent())
         {
             LevelRewardManager.Instance.OnChooseRewardDependExcel();
-            OnLevelRewardFeedbackAnimation(ShopManager.Instance.SubcriberSO);
+            OnLevelRewardFeedbackAnimation(LevelRewardManager.Instance.ItemToShow);
             yield return new WaitUntil(() => LevelRewardManager.Instance.IsRewardClaim);
             LevelRewardManager.Instance.IsRewardClaim = false;
             StartCoroutine(WaitForNextLevel(0.3f));

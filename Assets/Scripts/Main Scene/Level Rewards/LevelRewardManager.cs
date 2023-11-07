@@ -6,6 +6,10 @@ public class LevelRewardManager : MonoBehaviour
 {
     public static LevelRewardManager Instance;
 
+    [Header("Level Reward SOs")]
+    public LevelRewardSO Key;
+    public LevelRewardSO Egg;
+
     private LevelRewardSheet[] LevelRewardDataSO;
 
     private int _totalLevelToClaim;
@@ -14,6 +18,7 @@ public class LevelRewardManager : MonoBehaviour
     private int _currentReward;
 
     [HideInInspector] public bool IsRewardClaim = false;
+    [HideInInspector] public ShopItemSO ItemToShow;
 
     private void Awake()
     {
@@ -53,7 +58,16 @@ public class LevelRewardManager : MonoBehaviour
         {
             case "KeySkin":
             ShopGUIManager.Instance.ChooseNewRandomSkin();
+                ItemToShow = ShopManager.Instance.SubcriberSO;
             ShopManager.Instance.MarkShopItemIsUnlock();
+                break;
+
+            case "Egg":
+                ItemToShow = Egg;
+                break;
+
+            case "Key":
+                ItemToShow = Key;
                 break;
         }
     }    

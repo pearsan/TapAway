@@ -193,10 +193,16 @@ public class TapCube : MonoBehaviour, ITappable, IExplodable
 
     public void Explode(Vector3 hitPoint, float explodeForce, float explodeRadius)
     {
-        StartCoroutine(FadeOut());
+        StartCoroutine(ScaleDown());
         var rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.AddExplosionForce(explodeForce, hitPoint, explodeRadius, 0);
         transform.SetParent(null);
+    }
+
+    private IEnumerator ScaleDown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        gameObject.GetComponent<DOTweenAnimation>().DOPlay();
     }
 }

@@ -113,6 +113,8 @@ public class GameplayManager : MonoBehaviour
                     break;
             }
         }
+        
+        ChangeBackGroundColor();
     }
 
     public void HandlePlayButton()

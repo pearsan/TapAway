@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 public class CameraBehaviour : MonoBehaviour
 {
     [SerializeField] private InputAction pressed, axis;
-    [SerializeField] private Transform _targert;
+    [SerializeField] private Transform targert;
     [SerializeField] private InputAction clicked;
 
     private Transform _cam;
@@ -23,8 +23,8 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private float minZoom = 20f;
     [SerializeField] private float maxZoom = 120f;
 
-    private float previousMagnitude = 0;
-    private int touchCount = 0;
+    private float _previousMagnitude = 0;
+    private int _touchCount = 0;
     
     [SerializeField] private InputAction dragAction;
     [SerializeField] private float dragSpeed = 0.1f;
@@ -32,11 +32,18 @@ public class CameraBehaviour : MonoBehaviour
     private Vector2 _lastDragPosition;
     public float minCameraX, maxCameraX, minCameraY, maxCameraY;
     
-    private Vector2 touch0StartPos = Vector2.zero;
-    private Vector2 touch1StartPos = Vector2.zero;
-    private bool firstDrag = true;
+    private Vector2 _touch0StartPos = Vector2.zero;
+    private Vector2 _touch1StartPos = Vector2.zero;
+    private bool _firstDrag = true;
     private bool _cameraEnable = true;
     private bool _behaviorOn = false;
+    [SerializeField] private bool tapCube = true;
+    
+    [Header("Bombs")]
+    [SerializeField] private bool bomb = true;
+
+    [SerializeField] private float explodeRadius = 0.75f;
+    [SerializeField] private float explodeForce = 500f;
     
     /// <summary>
     /// EDITOR Cube
@@ -56,7 +63,7 @@ public class CameraBehaviour : MonoBehaviour
             {
                 EditLevel();
             }
-            else if (_targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && _cameraEnable)
+            else if (targert != null && GameplayManager.Instance.GetGameState() == GameplayManager.PLAYING_STATE && _cameraEnable)
             {
                 ShootRay();
             }
@@ -91,12 +98,13 @@ public class CameraBehaviour : MonoBehaviour
 
     private void SetRotate()
     {
-        _cam = Camera.main.transform;
+        if (Camera.main != null) 
+            _cam = Camera.main.transform;
         pressed.Enable();
         axis.Enable();
         pressed.performed += _ =>
         {
-            if (touchCount > 1)
+            if (_touchCount > 1)
             {
                 _rotateAllowed = false;
                 return;
@@ -107,7 +115,7 @@ public class CameraBehaviour : MonoBehaviour
         pressed.canceled += _ => { _rotateAllowed = false; };
         axis.performed += context =>
         {
-            if (touchCount > 1)
+            if (_touchCount > 1)
             {
                 _rotateAllowed = false;
                 return;
@@ -119,12 +127,12 @@ public class CameraBehaviour : MonoBehaviour
     private IEnumerator Rotate()
     {
         _rotateAllowed = true;
-        while(_rotateAllowed && _targert != null && _cameraEnable)
+        while(_rotateAllowed && targert != null && _cameraEnable)
         {
 
             _rotation *= speedRotate;
-            _targert.transform.Rotate(Vector3.up * (inverted? 1: -1), _rotation.x, Space.World);
-            _targert.transform.Rotate(_cam.right * (inverted? -1: 1), _rotation.y, Space.World);
+            targert.transform.Rotate(Vector3.up * (inverted? 1: -1), _rotation.x, Space.World);
+            targert.transform.Rotate(_cam.right * (inverted? -1: 1), _rotation.y, Space.World);
             
             yield return null;
         }
@@ -137,48 +145,48 @@ public class CameraBehaviour : MonoBehaviour
         scrollAction.Enable();
         scrollAction.performed += ctx =>CameraZoom(ctx.ReadValue<Vector2>().y * speedZoom);
         
-        var touch0contact = new InputAction( type: InputActionType.Button,
+        var touch0Contact = new InputAction( type: InputActionType.Button,
             binding: "<Touchscreen>/touch0/press"
         );
-        touch0contact.Enable();
+        touch0Contact.Enable();
         
         var touch1contact = new InputAction( type: InputActionType.Button,
             binding: "<Touchscreen>/touch1/press"
         );
         touch1contact.Enable();
 
-        touch0contact.canceled += _ =>
+        touch0Contact.canceled += _ =>
         {
-            touchCount--;
-            previousMagnitude = 0;
+            _touchCount--;
+            _previousMagnitude = 0;
         };
         touch1contact.canceled += _ =>
         {
-            touchCount--;
-            previousMagnitude = 0;
+            _touchCount--;
+            _previousMagnitude = 0;
         };
         
-        var touch0pos = new InputAction (type: InputActionType.Value,
+        var touch0Pos = new InputAction (type: InputActionType.Value,
             binding: "<TouchScreen>/touch0/position");
-        touch0pos.Enable();
+        touch0Pos.Enable();
         
-        var touch1pos = new InputAction (type: InputActionType.Value,
+        var touch1Pos = new InputAction (type: InputActionType.Value,
             binding: "<TouchScreen>/touch1/position");
-        touch1pos.Enable();
+        touch1Pos.Enable();
         
-        touch0contact.performed += _ =>
+        touch0Contact.performed += _ =>
         {
-            touchCount++;
-            touch0StartPos = touch0pos.ReadValue<Vector2>();
-            touch1StartPos = touch1pos.ReadValue<Vector2>();
+            _touchCount++;
+            _touch0StartPos = touch0Pos.ReadValue<Vector2>();
+            _touch1StartPos = touch1Pos.ReadValue<Vector2>();
         };
         touch1contact.performed += _ => {
-            touchCount++;
-            touch0StartPos = touch0pos.ReadValue<Vector2>();
-            touch1StartPos = touch1pos.ReadValue<Vector2>();
+            _touchCount++;
+            _touch0StartPos = touch0Pos.ReadValue<Vector2>();
+            _touch1StartPos = touch1Pos.ReadValue<Vector2>();
         };
         
-        touch1pos.performed += _ =>
+        touch1Pos.performed += _ =>
         {
             
             
@@ -186,26 +194,26 @@ public class CameraBehaviour : MonoBehaviour
             if (_cameraEnable)
             {
                 //zoom
-                if (touchCount  < 2)
+                if (_touchCount  < 2)
                     return;
-                var magnitude = (touch0pos.ReadValue<Vector2>() - touch1pos.ReadValue<Vector2>()).magnitude;
-                if (previousMagnitude == 0)
+                var magnitude = (touch0Pos.ReadValue<Vector2>() - touch1Pos.ReadValue<Vector2>()).magnitude;
+                if (_previousMagnitude == 0)
                 {
-                    previousMagnitude = magnitude;
+                    _previousMagnitude = magnitude;
                 }
-                var difference = magnitude - previousMagnitude;
-                previousMagnitude = magnitude;
+                var difference = magnitude - _previousMagnitude;
+                _previousMagnitude = magnitude;
                 CameraZoom(-difference * speedZoom);
                 
-                Vector2 touch0CurrentPos = touch0pos.ReadValue<Vector2>();
-                Vector2 touch1CurrentPos = touch1pos.ReadValue<Vector2>();
+                Vector2 touch0CurrentPos = touch0Pos.ReadValue<Vector2>();
+                Vector2 touch1CurrentPos = touch1Pos.ReadValue<Vector2>();
 
-                Vector2 prevPos = (touch0StartPos + touch1StartPos) / 2;
+                Vector2 prevPos = (_touch0StartPos + _touch1StartPos) / 2;
                 Vector2 currentPos = (touch0CurrentPos + touch1CurrentPos) / 2;
-                if (firstDrag)
+                if (_firstDrag)
                 {
                     prevPos = currentPos;
-                    firstDrag = false;
+                    _firstDrag = false;
                 }
                 Vector2 differenceDrag = currentPos - prevPos;
                 Vector3 newPosition = Camera.main.transform.position + new Vector3(-differenceDrag.x * dragSpeed / 10, -differenceDrag.y * dragSpeed / 10, 0) * Time.deltaTime;
@@ -213,8 +221,8 @@ public class CameraBehaviour : MonoBehaviour
                 newPosition.y = Mathf.Clamp(newPosition.y, minCameraY, maxCameraY);
                 Camera.main.transform.position = newPosition;
 
-                touch0StartPos = touch0CurrentPos;
-                touch1StartPos = touch1CurrentPos;
+                _touch0StartPos = touch0CurrentPos;
+                _touch1StartPos = touch1CurrentPos;
             }
         };
     }
@@ -281,11 +289,29 @@ public class CameraBehaviour : MonoBehaviour
                 ITappable tapCube = hit.collider.gameObject.GetComponent<ITappable>();
                 if (tapCube != null && GameplayManager.Instance.GetMoveAttemps() > 0)
                 {
-                    if (GameplayManager.Instance.GetCurrentStage() > 2)
-                        GameplayManager.Instance.MinusMoveAttemps();
+                    if (this.tapCube)
+                    {
+                        if (GameplayManager.Instance.GetCurrentStage() > 2)
+                            GameplayManager.Instance.MinusMoveAttemps();
 
-                    SoundManager.Instance.TapCube();
-                    tapCube.Tap();
+                        SoundManager.Instance.TapCube();
+                        tapCube.Tap();                        
+                    }
+                    else if (bomb)
+                    {
+                        int layerMask = 1 << LayerMask.NameToLayer("Cube");
+                        Collider[] hitColliders = Physics.OverlapSphere( hit.point, explodeRadius, layerMask);
+                        foreach (Collider hitCollider in hitColliders)
+                        {
+                            IExplodable cube = hitCollider.GetComponent<IExplodable>();
+                            if (cube != null) // If the object has a TapCube component
+                            {
+                                cube.Explode(hit.collider.transform.position, explodeForce, explodeRadius);
+
+                            }
+                        }
+                    }
+
 
                     #region tutorial
                     if (GameplayManager.Instance.GetCurrentStage() == 2)
@@ -364,7 +390,7 @@ public class CameraBehaviour : MonoBehaviour
 
     public void SetTargert(Transform targert)
     {
-        _targert = targert;
+        this.targert = targert;
     }
 
     public bool CameraIsOn()

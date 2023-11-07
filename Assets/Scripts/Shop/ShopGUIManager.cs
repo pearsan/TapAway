@@ -68,7 +68,7 @@ public class ShopGUIManager : MonoBehaviour
     private void UpdateGoldText()
     {
         if (GoldManager.Instance != null)
-            GoldText.text = GoldManager.Instance.GetGold().ToString();
+            GoldText.text = GoldManager.Instance.GetGoldString();
         else
             Debug.LogWarning("Not singleton of Gold Manager");
     }

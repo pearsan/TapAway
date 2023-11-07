@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f34bd44e8c0c0e54fac9469238534d04, type: 3}
+  m_Name: Key
+  m_EditorClassIdentifier: 
+  Name: 
+  IsUnlock: 0
+  Price: 0
+  Type: 
+  ShopItemPrefab: {fileID: 919132149155446097, guid: d7f3ea2fab545414c93892f207ef5442, type: 3}
+  CanUnlockByGold: 1
+  CanUnlockByAds: 1
+  AdsWatched: 0
+  AdsToUnlock: 0

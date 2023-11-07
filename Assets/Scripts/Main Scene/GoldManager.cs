@@ -18,6 +18,12 @@ public class GoldManager : MonoBehaviour
         return PlayerPrefs.GetInt("Gold");
     }
 
+    public string GetGoldString()
+    {
+        int gold = PlayerPrefs.GetInt("Gold");
+        return gold.ToString("N0").Replace(",", ".");
+    }
+
     public void ModifyGoldValue(int value)
     {
         int currentGold = PlayerPrefs.GetInt("Gold");

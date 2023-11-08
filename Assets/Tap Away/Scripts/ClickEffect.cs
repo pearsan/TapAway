@@ -36,4 +36,17 @@ public class ClickEffect : MonoBehaviour
      
         }
     }
+
+    public void ChangeEffect(ParticleSystem newEffect)
+    {
+        Destroy(_particleSystem);
+        _particleSystem = Instantiate(newEffect);
+        _particleSystems = _particleSystem.GetComponentsInChildren<ParticleSystem>();
+        foreach (var ps in _particleSystems)
+        {
+            var mainModule = ps.main;
+            mainModule.loop = false;
+            mainModule.simulationSpace = ParticleSystemSimulationSpace.World;
+        }
+    }
 }

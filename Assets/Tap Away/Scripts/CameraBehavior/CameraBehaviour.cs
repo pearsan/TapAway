@@ -8,6 +8,7 @@ using UnityEngine.Serialization;
 
 public class CameraBehaviour : MonoBehaviour
 {
+    public static CameraBehaviour Instance;
     [SerializeField] private InputAction pressed, axis;
     [SerializeField] private Transform targert;
     [SerializeField] private InputAction clicked;
@@ -39,9 +40,11 @@ public class CameraBehaviour : MonoBehaviour
     private bool _behaviorOn = false;
     [SerializeField] private bool tapCube = true;
     
+    [FormerlySerializedAs("bomb")]
     [Header("Bombs")]
-    [SerializeField] private bool bomb = true;
-
+    [SerializeField] private bool bombMode = true;
+    [SerializeField] private GameObject bombPrefabs;
+    private Bomb _currentBomb; 
     [SerializeField] private float explodeRadius = 0.75f;
     [SerializeField] private float explodeForce = 500f;
     
@@ -52,10 +55,19 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private GameObject parent;
     [SerializeField] private GameObject child;
     [FormerlySerializedAs("spawnBlock")] [SerializeField] private bool editCube = false;
-
     
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); 
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         clicked.Enable();
         clicked.performed += _ =>
         {
@@ -297,19 +309,10 @@ public class CameraBehaviour : MonoBehaviour
                         SoundManager.Instance.TapCube();
                         tapCube.Tap();                        
                     }
-                    else if (bomb)
+                    else if (bombMode)
                     {
-                        int layerMask = 1 << LayerMask.NameToLayer("Cube");
-                        Collider[] hitColliders = Physics.OverlapSphere( hit.point, explodeRadius, layerMask);
-                        foreach (Collider hitCollider in hitColliders)
-                        {
-                            IExplodable cube = hitCollider.GetComponent<IExplodable>();
-                            if (cube != null) // If the object has a TapCube component
-                            {
-                                cube.Explode(hit.collider.transform.position, explodeForce, explodeRadius);
-
-                            }
-                        }
+                        _currentBomb.Throw(hit.point, explodeRadius, explodeForce);
+                        ExitBombMode();
                     }
 
 
@@ -349,6 +352,23 @@ public class CameraBehaviour : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void OnBombMode()
+    {
+        GameObject bomb = Instantiate(bombPrefabs, Camera.main.transform);
+        bomb.transform.localPosition = new Vector3(0, -1.3f, 2);
+        _currentBomb = bomb.GetComponent<Bomb>();
+        
+        bombMode = true;
+        tapCube = false;
+    }
+    
+
+    private void ExitBombMode()
+    {
+        bombMode = false;
+        tapCube = true;
     }
 
     private void EditLevel()

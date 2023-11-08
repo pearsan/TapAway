@@ -17,12 +17,14 @@ public class BombButtonBehaviour : MonoBehaviour
         if(GoldManager.Instance.GetGold() >= 100)
         {
             GoldManager.Instance.ModifyGoldValue(-100);
-            Debug.Log("Bomb event in there");
+            CameraBehaviour.Instance.OnBombMode();
         }
         else
         {
             ISHandler.Instance.ShowRewardedVideo("Buy bomb by ads"
-                , () => { Debug.Log("Bomb event in there"); }
+                , () => {
+                    CameraBehaviour.Instance.OnBombMode();
+                }
                 , () => { });
         } 
             

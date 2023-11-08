@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 4
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 8307331719927824755, guid: 2306f356fc0539440903c20748447268, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

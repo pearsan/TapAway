@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 5
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 2917262680915108181, guid: 67ffd6e7a2268c645b6cc00e4cc12697, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

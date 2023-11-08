@@ -16,7 +16,7 @@ MonoBehaviour:
   IsUnlock: 0
   Price: 34
   Type: WinEffect
-  ShopItemPrefab: {fileID: 0}
+  ShopItemPrefab: {fileID: 7157534263300561286, guid: fc5f84b4ebaf7154999e60c2d8c5014f, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 6
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 8435969238600549160, guid: 151ca12eb3a39cf42942d4ffd9460ef9, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

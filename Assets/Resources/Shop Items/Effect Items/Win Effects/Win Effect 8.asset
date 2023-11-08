@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 8
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 1234874799450024241, guid: 206e3af82f46da640901cc1d40ef10ef, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

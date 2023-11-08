@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 7
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 6852682854576823542, guid: 7465aeb7c143e5e499c5a5509002000f, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

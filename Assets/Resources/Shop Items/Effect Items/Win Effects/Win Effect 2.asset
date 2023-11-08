@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 2
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 8995705719425219135, guid: 7cfc69d6d4c7986439869e34f7952c1d, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

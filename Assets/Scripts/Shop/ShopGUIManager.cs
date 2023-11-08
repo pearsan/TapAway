@@ -191,7 +191,7 @@ public class ShopGUIManager : MonoBehaviour
             }
         }
         #endregion
-        ISHandler.Instance.ShowRewardedVideo("Buy by Ads button", ShopManager.Instance.SetSubcriberSOAdsUnlockProgressSuccess, () => { }); 
+        ISHandler.Instance.ShowRewardedVideo("Increase skin process by Ads button", ShopManager.Instance.SetSubcriberSOAdsUnlockProgressSuccess, () => { }); 
         ShopManager.Instance.Subcribe();
 
         

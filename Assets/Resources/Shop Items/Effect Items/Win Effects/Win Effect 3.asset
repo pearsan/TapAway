@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: Win 3
   IsUnlock: 0
   Price: 34
-  Type: 
-  ShopItemPrefab: {fileID: 0}
+  Type: WinEffect
+  ShopItemPrefab: {fileID: 4511106020250382694, guid: 268e1d26c18b90340a88724005e182fd, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

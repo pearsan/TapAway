@@ -31,7 +31,9 @@ public class EquipButtonBehaviour : MonoBehaviour
         {
             GetComponent<Image>().sprite = EquippedSprite;
             GetComponent<Button>().interactable = false;
-            GameplayManager.Instance.ChangeCurrentSkin(itemPlayerSelected.ShopItemPrefab);
+
+            if(itemPlayerSelected.Type == "Skin")
+                GameplayManager.Instance.ChangeCurrentSkin(itemPlayerSelected.ShopItemPrefab);
             EquipButtonText.text = "Equipped";
         }
         else
@@ -48,6 +50,8 @@ public class EquipButtonBehaviour : MonoBehaviour
         ShopReadWriteData.Instance.SetEquippedEquipment();
         OnStartFeedbackToPlayer(ShopManager.Instance.SubcriberSO);
         ShopGUIManager.Instance.OnUpdateAllSelectedItemFeedbacks();
-        GameplayManager.Instance.ChangeCurrentSkin(ShopManager.Instance.SubcriberSO.ShopItemPrefab);
+
+        if(ShopManager.Instance.SubcriberSO.Type == "Skin")
+            GameplayManager.Instance.ChangeCurrentSkin(ShopManager.Instance.SubcriberSO.ShopItemPrefab);
     }    
 }

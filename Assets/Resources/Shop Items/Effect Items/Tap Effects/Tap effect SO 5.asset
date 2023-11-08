@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Tap effect SO 5
   m_EditorClassIdentifier: 
   Name: Tap 5
-  IsUnlock: 1
+  IsUnlock: 0
   Price: 0
   Type: TapEffect
-  TapIcon: {fileID: 21300000, guid: 4d338c631fa36f345b72a36f1c91ff9a, type: 3}
-  tapPrefab: {fileID: 0}
+  ShopItemPrefab: {fileID: 2554943981673393275, guid: f00aaf22ef0f7e6479cbabe2570885ab, type: 3}
+  CanUnlockByGold: 1
+  CanUnlockByAds: 1
+  AdsWatched: 0
+  AdsToUnlock: 0
+  TapIcon: {fileID: 21300000, guid: 648cc24f6f5a1014f8782d4a97dcc384, type: 3}

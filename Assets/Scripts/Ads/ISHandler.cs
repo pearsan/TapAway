@@ -225,7 +225,6 @@ public class ISHandler : MonoBehaviour
 
     public void ShowInterstitial(string adsWhere)
     {
-        Debug.Log("Show Interstitial");
         if (!IsInterstitialReady()) return;
         IronSource.Agent.showInterstitial();
         
@@ -369,7 +368,7 @@ public class ISHandler : MonoBehaviour
             { "af_rewarded_show", "af_rewarded_show" },
         };
         AppsFlyer.sendEvent("af_ad_events", eventValues);
-        Data4Game.AdsLog(GameplayManager.Instance.GetCurrentStage(), AdType.Interstitial, adsWhere);
+        Data4Game.AdsLog(GameplayManager.Instance.GetCurrentStage(), AdType.Reward, adsWhere);
     }
 
 

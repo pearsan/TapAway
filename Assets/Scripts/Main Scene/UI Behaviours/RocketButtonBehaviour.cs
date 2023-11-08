@@ -21,7 +21,7 @@ public class RocketButtonBehaviour : MonoBehaviour
         }
         else
         {
-            ISHandler.Instance.ShowRewardedVideo("Buy bomb by ads"
+            ISHandler.Instance.ShowRewardedVideo("Buy rocket by ads"
                 , () => { Debug.Log("Rocket event in there"); }
                 , () => { });
         }

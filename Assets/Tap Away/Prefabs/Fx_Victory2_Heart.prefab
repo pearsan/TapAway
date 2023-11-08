@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4511106020250382683}
   - component: {fileID: 4511106020250382680}
   - component: {fileID: 4511106020250382681}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Victory2_Heart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,7 +25,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4511106020250382694}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -33,7 +33,7 @@ Transform:
   - {fileID: 4511106020677764873}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &4511106020250382680
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -50,7 +50,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -4817,7 +4817,7 @@ GameObject:
   - component: {fileID: 4511106020571795527}
   - component: {fileID: 4511106020571795897}
   - component: {fileID: 4511106020571795526}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_PaperPop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9630,7 +9630,7 @@ GameObject:
   - component: {fileID: 4511106020677764873}
   - component: {fileID: 4511106020677764875}
   - component: {fileID: 4511106020677764872}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_PaperPop (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

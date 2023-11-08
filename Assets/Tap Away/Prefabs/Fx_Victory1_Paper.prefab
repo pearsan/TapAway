@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7157534262230444432}
   - component: {fileID: 7157534262230444446}
   - component: {fileID: 7157534262230444433}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_PaperPop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4829,7 +4829,7 @@ GameObject:
   - component: {fileID: 7157534262871423048}
   - component: {fileID: 7157534262871423414}
   - component: {fileID: 7157534262871423049}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_PaperPop (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9705,7 +9705,7 @@ GameObject:
   - component: {fileID: 7157534263179311903}
   - component: {fileID: 7157534263179311901}
   - component: {fileID: 7157534263179311900}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_LightSmall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14518,7 +14518,7 @@ GameObject:
   - component: {fileID: 7157534263300561285}
   - component: {fileID: 7157534263300561284}
   - component: {fileID: 7157534263300561287}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Victory1_Paper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14532,7 +14532,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7157534263300561286}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -14541,7 +14541,7 @@ Transform:
   - {fileID: 7157534262871423048}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &7157534263300561284
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -14558,7 +14558,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1

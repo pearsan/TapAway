@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 852481305451199226}
   - component: {fileID: 852481305451199228}
   - component: {fileID: 852481305451199229}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Touch3_Cat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,8 +25,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852481305451199227}
-  m_LocalRotation: {x: -0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 7.400253, y: 1, z: -7.5216737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 852481307301023502}
@@ -50,7 +50,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -4817,7 +4817,7 @@ GameObject:
   - component: {fileID: 852481306470692954}
   - component: {fileID: 852481306470692956}
   - component: {fileID: 852481306470692957}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9679,7 +9679,7 @@ GameObject:
   - component: {fileID: 852481307301023502}
   - component: {fileID: 852481307301023600}
   - component: {fileID: 852481307301023601}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Paw
   m_TagString: Untagged
   m_Icon: {fileID: 0}

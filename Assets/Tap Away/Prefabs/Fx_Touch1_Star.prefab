@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2547801014522988311}
   - component: {fileID: 2547801014522988329}
   - component: {fileID: 2547801014522988328}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Touch1_Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25,8 +25,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2547801014522988310}
-  m_LocalRotation: {x: -0, y: -0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 7.400253, y: 1, z: -7.5216737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2547801016153003425}
@@ -50,7 +50,7 @@ ParticleSystem:
   ringBufferLoopRange: {x: 0, y: 1}
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   useRigidbodyForVelocity: 1
@@ -867,7 +867,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 1
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -4817,7 +4817,7 @@ GameObject:
   - component: {fileID: 2547801015835458876}
   - component: {fileID: 2547801015835458878}
   - component: {fileID: 2547801015835458877}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_PaperPop (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9679,7 +9679,7 @@ GameObject:
   - component: {fileID: 2547801016153003425}
   - component: {fileID: 2547801016153003427}
   - component: {fileID: 2547801016153003426}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fx_Star
   m_TagString: Untagged
   m_Icon: {fileID: 0}

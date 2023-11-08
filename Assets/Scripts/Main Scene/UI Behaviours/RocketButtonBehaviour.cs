@@ -17,12 +17,14 @@ public class RocketButtonBehaviour : MonoBehaviour
         if (GoldManager.Instance.GetGold() >= 100)
         {
             GoldManager.Instance.ModifyGoldValue(-100);
-            Debug.Log("Rocket event in there");
+            CameraBehaviour.Instance.OnRocketMode();
         }
         else
         {
             ISHandler.Instance.ShowRewardedVideo("Buy rocket by ads"
-                , () => { Debug.Log("Rocket event in there"); }
+                , () => {            
+                    CameraBehaviour.Instance.OnRocketMode();
+                }
                 , () => { });
         }
 

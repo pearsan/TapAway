@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour
 {
+    [SerializeField] private GameObject explosionParticle;
     private void Start()
     {
         GetComponent<DOTweenAnimation>().DOPlay();
@@ -13,6 +14,7 @@ public class Bomb : MonoBehaviour
 
     public void Throw(Vector3 hitPoint, float explodeRadius, float explodeForce)
     {
+        CameraBehaviour.Instance.OnPause();
         GetComponent<DOTweenAnimation>().DOComplete();
 
         transform.SetParent(null);
@@ -30,10 +32,13 @@ public class Bomb : MonoBehaviour
             endPoint
         };
         
-        transform.DOPath(path, 2, PathType.CatmullRom).SetEase(Ease.InSine).SetLookAt(0.01f).OnComplete(() =>
+        transform.DOPath(path, 1, PathType.CatmullRom).SetEase(Ease.InSine).SetLookAt(0.01f).OnComplete(() =>
         {
             Explode(hitPoint, explodeRadius, explodeForce);
+            explosionParticle = Instantiate(explosionParticle, hitPoint, Quaternion.identity);
+            Destroy(explosionParticle, 2);
             Destroy(gameObject);
+            CameraBehaviour.Instance.OnPlay();
         }
             );
     }

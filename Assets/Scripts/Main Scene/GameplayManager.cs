@@ -120,7 +120,9 @@ public class GameplayManager : MonoBehaviour
     public void HandlePlayButton()
     {
         StartCoroutine(GenerateLevel());
-
+        
+        cameraBehaviour.ExitBombMode();
+        cameraBehaviour.ExitRocketMode();
         ChangeBackGroundColor();
     }
 

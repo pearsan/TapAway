@@ -48,6 +48,11 @@ public class CameraBehaviour : MonoBehaviour
     [SerializeField] private float explodeRadius = 0.75f;
     [SerializeField] private float explodeForce = 500f;
     
+    [Header("Rockets")]
+    [SerializeField] private bool rocketMode = true;
+    [SerializeField] private GameObject rocketPrefabs;
+    
+    [Header(("Editor"))]
     /// <summary>
     /// EDITOR Cube
     /// </summary>
@@ -313,6 +318,13 @@ public class CameraBehaviour : MonoBehaviour
                     {
                         _currentBomb.Throw(hit.point, explodeRadius, explodeForce);
                         ExitBombMode();
+                    } else if (rocketMode)
+                    {
+                        GameObject rocket = Instantiate(rocketPrefabs);
+                        rocket.transform.position = hit.collider.gameObject.transform.position + 1.5f * hit.normal;
+                        rocket.transform.rotation = Quaternion.LookRotation(-hit.normal);
+                        rocket.transform.SetParent(hit.collider.transform.parent);
+                        ExitRocketMode();
                     }
 
 
@@ -356,6 +368,8 @@ public class CameraBehaviour : MonoBehaviour
 
     public void OnBombMode()
     {
+        if (bombMode)
+            return;
         GameObject bomb = Instantiate(bombPrefabs, Camera.main.transform);
         bomb.transform.localPosition = new Vector3(0, -1.3f, 2);
         _currentBomb = bomb.GetComponent<Bomb>();
@@ -365,9 +379,27 @@ public class CameraBehaviour : MonoBehaviour
     }
     
 
-    private void ExitBombMode()
+    public void ExitBombMode()
+    {
+        if (_currentBomb != null && _currentBomb.transform.parent != null)
+            Destroy(_currentBomb.gameObject);
+        bombMode = false;
+        tapCube = true;
+    }
+
+    public void OnRocketMode()
+    {
+        if (rocketMode)
+            return;
+        bombMode = false;
+        tapCube = false;
+        rocketMode = true;
+    }
+
+    public void ExitRocketMode()
     {
         bombMode = false;
+        rocketMode = false;
         tapCube = true;
     }
 

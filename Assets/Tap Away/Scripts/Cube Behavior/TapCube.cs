@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [SelectionBase]
-public class TapCube : MonoBehaviour, ITappable
+public class TapCube : MonoBehaviour, ITappable, IExplodable
 {
 
     [SerializeField] private bool isHidden = false;
@@ -189,5 +189,20 @@ public class TapCube : MonoBehaviour, ITappable
     private void OnDestroy()
     {
         Destroy(_material);
+    }
+
+    public void Explode(Vector3 hitPoint, float explodeForce, float explodeRadius)
+    {
+        StartCoroutine(ScaleDown());
+        var rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.AddExplosionForce(explodeForce, hitPoint, explodeRadius, 0);
+        transform.SetParent(null);
+    }
+
+    private IEnumerator ScaleDown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        gameObject.GetComponent<DOTweenAnimation>().DOPlay();
     }
 }

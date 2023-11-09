@@ -113,12 +113,16 @@ public class GameplayManager : MonoBehaviour
                     break;
             }
         }
+        
+        ChangeBackGroundColor();
     }
 
     public void HandlePlayButton()
     {
         StartCoroutine(GenerateLevel());
-
+        
+        cameraBehaviour.ExitBombMode();
+        cameraBehaviour.ExitRocketMode();
         ChangeBackGroundColor();
     }
 

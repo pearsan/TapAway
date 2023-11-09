@@ -1554,7 +1554,7 @@ MonoBehaviour:
       m_Action: Axis
       m_Flags: 0
     m_Flags: 0
-  _targert: {fileID: 1932764984}
+  targert: {fileID: 0}
   clicked:
     m_Name: Clicked
     m_Type: 1
@@ -1595,6 +1595,14 @@ MonoBehaviour:
     m_SingletonActionBindings: []
     m_Flags: 0
   dragSpeed: 2
+  minCameraX: 0
+  maxCameraX: 0
+  minCameraY: 0
+  maxCameraY: 0
+  tapCube: 1
+  bomb: 1
+  explodeRadius: 0.75
+  explodeForce: 500
   parent: {fileID: 1932764982}
   child: {fileID: 8664533911761528409, guid: 1fe266b54487bf74ea6322c6d64aeaf4, type: 3}
   editCube: 0
@@ -2157,8 +2165,6 @@ MonoBehaviour:
   shapePrefab: {fileID: 122436475}
   jsonFile: {fileID: 4900000, guid: 42dc2b0d4d344fe489612f0657ee8e9f, type: 3}
   levelName: tutorial 3
-  currentSkinSo: {fileID: 11400000, guid: fb87122a40b686443b413f2b12932562, type: 2}
-  defaultSkinSo: {fileID: 11400000, guid: fb87122a40b686443b413f2b12932562, type: 2}
   isHollow: 0
 --- !u!1 &2025334840
 GameObject:

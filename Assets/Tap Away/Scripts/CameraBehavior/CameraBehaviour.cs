@@ -450,6 +450,16 @@ public class CameraBehaviour : MonoBehaviour
         return _behaviorOn;
         
     }
+
+    public bool CanBombMode()
+    {
+        return (!bombMode && !rocketMode);
+    }
+
+    public bool CanRocketMode()
+    {
+        return (!bombMode && !rocketMode);
+    }    
 }
 
 

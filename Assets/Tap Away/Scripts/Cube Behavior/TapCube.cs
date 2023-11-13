@@ -197,7 +197,7 @@ public class TapCube : MonoBehaviour, ITappable, IExplodable
         var rb = GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.AddExplosionForce(explodeForce, hitPoint, explodeRadius, 0);
-        transform.SetParent(null);
+        transform.parent = null;
     }
 
     private IEnumerator ScaleDown()

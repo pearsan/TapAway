@@ -30,8 +30,13 @@ public class Rocket : MonoBehaviour
         }
         else
         {
+            transform.position += transform.forward * speed * Time.deltaTime;
             CameraBehaviour.Instance.OnPlay();
-            Destroy(gameObject);
+            if (GameplayManager.Instance.CheckIfWin())
+            {
+                GameplayManager.Instance.OnTriggerWin();
+            }
+            Destroy(gameObject, 1f);
         }
     }
 

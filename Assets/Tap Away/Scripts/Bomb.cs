@@ -52,8 +52,14 @@ public class Bomb : MonoBehaviour
             IExplodable cube = hitCollider.GetComponent<IExplodable>();
             if (cube != null) // If the object has a TapCube component
             {
+                hitCollider.transform.parent = null;
                 cube.Explode(hitPoint, explodeForce, explodeRadius);
             }
-        }        
+        }
+
+        if (GameplayManager.Instance.CheckIfWin())
+        {
+            GameplayManager.Instance.OnTriggerWin();
+        }
     }
 }

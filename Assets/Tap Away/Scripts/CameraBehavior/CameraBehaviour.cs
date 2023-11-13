@@ -312,7 +312,17 @@ public class CameraBehaviour : MonoBehaviour
                             GameplayManager.Instance.MinusMoveAttemps();
 
                         SoundManager.Instance.TapCube();
-                        tapCube.Tap();                        
+                        tapCube.Tap();     
+                        
+                        if (GameplayManager.Instance.CheckIfLose())
+                        {
+                            GameplayManager.Instance.OnTriggerLose();
+                        }
+
+                        if (GameplayManager.Instance.CheckIfWin())
+                        {
+                            GameplayManager.Instance.OnTriggerWin();
+                        }
                     }
                     else if (bombMode)
                     {
@@ -320,10 +330,9 @@ public class CameraBehaviour : MonoBehaviour
                         ExitBombMode();
                     } else if (rocketMode)
                     {
-                        GameObject rocket = Instantiate(rocketPrefabs);
+                        GameObject rocket = Instantiate(rocketPrefabs, hit.collider.transform.parent, true);
                         rocket.transform.position = hit.collider.gameObject.transform.position + 1.5f * hit.normal;
                         rocket.transform.rotation = Quaternion.LookRotation(-hit.normal);
-                        rocket.transform.SetParent(hit.collider.transform.parent);
                         ExitRocketMode();
                     }
 
@@ -352,15 +361,7 @@ public class CameraBehaviour : MonoBehaviour
                     }
                     #endregion
                     
-                    if (GameplayManager.Instance.CheckIfLose())
-                    {
-                        GameplayManager.Instance.OnTriggerLose();
-                    }
 
-                    if (GameplayManager.Instance.CheckIfWin())
-                    {
-                        GameplayManager.Instance.OnTriggerWin();
-                    }
                 }
             }
         }

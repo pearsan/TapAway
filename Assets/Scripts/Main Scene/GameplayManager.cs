@@ -88,7 +88,7 @@ public class GameplayManager : MonoBehaviour
             {
                 case PLAYING_STATE:
                     
-                    if (loadedData.transforms.Count < 0 || _currentStage < 3)
+                    if (loadedData.transforms.Count < 0)
                     {
                         HandlePlayButton();
                     }
@@ -115,6 +115,25 @@ public class GameplayManager : MonoBehaviour
         }
         
         ChangeBackGroundColor();
+    }
+
+    private void Update()
+    {
+        if (Time.frameCount % 5 == 0)
+        {
+            if (_gameState == PLAYING_STATE)
+            {
+                if (GameplayManager.Instance.CheckIfLose())
+                {
+                    GameplayManager.Instance.OnTriggerLose();
+                }
+
+                if (GameplayManager.Instance.CheckIfWin())
+                {
+                    GameplayManager.Instance.OnTriggerWin();
+                }                
+            }
+        }
     }
 
     public void HandlePlayButton()

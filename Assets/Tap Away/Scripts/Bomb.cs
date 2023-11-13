@@ -56,10 +56,5 @@ public class Bomb : MonoBehaviour
                 cube.Explode(hitPoint, explodeForce, explodeRadius);
             }
         }
-
-        if (GameplayManager.Instance.CheckIfWin())
-        {
-            GameplayManager.Instance.OnTriggerWin();
-        }
     }
 }

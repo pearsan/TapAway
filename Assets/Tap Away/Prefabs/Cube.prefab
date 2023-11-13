@@ -93,7 +93,6 @@ GameObject:
   - component: {fileID: 8828609830021151578}
   - component: {fileID: 2671431766050059306}
   - component: {fileID: 5180934773197842292}
-  - component: {fileID: 5977779239943670388}
   - component: {fileID: 1932445501598567631}
   m_Layer: 3
   m_Name: Cube
@@ -162,21 +161,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5977779239943670388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5966293222690816701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 40306178, guid: aa0b1eebb5db27a419fa4564bbe5c9c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  preset: 0
-  onEnableBehaviour: 0
-  onDisableBehaviour: 5
 --- !u!114 &1932445501598567631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,10 +197,10 @@ MonoBehaviour:
   onComplete:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5966293222690816701}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 2671431766050059306}
+        m_TargetAssemblyTypeName: TapCube, Assembly-CSharp
+        m_MethodName: DestroySelf
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

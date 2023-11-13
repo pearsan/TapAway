@@ -312,17 +312,7 @@ public class CameraBehaviour : MonoBehaviour
                             GameplayManager.Instance.MinusMoveAttemps();
 
                         SoundManager.Instance.TapCube();
-                        tapCube.Tap();     
-                        
-                        if (GameplayManager.Instance.CheckIfLose())
-                        {
-                            GameplayManager.Instance.OnTriggerLose();
-                        }
-
-                        if (GameplayManager.Instance.CheckIfWin())
-                        {
-                            GameplayManager.Instance.OnTriggerWin();
-                        }
+                        tapCube.Tap();                        
                     }
                     else if (bombMode)
                     {
@@ -330,9 +320,10 @@ public class CameraBehaviour : MonoBehaviour
                         ExitBombMode();
                     } else if (rocketMode)
                     {
-                        GameObject rocket = Instantiate(rocketPrefabs, hit.collider.transform.parent, true);
+                        GameObject rocket = Instantiate(rocketPrefabs);
                         rocket.transform.position = hit.collider.gameObject.transform.position + 1.5f * hit.normal;
                         rocket.transform.rotation = Quaternion.LookRotation(-hit.normal);
+                        rocket.transform.SetParent(hit.collider.transform.parent);
                         ExitRocketMode();
                     }
 
@@ -361,7 +352,6 @@ public class CameraBehaviour : MonoBehaviour
                     }
                     #endregion
                     
-
                 }
             }
         }
@@ -451,6 +441,16 @@ public class CameraBehaviour : MonoBehaviour
         return _behaviorOn;
         
     }
+
+    public bool CanBombMode()
+    {
+        return (!bombMode && !rocketMode);
+    }
+
+    public bool CanRocketMode()
+    {
+        return (!bombMode && !rocketMode);
+    }    
 }
 
 

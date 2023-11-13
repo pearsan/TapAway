@@ -32,11 +32,7 @@ public class Rocket : MonoBehaviour
         {
             transform.position += transform.forward * speed * Time.deltaTime;
             CameraBehaviour.Instance.OnPlay();
-            if (GameplayManager.Instance.CheckIfWin())
-            {
-                GameplayManager.Instance.OnTriggerWin();
-            }
-            Destroy(gameObject, 1f);
+            Destroy(gameObject, 0.25f);
         }
     }
 
@@ -45,6 +41,7 @@ public class Rocket : MonoBehaviour
         IExplodable cube = other.GetComponent<IExplodable>();
         if (cube != null)
         {
+            other.transform.parent = null;
             cube.Explode(transform.position, 500f, 2f);
         }
     }

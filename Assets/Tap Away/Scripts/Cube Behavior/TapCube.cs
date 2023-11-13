@@ -204,5 +204,11 @@ public class TapCube : MonoBehaviour, ITappable, IExplodable
     {
         yield return new WaitForSeconds(0.5f);
         gameObject.GetComponent<DOTweenAnimation>().DOPlay();
+        
+    }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
     }
 }

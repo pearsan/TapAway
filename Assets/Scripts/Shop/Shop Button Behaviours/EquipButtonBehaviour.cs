@@ -26,8 +26,8 @@ public class EquipButtonBehaviour : MonoBehaviour
     /// <param name="itemPlayerSelected"></param>
     public void OnStartFeedbackToPlayer(ShopItemSO itemPlayerSelected)
     {
-        string EquimentEquipped = ShopReadWriteData.Instance.GetEquippedEquipmentName(itemPlayerSelected);
-        if (EquimentEquipped == itemPlayerSelected.Name)
+        string EquipmentEquipped = ShopReadWriteData.Instance.GetEquippedEquipmentName(itemPlayerSelected);
+        if (EquipmentEquipped == itemPlayerSelected.Name)
         {
             GetComponent<Image>().sprite = EquippedSprite;
             GetComponent<Button>().interactable = false;
@@ -51,7 +51,11 @@ public class EquipButtonBehaviour : MonoBehaviour
         OnStartFeedbackToPlayer(ShopManager.Instance.SubcriberSO);
         ShopGUIManager.Instance.OnUpdateAllSelectedItemFeedbacks();
 
-        if(ShopManager.Instance.SubcriberSO.Type == "Skin")
+        if (ShopManager.Instance.SubcriberSO.Type == "Skin")
             GameplayManager.Instance.ChangeCurrentSkin(ShopManager.Instance.SubcriberSO.ShopItemPrefab);
+        else if (ShopManager.Instance.SubcriberSO.Type == "TapEffect")
+            ClickEffect.Instance.ChangeEffect(ShopManager.Instance.SubcriberSO.ShopItemPrefab.GetComponent<ParticleSystem>());
+        else if (ShopManager.Instance.SubcriberSO.Type == "WinEffect")
+            WinEffectBehaviour.Instance.ChangeWinEffect(ShopManager.Instance.SubcriberSO);
     }    
 }

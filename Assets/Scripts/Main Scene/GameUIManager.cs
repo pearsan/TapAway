@@ -177,8 +177,11 @@ public class GameUIManager : MonoBehaviour
 
     public IEnumerator OnTriggerEnterWinPanel()
     {
-        WinPanel.SetActive(true);
-        yield return new WaitUntil(() => !WinPanel.activeSelf);
+        yield return StartCoroutine(WinEffectBehaviour.Instance.OnAnimateWinEffect());
+
+        //Now win panel no longer to available
+        //WinPanel.SetActive(true);
+        //yield return new WaitUntil(() => !WinPanel.activeSelf);
 
         LevelRewardManager.Instance.IsRewardClaim = false;
 

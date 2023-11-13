@@ -15,8 +15,8 @@ MonoBehaviour:
   Name: 
   IsUnlock: 0
   Price: 0
-  Type: 
-  ShopItemPrefab: {fileID: 919132149155446097, guid: d7f3ea2fab545414c93892f207ef5442, type: 3}
+  Type: Key
+  ShopItemPrefab: {fileID: 2580688448544776292, guid: cf065a86232b82f49b557ff59ac32e42, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1
   AdsWatched: 0

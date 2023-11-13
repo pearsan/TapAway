@@ -445,13 +445,16 @@ public class GameplayManager : MonoBehaviour
 
     public void EnableTarget()
     {
-        _currentPuzzle.gameObject.SetActive(true);
+        if(_currentPuzzle != null && _currentPuzzle.gameObject != null)
+            _currentPuzzle.gameObject.SetActive(true);
     }
 
     public void DisableTarget()
     {
         TutorialManager.Instance.DisableTutorial(_currentStage);
-        _currentPuzzle.gameObject.SetActive(false);
+
+        if(_currentPuzzle != null)
+            _currentPuzzle.gameObject.SetActive(false);
     }
 
     public int CubesLeft()

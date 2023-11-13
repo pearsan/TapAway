@@ -7,6 +7,9 @@ public class RocketButtonBehaviour : MonoBehaviour
     [SerializeField] private GameObject GoldDescription;
     [SerializeField] private GameObject AdsDescription;
 
+    [Space(10f)]
+    [SerializeField] private CameraBehaviour CameraBehaviour;
+
     private void Update()
     {
         UpdateDescriptionDependGold();
@@ -14,6 +17,8 @@ public class RocketButtonBehaviour : MonoBehaviour
 
     public void RocketButton()
     {
+        if (!CameraBehaviour.CanRocketMode()) return;
+
         if (GoldManager.Instance.GetGold() >= 100)
         {
             GoldManager.Instance.ModifyGoldValue(-100);

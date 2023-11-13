@@ -5,14 +5,26 @@ using UnityEngine;
 
 public class ClickEffect : MonoBehaviour
 {
+    public static ClickEffect Instance;
+
     [SerializeField] private ParticleSystem _particleSystem;
     [SerializeField] private Camera _camera;
     [SerializeField] private float distanceFromCamera = 10f;
     private ParticleSystem[] _particleSystems;
-    
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
 
     private void Start()
     {
+        string tapName = ShopReadWriteData.Instance.GetEquippedEquipmentName("TapEffect");
+
+        if (ShopManager.Instance.GetTapSO(tapName).ShopItemPrefab != null)
+            _particleSystem = ShopManager.Instance.GetTapSO(tapName).ShopItemPrefab.GetComponent<ParticleSystem>();
+
         _particleSystem = Instantiate(_particleSystem);
         _particleSystems = _particleSystem.GetComponentsInChildren<ParticleSystem>();
         foreach (var ps in _particleSystems)

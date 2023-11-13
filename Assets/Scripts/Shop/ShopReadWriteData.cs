@@ -18,7 +18,13 @@ public class ShopReadWriteData : MonoBehaviour
         string TypeEquipInput = EQUIP_PATH + input.Type;
         //Debug.Log(TypeEquipInput + "/" + PlayerPrefs.GetString(TypeEquipInput));
         return PlayerPrefs.GetString(TypeEquipInput);
-    }   
+    }
+    
+    public string GetEquippedEquipmentName(string input)
+    {
+        string TypeEquipInput = EQUIP_PATH + input;
+        return PlayerPrefs.GetString(TypeEquipInput);
+    }    
     
     public void SetEquippedEquipment()
     {

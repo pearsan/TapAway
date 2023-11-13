@@ -44,7 +44,13 @@ public class GachaEffect : MonoBehaviour
         }
         else
         {
-            RewardText.text = "You got new FX!!";
+            switch(obtainedObject.Type)
+            {
+                case "TapEffect": RewardText.text = "You got new tap effect!"; break;
+                case "WinEffect": RewardText.text = "You got new win effect!"; break;
+                case "Key": RewardText.text = "You got new key!"; break;
+                case "Egg": RewardText.text = "You got new mystery skin!"; break;
+            }    
 
             MainCamera.SetActive(false);
 
@@ -57,7 +63,7 @@ public class GachaEffect : MonoBehaviour
             GameObject FX = Instantiate<GameObject>(obtainedObject.ShopItemPrefab, _animationCamera.transform);
 
             yield return new WaitForSeconds(5f);
-        } 
+        }
             
     }
 

@@ -23,6 +23,25 @@ public class ShopManager : MonoBehaviour
         FetchData();
     }
 
+    private void Start()
+    {
+
+        if (PlayerPrefs.HasKey("Has data before"))
+        {
+    
+        }
+        else
+        {
+            PlayerPrefs.SetInt("Has data before", 1);
+            SubcriberSO = _purchaseSkinsData[0];
+            ShopReadWriteData.Instance.SetEquippedEquipment();
+            SubcriberSO = _tapEffectsData[0];
+            ShopReadWriteData.Instance.SetEquippedEquipment();
+            SubcriberSO = _winEffectsData[0];
+            ShopReadWriteData.Instance.SetEquippedEquipment();
+        }
+    }
+
     private void Update()
     {
         
@@ -40,6 +59,8 @@ public class ShopManager : MonoBehaviour
         LoadData();
 
         _purchaseSkinsData[0].IsUnlock = true;
+        _tapEffectsData[0].IsUnlock = true;
+        _winEffectsData[0].IsUnlock = true;
     }
 
     private void SaveData()
@@ -140,4 +161,12 @@ public class ShopManager : MonoBehaviour
         ShopGUIManager.Instance.OnShopItemButtonClick(SubcriberSO);
         ShopGUIManager.Instance.EquipButtonBehaviour.OnStartFeedbackToPlayer(SubcriberSO);
     }
+
+    public ShopItemSO GetTapSO(string name)
+    {
+        ShopItemSO temp = new ShopItemSO();
+        foreach (var tap in _tapEffectsData)
+            if (tap.Name == name) temp = tap;
+        return temp;
+    }    
 }

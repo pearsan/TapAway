@@ -15,7 +15,7 @@ MonoBehaviour:
   Name: 
   IsUnlock: 0
   Price: 0
-  Type: 
+  Type: Egg
   ShopItemPrefab: {fileID: 5992394700500863247, guid: d8fb8872165ca514bae935aaf9aee07c, type: 3}
   CanUnlockByGold: 1
   CanUnlockByAds: 1

@@ -52,6 +52,15 @@ public class LevelRewardManager : MonoBehaviour
         return _totalLevelCompleted + 1 == _totalLevelToClaim;
     }
 
+    /// <summary>
+    /// If the next reward is key, it will return true (Key isn't reward)
+    /// </summary>
+    /// <returns></returns>
+    public bool OnValidateKeyProgress()
+    {
+        return LevelRewardDataSO[_currentReward].Reward == "Key";
+    }    
+
     public void OnChooseRewardDependExcel()
     {
         switch (LevelRewardDataSO[_currentReward].Reward)

@@ -48,7 +48,7 @@ public class GachaEffect : MonoBehaviour
             {
                 case "TapEffect": RewardText.text = "You got new tap effect!"; break;
                 case "WinEffect": RewardText.text = "You got new win effect!"; break;
-                case "Key": RewardText.text = "You got new key!"; break;
+                case "Key": RewardText.text = "You got new reward process!"; break;
                 case "Egg": RewardText.text = "You got new mystery skin!"; break;
             }    
 

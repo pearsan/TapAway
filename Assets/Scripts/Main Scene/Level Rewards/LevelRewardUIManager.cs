@@ -50,11 +50,14 @@ public class LevelRewardUIManager : MonoBehaviour
     }     
 
     public void CreateNewRewardProgress()
-    {
+    {     
         StepProgressSliderSegment[] segments = RewardProgressTransform.GetComponentsInChildren<StepProgressSliderSegment>();
         if (segments.Length > 0)
             foreach (var segment in segments)
                 Destroy(segment.gameObject);
+
+        if (LevelRewardManager.Instance.OnValidateKeyProgress())
+            return;
 
         int completed = LevelRewardManager.Instance.GetData().Item1;
         int total = LevelRewardManager.Instance.GetData().Item2;
@@ -75,31 +78,37 @@ public class LevelRewardUIManager : MonoBehaviour
     public IEnumerator CreateNewRewardProgressTween(Transform RewardProgressTweenTransform)
     {
         LevelRewardUIManager.Instance.ShutAllButtonBehaviour();
+
         StepProgressSliderSegment[] segments = RewardProgressTweenTransform.GetComponentsInChildren<StepProgressSliderSegment>();
         if (segments.Length > 0)
             foreach (var segment in segments)
                 Destroy(segment.gameObject);
 
-        int completed = LevelRewardManager.Instance.GetData().Item1 + 1;
-        int total = LevelRewardManager.Instance.GetData().Item2;
-
-        GameObject reward = Instantiate<GameObject>(RewardPrefab, RewardProgressTweenTransform);
-        for (int i = total - 1 ; i >= 1; i--)
-        {
-            GameObject segment = Instantiate<GameObject>(SegmentPrefab, RewardProgressTweenTransform);
-            if (i < completed || (i == completed && completed == total)) 
-                segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillSegment();
-            else if (i == completed && completed < total)
-                segment.GetComponent<StepProgressSliderSegment>().OnTriggerHalfFillSegmentTween();
-            else
-                segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
-        }
-        if (completed < total)
-            reward.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
+        if (LevelRewardManager.Instance.OnValidateKeyProgress())
+            LevelRewardUIManager.Instance.ExcuteButtonBehaviour();
         else
-            reward.GetComponent<StepProgressSliderSegment>().OnTriggerFullFillSegmentTween();
+        {
+            int completed = LevelRewardManager.Instance.GetData().Item1 + 1;
+            int total = LevelRewardManager.Instance.GetData().Item2;
 
-        yield return new WaitUntil(() => !DOTween.IsTweening("Fill segment"));
-        LevelRewardUIManager.Instance.ExcuteButtonBehaviour();
-    }    
+            GameObject reward = Instantiate<GameObject>(RewardPrefab, RewardProgressTweenTransform);
+            for (int i = total - 1; i >= 1; i--)
+            {
+                GameObject segment = Instantiate<GameObject>(SegmentPrefab, RewardProgressTweenTransform);
+                if (i < completed || (i == completed && completed == total))
+                    segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillSegment();
+                else if (i == completed && completed < total)
+                    segment.GetComponent<StepProgressSliderSegment>().OnTriggerHalfFillSegmentTween();
+                else
+                    segment.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
+            }
+            if (completed < total)
+                reward.GetComponent<StepProgressSliderSegment>().OnTriggerFillntSegment();
+            else
+                reward.GetComponent<StepProgressSliderSegment>().OnTriggerFullFillSegmentTween();
+
+            yield return new WaitUntil(() => !DOTween.IsTweening("Fill segment"));
+            LevelRewardUIManager.Instance.ExcuteButtonBehaviour();
+        }
+    } 
 }
